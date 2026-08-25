@@ -61,13 +61,12 @@ SOURCES: dict[str, SourceInfo] = {
     "soccernet": SourceInfo(
         name="soccernet",
         module="sportio.loaders.soccernet",
-        title="SoccerNet Tracking / Game State Reconstruction",
-        url="https://github.com/SoccerNet/sn-gamestate",
-        license="SoccerNet NDA (research use); download requires a password",
+        title="SoccerNet Game State Reconstruction (SN-GSR-2025)",
+        url="https://huggingface.co/datasets/SoccerNet/SN-GSR-2025",
+        license="GPL-3.0 (GSR, public). SoccerNet-Tracking MOT is separate and NDA-gated.",
         events=False,
         tracking=True,
-        notes="Reads an already-downloaded sequence directory; see TODO.md for the manual step.",
-        extras=("soccernet",),
+        notes="Reads an already-extracted sequence directory; a split is 11.2 GB (see TODO.md).",
     ),
     "rugby": SourceInfo(
         name="rugby",

@@ -51,7 +51,7 @@ ignore = ["B008"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q --strict-markers"
+addopts = "-q --strict-markers -m 'not network'"
 markers = [
     "network: test needs live network access (deselected by default)",
 ]

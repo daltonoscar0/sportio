@@ -99,6 +99,19 @@ def test_velocities_recover_a_known_speed() -> None:
     assert walker["vy"].astype("float64").dropna().to_numpy() == pytest.approx(0.0, abs=1e-9)
 
 
+def test_velocities_are_not_differenced_across_a_gap() -> None:
+    src = _synthetic(hz=25.0, seconds=4.0)
+    # Excise a whole second in the middle of the period, as a truncated file would.
+    t = src["t"].astype("float64")
+    holed = src.loc[(t <= 1.0) | (t >= 2.0)]
+    out = add_velocities(holed, smooth=1, max_gap=0.5)
+    resumed = out.loc[(out["player_id"] == "Player1") & (out["t"].astype("float64") == 2.0)]
+    assert resumed["vx"].isna().all()
+    # ...and the frames after the gap recover normally.
+    later = out.loc[(out["player_id"] == "Player1") & (out["t"].astype("float64") > 2.1)]
+    assert later["vx"].astype("float64").dropna().to_numpy() == pytest.approx(1.0, abs=1e-6)
+
+
 def test_velocities_drop_teleports() -> None:
     src = _synthetic(hz=25.0, seconds=2.0).copy()
     jump = (src["player_id"] == "Player1") & (src["frame"] == 25)

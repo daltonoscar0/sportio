@@ -187,12 +187,14 @@ def _gsr_tracking(
 
 
 def _on_pitch(x: np.ndarray, y: np.ndarray, margin: float) -> np.ndarray:
-    return (
+    inside = (
         (x > -margin)
         & (x < 105.0 + margin)
         & (y > -margin)
         & (y < 68.0 + margin)
     )
+    # A missing position is not a blow-up; keep_uncalibrated decides its fate elsewhere.
+    return inside | ~(np.isfinite(x) & np.isfinite(y))
 
 
 def _period(info: dict[str, Any]) -> int:
