@@ -15,7 +15,6 @@ from sportio.transform import attacking_sign
 from .conftest import fixture_path
 
 SC = "skillcorner"
-MATCH_FILE = ("1886347_match.json",)
 
 
 def _sc_tracking(name: str, **kwargs: object) -> pd.DataFrame:
@@ -235,6 +234,23 @@ def test_rugby_reads_the_thinner_scoreboard_shape() -> None:
     assert events["match_id"].nunique() == 2
     # The scoreboard nests athletes under athletesInvolved rather than participants.
     assert events["player"].notna().any()
+
+
+def test_rugby_scoreboard_period_is_inferred_and_flagged() -> None:
+    events = rugby.load_events(
+        scoreboard_file=fixture_path("rugby", "espn_scoreboard_180659_20250201.json")
+    )
+    # The scoreboard shape omits period.number entirely, so the clock is the only signal.
+    # Dumping everything into period 1 would leave t reading 4918 s.
+    assert set(events["period"]) == {1, 2}
+    assert float(events["t"].max()) < 2600.0
+    assert sportio.extra_field(events, "period_inferred").map(bool).all()
+
+    # The summary shape states the period, so nothing is guessed there.
+    summary = rugby.load_events(
+        summary_file=fixture_path("rugby", "espn_summary_180659_600252.json")
+    )
+    assert not sportio.extra_field(summary, "period_inferred").map(bool).any()
 
 
 def test_rugby_scoreboard_index() -> None:

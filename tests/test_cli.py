@@ -111,5 +111,5 @@ def test_fetch_explains_the_soccernet_manual_step(capsys: pytest.CaptureFixture[
 def test_fetch_is_blocked_offline(capsys: pytest.CaptureFixture[str]) -> None:
     # conftest forces SPORTIO_OFFLINE, so a fetch that is not cached must fail loudly
     # rather than quietly reaching the network during the test run.
-    with pytest.raises(Exception, match="OFFLINE|not cached|offline"):
+    with pytest.raises(Exception, match=r"OFFLINE|not cached|offline"):
         main(["fetch", "rugby", "--match", "600252"])

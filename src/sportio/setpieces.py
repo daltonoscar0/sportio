@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 from collections.abc import Iterable
 
+import numpy as np
 import pandas as pd
 
 __all__ = [
@@ -66,12 +67,22 @@ def set_pieces(
 
 
 def _expand_window(ev: pd.DataFrame, seeds: pd.DataFrame, window: float) -> pd.DataFrame:
-    keep = pd.Series(False, index=ev.index)
-    for (match_id, period), block in seeds.groupby(["match_id", "period"], dropna=False):
-        same = (ev["match_id"] == match_id) & (ev["period"] == period)
-        times = ev["t"].astype("float64")
-        for start in block["t"].astype("float64"):
-            keep |= same & (times >= start) & (times <= start + window)
+    """Union of ``[start, start + window]`` around every seed, per match and period."""
+    keep = np.zeros(len(ev), dtype=bool)
+    times = ev["t"].astype("float64").to_numpy()
+    blocks = ev.groupby(["match_id", "period"], dropna=False, sort=False).indices
+
+    for key, seed_block in seeds.groupby(["match_id", "period"], dropna=False):
+        rows = blocks.get(key)
+        if rows is None:
+            continue
+        order = np.argsort(times[rows], kind="stable")
+        rows, block_times = rows[order], times[rows][order]
+        for start in seed_block["t"].astype("float64"):
+            lo = int(np.searchsorted(block_times, start, side="left"))
+            hi = int(np.searchsorted(block_times, start + window, side="right"))
+            keep[rows[lo:hi]] = True
+
     out = ev.loc[keep].sort_values(["match_id", "period", "t"], kind="stable")
     return out.reset_index(drop=True)
 

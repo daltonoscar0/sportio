@@ -203,6 +203,7 @@ def _from_scoreboard_event(event: dict[str, Any], payload: dict[str, Any]) -> pd
         half=_HALF_SECONDS,
         rosters={},
         team_names=_team_names(competition),
+        infer_period=True,
     )
 
 
@@ -247,10 +248,14 @@ def _details_frame(
     half: float,
     rosters: dict[str, dict[str, Any]],
     team_names: dict[str, str],
+    infer_period: bool = False,
 ) -> pd.DataFrame:
     partners = _substitution_partners(details)
     rows = [
-        _detail_row(detail, i, match_id, competition, season, half, rosters, team_names, partners)
+        _detail_row(
+            detail, i, match_id, competition, season, half, rosters, team_names,
+            partners, infer_period,
+        )
         for i, detail in enumerate(details)
     ]
     return pd.DataFrame(rows, columns=list(_EVENT_KEYS))
@@ -266,15 +271,24 @@ def _detail_row(
     rosters: dict[str, dict[str, Any]],
     team_names: dict[str, str],
     partners: dict[int, str],
+    infer_period: bool,
 ) -> dict[str, Any]:
     type_id = str((detail.get("type") or {}).get("id") or "")
     kind, subtype, outcome = _TYPE_MAP.get(type_id, ("unknown", None, None))
 
-    period = int(((detail.get("period") or {}).get("number")) or 1)
     clock = detail.get("clock") or {}
     raw_clock = _float(clock.get("value"))
-    # clock.value counts from kickoff and does NOT reset at half time; first-half added time
-    # overruns the nominal boundary, so period must come from period.number, never the clock.
+    # clock.value counts from kickoff and does NOT reset at half time, and first-half added
+    # time overruns the nominal boundary, so period comes from period.number wherever it
+    # exists. The scoreboard shape omits it, and then the clock is the only signal there is.
+    stated = (detail.get("period") or {}).get("number")
+    inferred = stated is None and infer_period and raw_clock is not None
+    if stated is not None:
+        period = int(stated)
+    elif inferred:
+        period = 1 if raw_clock <= half else 2
+    else:
+        period = 1
     t = None if raw_clock is None else raw_clock - (period - 1) * half
 
     athlete = _athlete(detail)
@@ -298,6 +312,8 @@ def _detail_row(
         "position": roster.get("position"),
         "substitution_partner": partners.get(index),
         "type_mapping": "unverified" if type_id in _UNVERIFIED_TYPE_IDS else None,
+        # Near half time the clock is genuinely ambiguous, so say when period was guessed.
+        "period_inferred": True if inferred else None,
     }
 
     return {

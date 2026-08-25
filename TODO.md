@@ -63,6 +63,10 @@ Consequences, all reflected in `sportio.loaders.rugby`:
   "unverified"`. Confirm against a match containing one before relying on them.
 - Only *successful* kicks at goal produce a detail row, so conversion counts are not
   attempt counts.
+- The **scoreboard** play shape omits `period.number`, so the loader infers the half from the
+  clock and sets `extra["period_inferred"]`. First-half added time overruns the nominal 2400 s
+  boundary (a period-1 play at 2419 s, a period-2 play at 2402 s), so plays within ~20 s of
+  half time can land in the wrong half. Use `summary` when the half matters.
 
 ### Metrica
 

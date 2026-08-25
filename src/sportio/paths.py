@@ -10,13 +10,11 @@ Resolution order for the raw-data cache:
 from __future__ import annotations
 
 import os
-from functools import lru_cache
 from pathlib import Path
 
 __all__ = ["cache_path", "data_root", "fixtures_root", "repo_root"]
 
 
-@lru_cache(maxsize=1)
 def repo_root() -> Path | None:
     """Nearest ancestor directory of the CWD that looks like the sportio checkout."""
     here = Path.cwd().resolve()
