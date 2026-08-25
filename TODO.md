@@ -74,9 +74,12 @@ Consequences, all reflected in `sportio.loaders.rugby`:
   the period's first *frame* (game 1: frame 71269), while events set it at the period's first
   *event*, which is later — the second half restarts play well after the tracking file resumes.
   So `events.t` and `tracking.t` are on different period clocks in period 2 and must not be
-  joined directly. Join on frames instead: every event carries `extra["start_frame"]`, which
-  indexes straight into `tracking.frame`. Giving `load_events` an optional `period_starts=`
-  argument (or having it read the tracking header) would remove the trap.
+  joined directly **unless you align them**: pass
+  `starts=metrica.period_starts(tracking)` to `load_events` and both frames land on the same
+  clock (verified event-by-event against the tracking rows). Failing that, join on frames —
+  every event carries `extra["start_frame"]`, which indexes straight into `tracking.frame`.
+  Making the alignment automatic would mean the events loader pulling the 65 MB tracking file,
+  so it stays opt-in.
 - **Game 3 (FIFA EPTS format) is not implemented.** It is a different file set entirely:
   `Sample_Game_3_metadata.xml` (EPTS XML), `Sample_Game_3_tracking.txt` (a
   `frame:player_x,player_y;…:ball_x,ball_y` stream) and `Sample_Game_3_events.json`. The

@@ -199,6 +199,35 @@ def test_pressure_is_false_because_metrica_has_no_such_flag(events: pd.DataFrame
     assert not events["pressure"].any()
 
 
+def test_events_can_be_aligned_onto_the_tracking_clock(tracking: pd.DataFrame) -> None:
+    # Tracking restarts t at the period's first *frame*; the events file's first *event* of
+    # the second half is later, so by default the two clocks disagree in period 2.
+    starts = metrica.period_starts(tracking)
+    assert set(starts) == {1, 2}
+
+    aligned = metrica.load_events(
+        1, events_file=fixture_path("metrica", EVENTS), starts=starts
+    )
+    second_half = aligned.loc[aligned["period"] == 2]
+    assert len(second_half) > 0
+
+    frames = sportio.extra_field(second_half, "start_frame")
+    checked = 0
+    for (_, event), frame in zip(second_half.iterrows(), frames, strict=True):
+        match = tracking.loc[(tracking["period"] == 2) & (tracking["frame"] == int(frame))]
+        if match.empty:
+            continue
+        assert float(event["t"]) == pytest.approx(float(match["t"].iloc[0]), abs=1e-6)
+        checked += 1
+    assert checked > 0, "no event fell inside the truncated tracking window"
+
+    # Without alignment the same events sit on a different clock.
+    plain = metrica.load_events(1, events_file=fixture_path("metrica", EVENTS))
+    assert float(plain.loc[plain["period"] == 2, "t"].min()) != pytest.approx(
+        float(second_half["t"].min())
+    )
+
+
 def test_subtype_raw_keeps_its_internal_spaces(events: pd.DataFrame) -> None:
     # Metrica's atomic tags contain spaces ("ON TARGET", "CORNER KICK"). The player-id
     # cleaner strips internal whitespace, which would corrupt them.

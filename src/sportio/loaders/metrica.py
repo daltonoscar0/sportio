@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import csv
 import re
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -28,7 +29,14 @@ from ..schema import conform_events, conform_tracking, encode_extra
 from ..transform import flip_events
 from ._common import finish_events, finish_tracking, snake
 
-__all__ = ["GAMES", "load_events", "load_tracking", "read_events", "read_tracking"]
+__all__ = [
+    "GAMES",
+    "load_events",
+    "load_tracking",
+    "period_starts",
+    "read_events",
+    "read_tracking",
+]
 
 BASE = "https://raw.githubusercontent.com/metrica-sports/sample-data/master/data"
 FPS = 25.0
@@ -203,12 +211,32 @@ _OUTCOME_TAGS = (
 )
 
 
-def read_events(path: str | Path, match_id: str) -> pd.DataFrame:
+def period_starts(tracking: pd.DataFrame) -> dict[int, int]:
+    """First tracked frame of each period, for aligning events onto the tracking clock.
+
+    Pass the result to :func:`load_events` as ``period_starts=``. Without it the two frames
+    disagree in the second half: tracking restarts its clock at the period's first *frame*,
+    while the events file's first *event* of the half comes some seconds later.
+    """
+    grouped = tracking.dropna(subset=["frame"]).groupby("period")["frame"]
+    return {int(period): int(first) for period, first in grouped.min().items()}
+
+
+def read_events(
+    path: str | Path,
+    match_id: str,
+    starts: Mapping[int, int] | None = None,
+) -> pd.DataFrame:
     """Parse a Metrica events CSV into canonical events, still in the raw pitch frame."""
     raw = pd.read_csv(path)
     period = raw["Period"].astype("int64")
     clock = raw["Start Time [s]"].astype("float64")
-    t = clock - clock.groupby(period).transform("min")
+    if starts:
+        # Anchor on the same frame the tracking loader anchors on, so the two clocks agree.
+        base = period.map(starts)
+        t = (raw["Start Frame"].astype("float64") - base) / FPS
+    else:
+        t = clock - clock.groupby(period).transform("min")
 
     tags = raw["Subtype"].map(_split_tags)
     x, y = METRICA.to_canonical(
@@ -318,6 +346,7 @@ def load_events(
     *,
     events_file: str | Path | None = None,
     direction: str = "possession",
+    starts: Mapping[int, int] | None = None,
     fetcher: Fetcher | None = None,
 ) -> pd.DataFrame:
     """Load one Metrica sample game as canonical events.
@@ -327,6 +356,12 @@ def load_events(
         events_file: read this CSV instead of downloading it.
         direction: ``"possession"`` (default) rotates each event so the acting team attacks +x,
             as the canonical schema requires; ``"raw"`` keeps Metrica's fixed match frame.
+        starts: ``{period: first_frame}`` from :func:`period_starts`, so ``t`` lands on the
+            same clock the tracking loader uses. Without it the second half is offset by the
+            gap between the period's first tracked frame and its first recorded event -- join
+            on ``extra["start_frame"]`` instead if you cannot supply this. Note that if the
+            tracking is a truncated slice, events preceding its first frame get a negative
+            ``t``, which is the honest answer rather than a clamp.
     """
     fetcher = fetcher or default_fetcher()
     match_id = _match_id(match)
@@ -336,7 +371,7 @@ def load_events(
             f"{BASE}/Sample_Game_{match}/{name}", f"metrica/{name}", desc=name
         )
 
-    out = read_events(events_file, match_id)
+    out = read_events(events_file, match_id, starts)
     if direction == "possession":
         signs = attack_directions(out)
         pairs = zip(out["team_id"], out["period"], strict=True)
