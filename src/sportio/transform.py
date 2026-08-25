@@ -133,12 +133,17 @@ def add_velocities(
     *,
     smooth: int = 7,
     max_speed: float = 12.0,
+    max_gap: float = 1.0,
 ) -> pd.DataFrame:
-    """Fill ``vx``/``vy`` by central differences per track, with a moving-average smooth.
+    """Fill ``vx``/``vy`` by differencing each track, with a moving-average smooth.
 
     Args:
         smooth: window length in frames for the moving average; ``<= 1`` disables it.
         max_speed: speeds above this (m/s) are treated as tracking glitches and dropped.
+        max_gap: no velocity is emitted across a time gap longer than this (seconds).
+            Grouping by period alone is not enough -- a truncated file, a substitution or a
+            stretch of lost tracking leaves a hole *inside* a period, and differencing
+            across it manufactures a several-hundred-m/s spike.
     """
     if df.empty:
         return df
@@ -151,7 +156,7 @@ def add_velocities(
     vy = grouped["y"].diff().astype("float64") / dt
 
     speed = np.hypot(vx.to_numpy(dtype="float64"), vy.to_numpy(dtype="float64"))
-    bad = speed > max_speed
+    bad = (speed > max_speed) | (dt > max_gap)
     vx = vx.mask(bad)
     vy = vy.mask(bad)
 
