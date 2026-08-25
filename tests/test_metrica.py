@@ -199,6 +199,15 @@ def test_pressure_is_false_because_metrica_has_no_such_flag(events: pd.DataFrame
     assert not events["pressure"].any()
 
 
+def test_event_time_restarts_each_period(events: pd.DataFrame) -> None:
+    # Metrica's Start Time [s] is cumulative across the match; period 2 begins at 2850.76 s
+    # in the full file. Carrying that through would put every second-half event on a match
+    # clock while the schema promises seconds-within-period.
+    starts = events.groupby("period")["t"].min().astype("float64")
+    assert starts.to_dict() == {1: 0.0, 2: 0.0}
+    assert float(events["t"].max()) < 4200.0
+
+
 def test_events_can_be_aligned_onto_the_tracking_clock(tracking: pd.DataFrame) -> None:
     # Tracking restarts t at the period's first *frame*; the events file's first *event* of
     # the second half is later, so by default the two clocks disagree in period 2.

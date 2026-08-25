@@ -234,6 +234,45 @@ def test_soccernet_mot_is_image_space_and_says_so() -> None:
     assert tracking["jersey"].notna().any()
 
 
+def test_soccernet_y_axis_is_flipped_to_point_up_the_pitch() -> None:
+    """SoccerNet's +y points at the *bottom* of the broadcast image -- the opposite of
+    SkillCorner's, though both call themselves "metres from the pitch centre". Canonical y
+    runs up, so it must end up anti-correlated with image-space y."""
+    _, det = soccernet.read_gsr(fixture_path("soccernet", "gsr", "SNGS-056"))
+    det = det.dropna(subset=["pitch_x", "pitch_y", "image_y"])
+    assert len(det) > 20
+
+    _, y = soccernet.SOCCERNET_PITCH.to_canonical(
+        det["pitch_x"].astype("float64").to_numpy(),
+        det["pitch_y"].astype("float64").to_numpy(),
+    )
+    image_y = det["image_y"].astype("float64").to_numpy()
+    correlation = float(np.corrcoef(image_y, y)[0, 1])
+    assert correlation < -0.5, f"canonical y tracks image y (r={correlation:.2f}); axis not flipped"
+
+
+def test_skillcorner_y_axis_keeps_left_on_the_left() -> None:
+    """For a team attacking +x, its left back belongs on the +y side. Mirroring y alone
+    would keep every player on the pitch while quietly swapping the wings."""
+    import json as _json
+
+    meta = _json.loads(fixture_path(SC, "1886347_match.json").read_text())
+    roles = {
+        str(p["id"]): (p.get("player_role") or {}).get("name") or "" for p in meta["players"]
+    }
+    tracking = _sc_tracking("1886347_tracking_head.jsonl")  # home normalised to attack +x
+
+    home = tracking.loc[tracking["team"] == "home"]
+    by_player = home.groupby("player_id")["y"].mean().astype("float64")
+    left = [v for pid, v in by_player.items() if roles.get(str(pid), "").startswith("Left")]
+    right = [v for pid, v in by_player.items() if roles.get(str(pid), "").startswith("Right")]
+    assert left and right, "fixture roster should name left- and right-sided players"
+    assert min(left) > max(right), (
+        f"left-sided players at y={sorted(left)} are not on the +y side of "
+        f"right-sided players at y={sorted(right)}"
+    )
+
+
 def test_soccernet_mot_drops_referees_rather_than_calling_them_home() -> None:
     _, det = soccernet.read_mot(fixture_path("soccernet", "mot", "SNMOT-116"))
     assert (det["role"] == "referee").any(), "fixture should contain referee tracklets"
