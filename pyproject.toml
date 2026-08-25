@@ -1,0 +1,58 @@
+[project]
+name = "sportio"
+version = "0.1.0"
+description = "Shared data layer for the sports tools suite: one canonical events/tracking schema over every open soccer and rugby data source."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Oscar Dalton" }]
+keywords = ["soccer", "football", "rugby", "tracking-data", "event-data"]
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.1",
+    "pydantic>=2.6",
+    "requests>=2.31",
+    "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+soccernet = ["SoccerNet>=0.1.60"]
+
+[project.scripts]
+sportio = "sportio.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/daltonoscar0/sportio"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sportio"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM", "RUF"]
+ignore = ["B008"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+markers = [
+    "network: test needs live network access (deselected by default)",
+]
+filterwarnings = ["error::DeprecationWarning:sportio.*"]

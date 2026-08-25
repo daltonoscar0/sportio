@@ -1,0 +1,132 @@
+"""Source registry: the one place that knows which loaders exist."""
+
+from __future__ import annotations
+
+import importlib
+from dataclasses import dataclass, field
+from types import ModuleType
+from typing import Any
+
+import pandas as pd
+
+__all__ = ["SourceInfo", "get_source", "load_events", "load_tracking", "source_table", "sources"]
+
+
+@dataclass(frozen=True, slots=True)
+class SourceInfo:
+    """Static description of a data source, used by ``sportio info`` and the README."""
+
+    name: str
+    module: str
+    title: str
+    url: str
+    license: str
+    events: bool
+    tracking: bool
+    notes: str = ""
+    extras: tuple[str, ...] = field(default=())
+
+
+SOURCES: dict[str, SourceInfo] = {
+    "statsbomb": SourceInfo(
+        name="statsbomb",
+        module="sportio.loaders.statsbomb",
+        title="StatsBomb Open Data",
+        url="https://github.com/statsbomb/open-data",
+        license="StatsBomb Open Data User Agreement (non-commercial, attribution)",
+        events=True,
+        tracking=False,
+        notes="Events plus 360 freeze frames; freeze frames land in events.extra['freeze_frame'].",
+    ),
+    "metrica": SourceInfo(
+        name="metrica",
+        module="sportio.loaders.metrica",
+        title="Metrica Sports Sample Data",
+        url="https://github.com/metrica-sports/sample-data",
+        license="CC BY-NC-SA 4.0",
+        events=True,
+        tracking=True,
+        notes="Two fully-tracked sample matches at 25 Hz plus a third in EPTS format.",
+    ),
+    "skillcorner": SourceInfo(
+        name="skillcorner",
+        module="sportio.loaders.skillcorner",
+        title="SkillCorner Open Data",
+        url="https://github.com/SkillCorner/opendata",
+        license="CC BY-NC-SA 4.0",
+        events=False,
+        tracking=True,
+        notes="Nine matches of broadcast tracking at 10 Hz; players are only tracked while on camera.",
+    ),
+    "soccernet": SourceInfo(
+        name="soccernet",
+        module="sportio.loaders.soccernet",
+        title="SoccerNet Tracking / Game State Reconstruction",
+        url="https://github.com/SoccerNet/sn-gamestate",
+        license="SoccerNet NDA (research use); download requires a password",
+        events=False,
+        tracking=True,
+        notes="Loader reads an already-downloaded sequence directory; see TODO.md for the manual step.",
+        extras=("soccernet",),
+    ),
+    "rugby": SourceInfo(
+        name="rugby",
+        module="sportio.loaders.rugby",
+        title="Rugby play-by-play (ESPN / rugbypy)",
+        url="https://github.com/seanyboi/rugbypy",
+        license="see source; ESPN content is used under fair-use for research",
+        events=True,
+        tracking=False,
+        notes="Commentary-derived events; positional columns are mostly null (see docs).",
+    ),
+}
+
+
+def sources() -> list[str]:
+    """Names of every registered source."""
+    return sorted(SOURCES)
+
+
+def get_source(name: str) -> SourceInfo:
+    try:
+        return SOURCES[name.strip().lower()]
+    except KeyError:
+        raise KeyError(f"unknown source {name!r}; known sources: {sources()}") from None
+
+
+def _module(name: str) -> ModuleType:
+    return importlib.import_module(get_source(name).module)
+
+
+def load_events(source: str, **kwargs: Any) -> pd.DataFrame:
+    """Load canonical events from ``source``. See each loader for its keyword arguments."""
+    info = get_source(source)
+    if not info.events:
+        raise ValueError(f"source {info.name!r} has no event data")
+    return _module(info.name).load_events(**kwargs)
+
+
+def load_tracking(source: str, **kwargs: Any) -> pd.DataFrame:
+    """Load canonical tracking from ``source``. See each loader for its keyword arguments."""
+    info = get_source(source)
+    if not info.tracking:
+        raise ValueError(f"source {info.name!r} has no tracking data")
+    return _module(info.name).load_tracking(**kwargs)
+
+
+def source_table() -> pd.DataFrame:
+    """One row per source: what it provides and under what licence."""
+    return pd.DataFrame(
+        [
+            {
+                "source": s.name,
+                "title": s.title,
+                "events": s.events,
+                "tracking": s.tracking,
+                "license": s.license,
+                "url": s.url,
+                "notes": s.notes,
+            }
+            for s in (SOURCES[k] for k in sources())
+        ]
+    )
