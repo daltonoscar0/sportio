@@ -1,0 +1,2834 @@
+{
+ "leagues": [
+  {
+   "id": "8323",
+   "uid": "s:300~l:8323",
+   "name": "Six Nations",
+   "abbreviation": "Six Nations",
+   "midsizeName": "180659",
+   "slug": "180659",
+   "season": {
+    "year": 2025,
+    "startDate": "2025-01-31T05:00Z",
+    "endDate": "2025-03-17T03:59Z",
+    "displayName": "2025",
+    "type": {
+     "id": "1",
+     "type": 1,
+     "name": "2025 Six Nations",
+     "abbreviation": "2025 Six Nations"
+    }
+   },
+   "isClubCompetition": true,
+   "calendarType": "day",
+   "calendarIsWhitelist": true,
+   "calendarStartDate": "2025-01-31T05:00Z",
+   "calendarEndDate": "2025-03-17T03:59Z"
+  }
+ ],
+ "events": [
+  {
+   "id": "600251",
+   "uid": "s:300~l:8323~e:600251",
+   "date": "2025-02-01T14:15Z",
+   "name": "Scotland vs Italy",
+   "shortName": "SCO VS ITA",
+   "season": {
+    "year": 2025,
+    "type": 1,
+    "slug": "2025-six-nations"
+   },
+   "competitions": [
+    {
+     "id": "600251",
+     "uid": "s:300~l:8323~e:600251~c:600251",
+     "date": "2025-02-01T14:15Z",
+     "attendance": 0,
+     "timeValid": true,
+     "neutralSite": false,
+     "conferenceCompetition": false,
+     "playByPlayAvailable": true,
+     "recent": false,
+     "venue": {
+      "id": "16162",
+      "fullName": "Scottish Gas Murrayfield",
+      "address": {
+       "city": "Edinburgh",
+       "state": "Scotland"
+      },
+      "indoor": false
+     },
+     "competitors": [
+      {
+       "id": "2",
+       "uid": "s:300~l:8323~t:2",
+       "type": "team",
+       "order": 0,
+       "homeAway": "home",
+       "winner": true,
+       "team": {
+        "id": "2",
+        "uid": "s:300~t:2",
+        "name": "Scotland",
+        "abbreviation": "SCO",
+        "displayName": "Scotland",
+        "shortDisplayName": "Scotland",
+        "color": "003366",
+        "isActive": true,
+        "venue": {
+         "id": "16162"
+        },
+        "logo": "https://a.espncdn.com/i/teamlogos/rugby/teams/500/2.png"
+       },
+       "score": "31",
+       "linescores": [
+        {
+         "value": 19.0,
+         "displayValue": "19",
+         "period": 1
+        },
+        {
+         "value": 12.0,
+         "displayValue": "12",
+         "period": 2
+        },
+        {
+         "value": 0.0,
+         "displayValue": "0",
+         "period": 20
+        },
+        {
+         "value": 0.0,
+         "displayValue": "0",
+         "period": 60
+        }
+       ],
+       "form": "WLWLW",
+       "records": [
+        {
+         "name": "overall",
+         "abbreviation": "Total",
+         "type": "total",
+         "summary": "WLWLW"
+        }
+       ]
+      },
+      {
+       "id": "20",
+       "uid": "s:300~l:8323~t:20",
+       "type": "team",
+       "order": 1,
+       "homeAway": "away",
+       "winner": false,
+       "team": {
+        "id": "20",
+        "uid": "s:300~t:20",
+        "name": "Italy",
+        "abbreviation": "ITA",
+        "displayName": "Italy",
+        "shortDisplayName": "Italy",
+        "color": "3366FF",
+        "isActive": true,
+        "venue": {
+         "id": "16225"
+        },
+        "logo": "https://a.espncdn.com/i/teamlogos/rugby/teams/500/20.png"
+       },
+       "score": "19",
+       "linescores": [
+        {
+         "value": 9.0,
+         "displayValue": "9",
+         "period": 1
+        },
+        {
+         "value": 10.0,
+         "displayValue": "10",
+         "period": 2
+        },
+        {
+         "value": 0.0,
+         "displayValue": "0",
+         "period": 20
+        },
+        {
+         "value": 0.0,
+         "displayValue": "0",
+         "period": 60
+        }
+       ],
+       "form": "LLLLW",
+       "records": [
+        {
+         "name": "overall",
+         "abbreviation": "Total",
+         "type": "total",
+         "summary": "LLLLW"
+        }
+       ]
+      }
+     ],
+     "status": {
+      "clock": 4817.0,
+      "displayClock": "81'",
+      "period": 2,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "FT",
+       "detail": "FT",
+       "shortDetail": "FT"
+      }
+     },
+     "format": {
+      "regulation": {
+       "periods": 2
+      }
+     },
+     "startDate": "2025-02-01T14:15Z",
+     "details": [
+      {
+       "type": {
+        "id": "1",
+        "text": "try"
+       },
+       "clock": {
+        "value": 198.0,
+        "displayValue": "4'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "298786",
+         "fullName": "Rory Darge",
+         "displayName": "Rory Darge",
+         "shortName": "R. Darge",
+         "position": "FL",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "2",
+        "text": "conversion"
+       },
+       "clock": {
+        "value": 254.0,
+        "displayValue": "5'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "158721",
+         "fullName": "Finn Russell",
+         "displayName": "Finn Russell",
+         "shortName": "F. Russell",
+         "position": "FH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "1",
+        "text": "try"
+       },
+       "clock": {
+        "value": 494.0,
+        "displayValue": "9'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "255949",
+         "fullName": "Huw Jones",
+         "displayName": "Huw Jones",
+         "shortName": "H. Jones",
+         "position": "C",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "2",
+        "text": "conversion"
+       },
+       "clock": {
+        "value": 559.0,
+        "displayValue": "10'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "158721",
+         "fullName": "Finn Russell",
+         "displayName": "Finn Russell",
+         "shortName": "F. Russell",
+         "position": "FH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "3",
+        "text": "penalty goal"
+       },
+       "clock": {
+        "value": 1237.0,
+        "displayValue": "21'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "158708",
+         "fullName": "Tommaso Allan",
+         "displayName": "Tommaso Allan",
+         "shortName": "T. Allan",
+         "position": "FH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "3",
+        "text": "penalty goal"
+       },
+       "clock": {
+        "value": 1390.0,
+        "displayValue": "24'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "158708",
+         "fullName": "Tommaso Allan",
+         "displayName": "Tommaso Allan",
+         "shortName": "T. Allan",
+         "position": "FH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "1",
+        "text": "try"
+       },
+       "clock": {
+        "value": 1731.0,
+        "displayValue": "29'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "278697",
+         "fullName": "Ben White",
+         "displayName": "Ben White",
+         "shortName": "B. White",
+         "position": "SH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "3",
+        "text": "penalty goal"
+       },
+       "clock": {
+        "value": 2328.0,
+        "displayValue": "39'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "158708",
+         "fullName": "Tommaso Allan",
+         "displayName": "Tommaso Allan",
+         "shortName": "T. Allan",
+         "position": "FH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 2556.0,
+        "displayValue": "43'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "295323",
+         "fullName": "Niccolo Cannone",
+         "displayName": "Niccolo Cannone",
+         "shortName": "N. Cannone",
+         "position": "L",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 2556.0,
+        "displayValue": "43'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "212729",
+         "fullName": "Federico Ruzza",
+         "displayName": "Federico Ruzza",
+         "shortName": "F. Ruzza",
+         "position": "L",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "3",
+        "text": "penalty goal"
+       },
+       "clock": {
+        "value": 2639.0,
+        "displayValue": "44'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "158708",
+         "fullName": "Tommaso Allan",
+         "displayName": "Tommaso Allan",
+         "shortName": "T. Allan",
+         "position": "FH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "1",
+        "text": "try"
+       },
+       "clock": {
+        "value": 2737.0,
+        "displayValue": "46'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "165096",
+         "fullName": "Juan Ignacio Brex",
+         "displayName": "Juan Ignacio Brex",
+         "shortName": "J. Brex",
+         "position": "C",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "2",
+        "text": "conversion"
+       },
+       "clock": {
+        "value": 2792.0,
+        "displayValue": "47'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "158708",
+         "fullName": "Tommaso Allan",
+         "displayName": "Tommaso Allan",
+         "shortName": "T. Allan",
+         "position": "FH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3057.0,
+        "displayValue": "51'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "294809",
+         "fullName": "Ewan Ashman",
+         "displayName": "Ewan Ashman",
+         "shortName": "E. Ashman",
+         "position": "H",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3057.0,
+        "displayValue": "51'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "134164",
+         "fullName": "Dave Cherry",
+         "displayName": "Dave Cherry",
+         "shortName": "D. Cherry",
+         "position": "H",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3058.0,
+        "displayValue": "51'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "184451",
+         "fullName": "Jack Dempsey",
+         "displayName": "Jack Dempsey",
+         "shortName": "J. Dempsey",
+         "position": "BR",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3058.0,
+        "displayValue": "51'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "228531",
+         "fullName": "Jamie Ritchie",
+         "displayName": "Jamie Ritchie",
+         "shortName": "J. Ritchie",
+         "position": "FL",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3059.0,
+        "displayValue": "51'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "283653",
+         "fullName": "Marco Riccioni",
+         "displayName": "Marco Riccioni",
+         "shortName": "M. Riccioni",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3059.0,
+        "displayValue": "51'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "176654",
+         "fullName": "Simone Ferrari",
+         "displayName": "Simone Ferrari",
+         "shortName": "S. Ferrari",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3060.0,
+        "displayValue": "51'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "239597",
+         "fullName": "Rory Sutherland",
+         "displayName": "Rory Sutherland",
+         "shortName": "R. Sutherland",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3060.0,
+        "displayValue": "51'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "227763",
+         "fullName": "Pierre Schoeman",
+         "displayName": "Pierre Schoeman",
+         "shortName": "P. Schoeman",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3061.0,
+        "displayValue": "52'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "297154",
+         "fullName": "Gianmarco Lucchesi",
+         "displayName": "Gianmarco Lucchesi",
+         "shortName": "G. Lucchesi",
+         "position": "H",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3061.0,
+        "displayValue": "52'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "299022",
+         "fullName": "Giacomo Nicotera",
+         "displayName": "Giacomo Nicotera",
+         "shortName": "G. Nicotera",
+         "position": "H",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3269.0,
+        "displayValue": "55'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "301497",
+         "fullName": "Ross Vintcent",
+         "displayName": "Ross Vintcent",
+         "shortName": "R. Vintcent",
+         "position": "FL",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3269.0,
+        "displayValue": "55'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "300916",
+         "fullName": "Lorenzo Cannone",
+         "displayName": "Lorenzo Cannone",
+         "shortName": "L. Cannone",
+         "position": "L",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3270.0,
+        "displayValue": "55'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "212729",
+         "fullName": "Federico Ruzza",
+         "displayName": "Federico Ruzza",
+         "shortName": "F. Ruzza",
+         "position": "L",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3270.0,
+        "displayValue": "55'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "290933",
+         "fullName": "Dino Lamb",
+         "displayName": "Dino Lamb",
+         "shortName": "D. Lamb",
+         "position": "L",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3408.0,
+        "displayValue": "57'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "215295",
+         "fullName": "George Horne",
+         "displayName": "George Horne",
+         "shortName": "G. Horne",
+         "position": "SH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3408.0,
+        "displayValue": "57'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "278697",
+         "fullName": "Ben White",
+         "displayName": "Ben White",
+         "shortName": "B. White",
+         "position": "SH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3409.0,
+        "displayValue": "57'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "299169",
+         "fullName": "Gregor Brown",
+         "displayName": "Gregor Brown",
+         "shortName": "G. Brown",
+         "position": "FL",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3409.0,
+        "displayValue": "57'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "158712",
+         "fullName": "Jonny Gray",
+         "displayName": "Jonny Gray",
+         "shortName": "J. Gray",
+         "position": "L",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3410.0,
+        "displayValue": "57'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "301191",
+         "fullName": "Tom Jordan",
+         "displayName": "Tom Jordan",
+         "shortName": "T. Jordan",
+         "position": "C",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3410.0,
+        "displayValue": "57'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "292682",
+         "fullName": "Stafford McDowall",
+         "displayName": "Stafford McDowall",
+         "shortName": "S. McDowall",
+         "position": "C",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "1",
+        "text": "try"
+       },
+       "clock": {
+        "value": 3648.0,
+        "displayValue": "61'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "255949",
+         "fullName": "Huw Jones",
+         "displayName": "Huw Jones",
+         "shortName": "H. Jones",
+         "position": "C",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "2",
+        "text": "conversion"
+       },
+       "clock": {
+        "value": 3703.0,
+        "displayValue": "62'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "158721",
+         "fullName": "Finn Russell",
+         "displayName": "Finn Russell",
+         "shortName": "F. Russell",
+         "position": "FH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3745.0,
+        "displayValue": "63'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "301050",
+         "fullName": "Alessandro Garbisi",
+         "displayName": "Alessandro Garbisi",
+         "shortName": "A. Garbisi",
+         "position": "SH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3745.0,
+        "displayValue": "63'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "300681",
+         "fullName": "Martin Page-Relo",
+         "displayName": "Martin Page-Relo",
+         "shortName": "M. Page-Relo",
+         "position": "SH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3748.0,
+        "displayValue": "63'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "297155",
+         "fullName": "Manuel Zuliani",
+         "displayName": "Manuel Zuliani",
+         "shortName": "M. Zuliani",
+         "position": "FL",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3748.0,
+        "displayValue": "63'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "295064",
+         "fullName": "Michele Lamaro",
+         "displayName": "Michele Lamaro",
+         "shortName": "M. Lamaro",
+         "position": "FL",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "1",
+        "text": "try"
+       },
+       "clock": {
+        "value": 3946.0,
+        "displayValue": "66'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "255949",
+         "fullName": "Huw Jones",
+         "displayName": "Huw Jones",
+         "shortName": "H. Jones",
+         "position": "C",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 4036.0,
+        "displayValue": "68'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "302184",
+         "fullName": "Luca Rizzoli",
+         "displayName": "Luca Rizzoli",
+         "shortName": "L. Rizzoli",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 4036.0,
+        "displayValue": "68'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "295850",
+         "fullName": "Danilo Fischetti",
+         "displayName": "Danilo Fischetti",
+         "shortName": "D. Fischetti",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 4037.0,
+        "displayValue": "68'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "301383",
+         "fullName": "Simone Gesi",
+         "displayName": "Simone Gesi",
+         "shortName": "S. Gesi",
+         "position": "W",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 4037.0,
+        "displayValue": "68'"
+       },
+       "team": {
+        "id": "20"
+       },
+       "athletesInvolved": [
+        {
+         "id": "239153",
+         "fullName": "Monty Ioane",
+         "displayName": "Monty Ioane",
+         "shortName": "M. Ioane",
+         "position": "W",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 4102.0,
+        "displayValue": "69'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "299280",
+         "fullName": "Will Hurd",
+         "displayName": "Will Hurd",
+         "shortName": "W. Hurd",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 4102.0,
+        "displayValue": "69'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "228205",
+         "fullName": "Zander Fagerson",
+         "displayName": "Zander Fagerson",
+         "shortName": "Z. Fagerson",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 4320.0,
+        "displayValue": "72'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "285607",
+         "fullName": "Darcy Graham",
+         "displayName": "Darcy Graham",
+         "shortName": "D. Graham",
+         "position": "W",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 4320.0,
+        "displayValue": "72'"
+       },
+       "team": {
+        "id": "2"
+       },
+       "athletesInvolved": [
+        {
+         "id": "299481",
+         "fullName": "Kyle Rowe",
+         "displayName": "Kyle Rowe",
+         "shortName": "K. Rowe",
+         "position": "W",
+         "links": []
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "status": {
+    "clock": 4817.0,
+    "displayClock": "81'",
+    "period": 2,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "FT",
+     "detail": "FT",
+     "shortDetail": "FT"
+    }
+   }
+  },
+  {
+   "id": "600252",
+   "uid": "s:300~l:8323~e:600252",
+   "date": "2025-02-01T16:45Z",
+   "name": "Ireland vs England",
+   "shortName": "IRE VS ENG",
+   "season": {
+    "year": 2025,
+    "type": 1,
+    "slug": "2025-six-nations"
+   },
+   "competitions": [
+    {
+     "id": "600252",
+     "uid": "s:300~l:8323~e:600252~c:600252",
+     "date": "2025-02-01T16:45Z",
+     "attendance": 0,
+     "timeValid": true,
+     "neutralSite": false,
+     "conferenceCompetition": false,
+     "playByPlayAvailable": true,
+     "recent": false,
+     "venue": {
+      "id": "16102",
+      "fullName": "Aviva Stadium",
+      "address": {
+       "city": "Dublin",
+       "state": "Ireland"
+      },
+      "indoor": false
+     },
+     "competitors": [
+      {
+       "id": "3",
+       "uid": "s:300~l:8323~t:3",
+       "type": "team",
+       "order": 0,
+       "homeAway": "home",
+       "winner": true,
+       "team": {
+        "id": "3",
+        "uid": "s:300~t:3",
+        "name": "Ireland",
+        "abbreviation": "IRE",
+        "displayName": "Ireland",
+        "shortDisplayName": "Ireland",
+        "color": "009900",
+        "isActive": true,
+        "venue": {
+         "id": "16102"
+        },
+        "logo": "https://a.espncdn.com/i/teamlogos/rugby/teams/500/3.png"
+       },
+       "score": "27",
+       "linescores": [
+        {
+         "value": 5.0,
+         "displayValue": "5",
+         "period": 1
+        },
+        {
+         "value": 22.0,
+         "displayValue": "22",
+         "period": 2
+        },
+        {
+         "value": 0.0,
+         "displayValue": "0",
+         "period": 20
+        },
+        {
+         "value": 0.0,
+         "displayValue": "0",
+         "period": 60
+        }
+       ],
+       "form": "LWWWW",
+       "records": [
+        {
+         "name": "overall",
+         "abbreviation": "Total",
+         "type": "total",
+         "summary": "LWWWW"
+        }
+       ]
+      },
+      {
+       "id": "1",
+       "uid": "s:300~l:8323~t:1",
+       "type": "team",
+       "order": 1,
+       "homeAway": "away",
+       "winner": false,
+       "team": {
+        "id": "1",
+        "uid": "s:300~t:1",
+        "name": "England",
+        "abbreviation": "ENG",
+        "displayName": "England",
+        "shortDisplayName": "England",
+        "color": "FF0000",
+        "isActive": true,
+        "venue": {
+         "id": "16145"
+        },
+        "logo": "https://a.espncdn.com/i/teamlogos/rugby/teams/500/1.png"
+       },
+       "score": "22",
+       "linescores": [
+        {
+         "value": 10.0,
+         "displayValue": "10",
+         "period": 1
+        },
+        {
+         "value": 12.0,
+         "displayValue": "12",
+         "period": 2
+        },
+        {
+         "value": 0.0,
+         "displayValue": "0",
+         "period": 20
+        },
+        {
+         "value": 0.0,
+         "displayValue": "0",
+         "period": 60
+        }
+       ],
+       "form": "WWLLL",
+       "records": [
+        {
+         "name": "overall",
+         "abbreviation": "Total",
+         "type": "total",
+         "summary": "WWLLL"
+        }
+       ]
+      }
+     ],
+     "status": {
+      "clock": 4921.0,
+      "displayClock": "83'",
+      "period": 2,
+      "type": {
+       "id": "3",
+       "name": "STATUS_FINAL",
+       "state": "post",
+       "completed": true,
+       "description": "FT",
+       "detail": "FT",
+       "shortDetail": "FT"
+      }
+     },
+     "format": {
+      "regulation": {
+       "periods": 2
+      }
+     },
+     "startDate": "2025-02-01T16:45Z",
+     "details": [
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 233.0,
+        "displayValue": "4'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "169067",
+         "fullName": "Robbie Henshaw",
+         "displayName": "Robbie Henshaw",
+         "shortName": "R. Henshaw",
+         "position": "C",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 233.0,
+        "displayValue": "4'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "292699",
+         "fullName": "Mack Hansen",
+         "displayName": "Mack Hansen",
+         "shortName": "M. Hansen",
+         "position": "W",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "1",
+        "text": "try"
+       },
+       "clock": {
+        "value": 521.0,
+        "displayValue": "9'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "292217",
+         "fullName": "Cadan Murley",
+         "displayName": "Cadan Murley",
+         "shortName": "C. Murley",
+         "position": "C",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "2",
+        "text": "conversion"
+       },
+       "clock": {
+        "value": 579.0,
+        "displayValue": "10'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "290946",
+         "fullName": "Marcus Smith",
+         "displayName": "Marcus Smith",
+         "shortName": "M. Smith",
+         "position": "FH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 996.0,
+        "displayValue": "17'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "292699",
+         "fullName": "Mack Hansen",
+         "displayName": "Mack Hansen",
+         "shortName": "M. Hansen",
+         "position": "W",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 996.0,
+        "displayValue": "17'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "169067",
+         "fullName": "Robbie Henshaw",
+         "displayName": "Robbie Henshaw",
+         "shortName": "R. Henshaw",
+         "position": "C",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "5",
+        "text": "yellow card"
+       },
+       "clock": {
+        "value": 1469.0,
+        "displayValue": "25'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "290946",
+         "fullName": "Marcus Smith",
+         "displayName": "Marcus Smith",
+         "shortName": "M. Smith",
+         "position": "FH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "1",
+        "text": "try"
+       },
+       "clock": {
+        "value": 2066.0,
+        "displayValue": "35'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "172719",
+         "fullName": "Jamison Gibson-Park",
+         "displayName": "Jamison Gibson-Park",
+         "shortName": "J. Gibson-Park",
+         "position": "SH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 2239.0,
+        "displayValue": "38'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "294374",
+         "fullName": "Joe Heyes",
+         "displayName": "Joe Heyes",
+         "shortName": "J. Heyes",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 2239.0,
+        "displayValue": "38'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "285791",
+         "fullName": "Will Stuart",
+         "displayName": "Will Stuart",
+         "shortName": "W. Stuart",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "3",
+        "text": "penalty goal"
+       },
+       "clock": {
+        "value": 2419.0,
+        "displayValue": "41'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "290946",
+         "fullName": "Marcus Smith",
+         "displayName": "Marcus Smith",
+         "shortName": "M. Smith",
+         "position": "FH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 2402.0,
+        "displayValue": "41'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "285791",
+         "fullName": "Will Stuart",
+         "displayName": "Will Stuart",
+         "shortName": "W. Stuart",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 2402.0,
+        "displayValue": "41'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "294374",
+         "fullName": "Joe Heyes",
+         "displayName": "Joe Heyes",
+         "shortName": "J. Heyes",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 2973.0,
+        "displayValue": "50'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "295194",
+         "fullName": "Dan Sheehan",
+         "displayName": "Dan Sheehan",
+         "shortName": "D. Sheehan",
+         "position": "H",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 2973.0,
+        "displayValue": "50'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "292591",
+         "fullName": "Ronan Kelleher",
+         "displayName": "Ronan Kelleher",
+         "shortName": "R. Kelleher",
+         "position": "H",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 2974.0,
+        "displayValue": "50'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "294374",
+         "fullName": "Joe Heyes",
+         "displayName": "Joe Heyes",
+         "shortName": "J. Heyes",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 2974.0,
+        "displayValue": "50'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "285791",
+         "fullName": "Will Stuart",
+         "displayName": "Will Stuart",
+         "shortName": "W. Stuart",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 2975.0,
+        "displayValue": "50'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "158698",
+         "fullName": "Jack Conan",
+         "displayName": "Jack Conan",
+         "shortName": "J. Conan",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 2975.0,
+        "displayValue": "50'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "296080",
+         "fullName": "Ryan Baird",
+         "displayName": "Ryan Baird",
+         "shortName": "R. Baird",
+         "position": "L",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "1",
+        "text": "try"
+       },
+       "clock": {
+        "value": 3067.0,
+        "displayValue": "52'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "145340",
+         "fullName": "Bundee Aki",
+         "displayName": "Bundee Aki",
+         "shortName": "B. Aki",
+         "position": "C",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "3",
+        "text": "penalty goal"
+       },
+       "clock": {
+        "value": 3306.0,
+        "displayValue": "56'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "301913",
+         "fullName": "Sam Prendergast",
+         "displayName": "Sam Prendergast",
+         "shortName": "S. Prendergast",
+         "position": "SH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3330.0,
+        "displayValue": "56'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "300475",
+         "fullName": "Theo Dan",
+         "displayName": "Theo Dan",
+         "shortName": "T. Dan",
+         "position": "H",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3330.0,
+        "displayValue": "56'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "154534",
+         "fullName": "Luke Cowan-Dickie",
+         "displayName": "Luke Cowan-Dickie",
+         "shortName": "L. Cowan-Dickie",
+         "position": "H",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3331.0,
+        "displayValue": "56'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "291648",
+         "fullName": "Tom Willis",
+         "displayName": "Tom Willis",
+         "shortName": "T. Willis",
+         "position": "BR",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3331.0,
+        "displayValue": "56'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "290431",
+         "fullName": "Ben Earl",
+         "displayName": "Ben Earl",
+         "shortName": "B. Earl",
+         "position": "FL",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3434.0,
+        "displayValue": "58'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "169067",
+         "fullName": "Robbie Henshaw",
+         "displayName": "Robbie Henshaw",
+         "shortName": "R. Henshaw",
+         "position": "C",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3434.0,
+        "displayValue": "58'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "145340",
+         "fullName": "Bundee Aki",
+         "displayName": "Bundee Aki",
+         "shortName": "B. Aki",
+         "position": "C",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3501.0,
+        "displayValue": "59'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "298527",
+         "fullName": "Thomas Clarkson",
+         "displayName": "Thomas Clarkson",
+         "shortName": "T. Clarkson",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3501.0,
+        "displayValue": "59'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "134572",
+         "fullName": "Finlay Bealham",
+         "displayName": "Finlay Bealham",
+         "shortName": "F. Bealham",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3502.0,
+        "displayValue": "59'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "298855",
+         "fullName": "Jack Crowley",
+         "displayName": "Jack Crowley",
+         "shortName": "J. Crowley",
+         "position": "FH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3502.0,
+        "displayValue": "59'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "301913",
+         "fullName": "Sam Prendergast",
+         "displayName": "Sam Prendergast",
+         "shortName": "S. Prendergast",
+         "position": "SH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3575.0,
+        "displayValue": "60'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "285791",
+         "fullName": "Will Stuart",
+         "displayName": "Will Stuart",
+         "shortName": "W. Stuart",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3575.0,
+        "displayValue": "60'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "294374",
+         "fullName": "Joe Heyes",
+         "displayName": "Joe Heyes",
+         "shortName": "J. Heyes",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3576.0,
+        "displayValue": "60'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "301432",
+         "fullName": "Chandler Cunningham-South",
+         "displayName": "Chandler Cunningham-South",
+         "shortName": "C. Cunningham-South",
+         "position": "FL",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3576.0,
+        "displayValue": "60'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "290914",
+         "fullName": "Ben Curry",
+         "displayName": "Ben Curry",
+         "shortName": "B. Curry",
+         "position": "FL",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3577.0,
+        "displayValue": "60'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "298470",
+         "fullName": "Ollie Chessum",
+         "displayName": "Ollie Chessum",
+         "shortName": "O. Chessum",
+         "position": "L",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3577.0,
+        "displayValue": "60'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "296843",
+         "fullName": "George Martin",
+         "displayName": "George Martin",
+         "shortName": "G. Martin",
+         "position": "L",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3671.0,
+        "displayValue": "62'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "134573",
+         "fullName": "Iain Henderson",
+         "displayName": "Iain Henderson",
+         "shortName": "I. Henderson",
+         "position": "L",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3671.0,
+        "displayValue": "62'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "285691",
+         "fullName": "James Ryan",
+         "displayName": "James Ryan",
+         "shortName": "J. Ryan",
+         "position": "L",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "1",
+        "text": "try"
+       },
+       "clock": {
+        "value": 3814.0,
+        "displayValue": "64'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "158701",
+         "fullName": "Tadhg Beirne",
+         "displayName": "Tadhg Beirne",
+         "shortName": "T. Beirne",
+         "position": "L",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "2",
+        "text": "conversion"
+       },
+       "clock": {
+        "value": 3867.0,
+        "displayValue": "65'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "298855",
+         "fullName": "Jack Crowley",
+         "displayName": "Jack Crowley",
+         "shortName": "J. Crowley",
+         "position": "FH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3878.0,
+        "displayValue": "65'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "288779",
+         "fullName": "Harry Randall",
+         "displayName": "Harry Randall",
+         "shortName": "H. Randall",
+         "position": "SH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3878.0,
+        "displayValue": "65'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "289392",
+         "fullName": "Alex Mitchell",
+         "displayName": "Alex Mitchell",
+         "shortName": "A. Mitchell",
+         "position": "SH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 3882.0,
+        "displayValue": "65'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "299147",
+         "fullName": "Fin Smith",
+         "displayName": "Fin Smith",
+         "shortName": "F. Smith",
+         "position": "FH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 3882.0,
+        "displayValue": "65'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "295853",
+         "fullName": "Freddie Steward",
+         "displayName": "Freddie Steward",
+         "shortName": "F. Steward",
+         "position": "FB",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 4219.0,
+        "displayValue": "71'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "299031",
+         "fullName": "Fin Baxter",
+         "displayName": "Fin Baxter",
+         "shortName": "F. Baxter",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 4219.0,
+        "displayValue": "71'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "255181",
+         "fullName": "Ellis Genge",
+         "displayName": "Ellis Genge",
+         "shortName": "E. Genge",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 4220.0,
+        "displayValue": "71'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "294374",
+         "fullName": "Joe Heyes",
+         "displayName": "Joe Heyes",
+         "shortName": "J. Heyes",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 4220.0,
+        "displayValue": "71'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "285791",
+         "fullName": "Will Stuart",
+         "displayName": "Will Stuart",
+         "shortName": "W. Stuart",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "1",
+        "text": "try"
+       },
+       "clock": {
+        "value": 4307.0,
+        "displayValue": "72'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "295194",
+         "fullName": "Dan Sheehan",
+         "displayName": "Dan Sheehan",
+         "shortName": "D. Sheehan",
+         "position": "H",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "2",
+        "text": "conversion"
+       },
+       "clock": {
+        "value": 4366.0,
+        "displayValue": "73'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "298855",
+         "fullName": "Jack Crowley",
+         "displayName": "Jack Crowley",
+         "shortName": "J. Crowley",
+         "position": "FH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 4384.0,
+        "displayValue": "74'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "15972",
+         "fullName": "Cian Healy",
+         "displayName": "Cian Healy",
+         "shortName": "C. Healy",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 4384.0,
+        "displayValue": "74'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "258957",
+         "fullName": "Andrew Porter",
+         "displayName": "Andrew Porter",
+         "shortName": "A. Porter",
+         "position": "P",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "8",
+        "text": "substitute on"
+       },
+       "clock": {
+        "value": 4457.0,
+        "displayValue": "75'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "96413",
+         "fullName": "Conor Murray",
+         "displayName": "Conor Murray",
+         "shortName": "C. Murray",
+         "position": "SH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "7",
+        "text": "player substituted"
+       },
+       "clock": {
+        "value": 4457.0,
+        "displayValue": "75'"
+       },
+       "team": {
+        "id": "3"
+       },
+       "athletesInvolved": [
+        {
+         "id": "172719",
+         "fullName": "Jamison Gibson-Park",
+         "displayName": "Jamison Gibson-Park",
+         "shortName": "J. Gibson-Park",
+         "position": "SH",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "1",
+        "text": "try"
+       },
+       "clock": {
+        "value": 4553.0,
+        "displayValue": "76'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "290913",
+         "fullName": "Tom Curry",
+         "displayName": "Tom Curry",
+         "shortName": "T. Curry",
+         "position": "FL",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "1",
+        "text": "try"
+       },
+       "clock": {
+        "value": 4881.0,
+        "displayValue": "82'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "296841",
+         "fullName": "Tommy Freeman",
+         "displayName": "Tommy Freeman",
+         "shortName": "T. Freeman",
+         "position": "FB",
+         "links": []
+        }
+       ]
+      },
+      {
+       "type": {
+        "id": "2",
+        "text": "conversion"
+       },
+       "clock": {
+        "value": 4918.0,
+        "displayValue": "82'"
+       },
+       "team": {
+        "id": "1"
+       },
+       "athletesInvolved": [
+        {
+         "id": "290946",
+         "fullName": "Marcus Smith",
+         "displayName": "Marcus Smith",
+         "shortName": "M. Smith",
+         "position": "FH",
+         "links": []
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "status": {
+    "clock": 4921.0,
+    "displayClock": "83'",
+    "period": 2,
+    "type": {
+     "id": "3",
+     "name": "STATUS_FINAL",
+     "state": "post",
+     "completed": true,
+     "description": "FT",
+     "detail": "FT",
+     "shortDetail": "FT"
+    }
+   }
+  }
+ ],
+ "provider": {
+  "id": "100",
+  "name": "Draft Kings",
+  "displayName": "Draft Kings",
+  "priority": 1
+ }
+}

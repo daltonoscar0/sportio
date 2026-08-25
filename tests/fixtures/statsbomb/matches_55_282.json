@@ -1,0 +1,542 @@
+[
+ {
+  "match_id": 3930158,
+  "match_date": "2024-06-14",
+  "kick_off": "19:00:00.000",
+  "competition": {
+   "competition_id": 55,
+   "country_name": "Europe",
+   "competition_name": "UEFA Euro"
+  },
+  "season": {
+   "season_id": 282,
+   "season_name": "2024"
+  },
+  "home_team": {
+   "home_team_id": 770,
+   "home_team_name": "Germany",
+   "home_team_gender": "male",
+   "home_team_group": null,
+   "country": {
+    "id": 85,
+    "name": "Germany"
+   },
+   "managers": [
+    {
+     "id": 445,
+     "name": "Julian Nagelsmann",
+     "nickname": null,
+     "dob": "1987-07-23",
+     "country": {
+      "id": 85,
+      "name": "Germany"
+     }
+    }
+   ]
+  },
+  "away_team": {
+   "away_team_id": 942,
+   "away_team_name": "Scotland",
+   "away_team_gender": "male",
+   "away_team_group": null,
+   "country": {
+    "id": 201,
+    "name": "Scotland"
+   },
+   "managers": [
+    {
+     "id": 510,
+     "name": "Steve Clarke",
+     "nickname": null,
+     "dob": "1963-08-29",
+     "country": {
+      "id": 201,
+      "name": "Scotland"
+     }
+    }
+   ]
+  },
+  "home_score": 5,
+  "away_score": 1,
+  "match_status": "available",
+  "match_status_360": "available",
+  "last_updated": "2026-05-01T19:43:49.048383",
+  "last_updated_360": "2026-05-01T19:44:28.668814",
+  "metadata": {
+   "data_version": "1.1.0",
+   "shot_fidelity_version": "2",
+   "xy_fidelity_version": "2"
+  },
+  "match_week": 1,
+  "competition_stage": {
+   "id": 10,
+   "name": "Group Stage"
+  },
+  "stadium": {
+   "id": 4867,
+   "name": "Allianz Arena",
+   "country": {
+    "id": 85,
+    "name": "Germany"
+   }
+  },
+  "referee": {
+   "id": 76,
+   "name": "Clément Turpin",
+   "country": {
+    "id": 78,
+    "name": "France"
+   }
+  }
+ },
+ {
+  "match_id": 3930163,
+  "match_date": "2024-06-16",
+  "kick_off": "19:00:00.000",
+  "competition": {
+   "competition_id": 55,
+   "country_name": "Europe",
+   "competition_name": "UEFA Euro"
+  },
+  "season": {
+   "season_id": 282,
+   "season_name": "2024"
+  },
+  "home_team": {
+   "home_team_id": 786,
+   "home_team_name": "Serbia",
+   "home_team_gender": "male",
+   "home_team_group": null,
+   "country": {
+    "id": 203,
+    "name": "Serbia"
+   },
+   "managers": [
+    {
+     "id": 5908,
+     "name": "Dragan Stojković",
+     "nickname": null,
+     "dob": "1965-03-03",
+     "country": {
+      "id": 203,
+      "name": "Serbia"
+     }
+    }
+   ]
+  },
+  "away_team": {
+   "away_team_id": 768,
+   "away_team_name": "England",
+   "away_team_gender": "male",
+   "away_team_group": null,
+   "country": {
+    "id": 68,
+    "name": "England"
+   },
+   "managers": [
+    {
+     "id": 277,
+     "name": "Gareth Southgate",
+     "nickname": null,
+     "dob": "1970-09-03",
+     "country": {
+      "id": 68,
+      "name": "England"
+     }
+    }
+   ]
+  },
+  "home_score": 0,
+  "away_score": 1,
+  "match_status": "available",
+  "match_status_360": "available",
+  "last_updated": "2026-05-01T19:48:19.783129",
+  "last_updated_360": "2026-05-01T19:49:47.226912",
+  "metadata": {
+   "data_version": "1.1.0",
+   "shot_fidelity_version": "2",
+   "xy_fidelity_version": "2"
+  },
+  "match_week": 1,
+  "competition_stage": {
+   "id": 10,
+   "name": "Group Stage"
+  },
+  "stadium": {
+   "id": 370,
+   "name": "VELTINS-Arena",
+   "country": {
+    "id": 85,
+    "name": "Germany"
+   }
+  },
+  "referee": {
+   "id": 269,
+   "name": "Daniele Orsato",
+   "country": {
+    "id": 112,
+    "name": "Italy"
+   }
+  }
+ },
+ {
+  "match_id": 3930166,
+  "match_date": "2024-06-18",
+  "kick_off": "19:00:00.000",
+  "competition": {
+   "competition_id": 55,
+   "country_name": "Europe",
+   "competition_name": "UEFA Euro"
+  },
+  "season": {
+   "season_id": 282,
+   "season_name": "2024"
+  },
+  "home_team": {
+   "home_team_id": 780,
+   "home_team_name": "Portugal",
+   "home_team_gender": "male",
+   "home_team_group": null,
+   "country": {
+    "id": 183,
+    "name": "Portugal"
+   },
+   "managers": [
+    {
+     "id": 263,
+     "name": "Roberto Martínez Montoliú",
+     "nickname": "Roberto Martínez",
+     "dob": "1973-07-13",
+     "country": {
+      "id": 214,
+      "name": "Spain"
+     }
+    }
+   ]
+  },
+  "away_team": {
+   "away_team_id": 912,
+   "away_team_name": "Czech Republic",
+   "away_team_gender": "male",
+   "away_team_group": null,
+   "country": {
+    "id": 60,
+    "name": "Czech Republic"
+   },
+   "managers": [
+    {
+     "id": 1000468,
+     "name": "Ivan Hašek",
+     "nickname": null,
+     "dob": "1963-09-06",
+     "country": {
+      "id": 60,
+      "name": "Czech Republic"
+     }
+    }
+   ]
+  },
+  "home_score": 2,
+  "away_score": 1,
+  "match_status": "available",
+  "match_status_360": "available",
+  "last_updated": "2026-05-01T19:52:36.631184",
+  "last_updated_360": "2026-05-01T19:56:35.877702",
+  "metadata": {
+   "data_version": "1.1.0",
+   "shot_fidelity_version": "2",
+   "xy_fidelity_version": "2"
+  },
+  "match_week": 1,
+  "competition_stage": {
+   "id": 10,
+   "name": "Group Stage"
+  },
+  "stadium": {
+   "id": 376,
+   "name": "Red Bull Arena",
+   "country": {
+    "id": 85,
+    "name": "Germany"
+   }
+  },
+  "referee": {
+   "id": 261,
+   "name": "Marco Guida",
+   "country": {
+    "id": 112,
+    "name": "Italy"
+   }
+  }
+ },
+ {
+  "match_id": 3942226,
+  "match_date": "2024-07-05",
+  "kick_off": "16:00:00.000",
+  "competition": {
+   "competition_id": 55,
+   "country_name": "Europe",
+   "competition_name": "UEFA Euro"
+  },
+  "season": {
+   "season_id": 282,
+   "season_name": "2024"
+  },
+  "home_team": {
+   "home_team_id": 772,
+   "home_team_name": "Spain",
+   "home_team_gender": "male",
+   "home_team_group": null,
+   "country": {
+    "id": 214,
+    "name": "Spain"
+   },
+   "managers": [
+    {
+     "id": 5588,
+     "name": "Luis de la Fuente Castillo",
+     "nickname": "Luis de la Fuente",
+     "dob": "1961-06-21",
+     "country": {
+      "id": 214,
+      "name": "Spain"
+     }
+    }
+   ]
+  },
+  "away_team": {
+   "away_team_id": 770,
+   "away_team_name": "Germany",
+   "away_team_gender": "male",
+   "away_team_group": null,
+   "country": {
+    "id": 85,
+    "name": "Germany"
+   },
+   "managers": [
+    {
+     "id": 445,
+     "name": "Julian Nagelsmann",
+     "nickname": null,
+     "dob": "1987-07-23",
+     "country": {
+      "id": 85,
+      "name": "Germany"
+     }
+    }
+   ]
+  },
+  "home_score": 2,
+  "away_score": 1,
+  "match_status": "available",
+  "match_status_360": "available",
+  "last_updated": "2026-04-28T18:47:02.268381",
+  "last_updated_360": "2026-04-28T18:48:13.592837",
+  "metadata": {
+   "data_version": "1.1.0",
+   "shot_fidelity_version": "2",
+   "xy_fidelity_version": "2"
+  },
+  "match_week": 5,
+  "competition_stage": {
+   "id": 11,
+   "name": "Quarter-finals"
+  },
+  "stadium": {
+   "id": 369,
+   "name": "MHPArena",
+   "country": {
+    "id": 85,
+    "name": "Germany"
+   }
+  },
+  "referee": {
+   "id": 8,
+   "name": "Anthony Taylor",
+   "country": {
+    "id": 68,
+    "name": "England"
+   }
+  }
+ },
+ {
+  "match_id": 3942819,
+  "match_date": "2024-07-10",
+  "kick_off": "19:00:00.000",
+  "competition": {
+   "competition_id": 55,
+   "country_name": "Europe",
+   "competition_name": "UEFA Euro"
+  },
+  "season": {
+   "season_id": 282,
+   "season_name": "2024"
+  },
+  "home_team": {
+   "home_team_id": 941,
+   "home_team_name": "Netherlands",
+   "home_team_gender": "male",
+   "home_team_group": null,
+   "country": {
+    "id": 160,
+    "name": "Netherlands"
+   },
+   "managers": [
+    {
+     "id": 676,
+     "name": "Ronald Koeman",
+     "nickname": null,
+     "dob": "1963-03-21",
+     "country": {
+      "id": 160,
+      "name": "Netherlands"
+     }
+    }
+   ]
+  },
+  "away_team": {
+   "away_team_id": 768,
+   "away_team_name": "England",
+   "away_team_gender": "male",
+   "away_team_group": null,
+   "country": {
+    "id": 68,
+    "name": "England"
+   },
+   "managers": [
+    {
+     "id": 277,
+     "name": "Gareth Southgate",
+     "nickname": null,
+     "dob": "1970-09-03",
+     "country": {
+      "id": 68,
+      "name": "England"
+     }
+    }
+   ]
+  },
+  "home_score": 1,
+  "away_score": 2,
+  "match_status": "available",
+  "match_status_360": "available",
+  "last_updated": "2026-04-29T01:44:42.908892",
+  "last_updated_360": "2026-04-29T01:45:55.922658",
+  "metadata": {
+   "data_version": "1.1.0",
+   "shot_fidelity_version": "2",
+   "xy_fidelity_version": "2"
+  },
+  "match_week": 6,
+  "competition_stage": {
+   "id": 15,
+   "name": "Semi-finals"
+  },
+  "stadium": {
+   "id": 373,
+   "name": "Signal-Iduna-Park",
+   "country": {
+    "id": 85,
+    "name": "Germany"
+   }
+  },
+  "referee": {
+   "id": 241,
+   "name": "Felix Zwayer",
+   "country": {
+    "id": 85,
+    "name": "Germany"
+   }
+  }
+ },
+ {
+  "match_id": 3943043,
+  "match_date": "2024-07-14",
+  "kick_off": "19:00:00.000",
+  "competition": {
+   "competition_id": 55,
+   "country_name": "Europe",
+   "competition_name": "UEFA Euro"
+  },
+  "season": {
+   "season_id": 282,
+   "season_name": "2024"
+  },
+  "home_team": {
+   "home_team_id": 772,
+   "home_team_name": "Spain",
+   "home_team_gender": "male",
+   "home_team_group": null,
+   "country": {
+    "id": 214,
+    "name": "Spain"
+   },
+   "managers": [
+    {
+     "id": 5588,
+     "name": "Luis de la Fuente Castillo",
+     "nickname": "Luis de la Fuente",
+     "dob": "1961-06-21",
+     "country": {
+      "id": 214,
+      "name": "Spain"
+     }
+    }
+   ]
+  },
+  "away_team": {
+   "away_team_id": 768,
+   "away_team_name": "England",
+   "away_team_gender": "male",
+   "away_team_group": null,
+   "country": {
+    "id": 68,
+    "name": "England"
+   },
+   "managers": [
+    {
+     "id": 277,
+     "name": "Gareth Southgate",
+     "nickname": null,
+     "dob": "1970-09-03",
+     "country": {
+      "id": 68,
+      "name": "England"
+     }
+    }
+   ]
+  },
+  "home_score": 2,
+  "away_score": 1,
+  "match_status": "available",
+  "match_status_360": "available",
+  "last_updated": "2026-04-29T01:45:39.959110",
+  "last_updated_360": "2026-04-29T01:48:42.195978",
+  "metadata": {
+   "data_version": "1.1.0",
+   "shot_fidelity_version": "2",
+   "xy_fidelity_version": "2"
+  },
+  "match_week": 7,
+  "competition_stage": {
+   "id": 26,
+   "name": "Final"
+  },
+  "stadium": {
+   "id": 367,
+   "name": "Olympiastadion Berlin",
+   "country": {
+    "id": 85,
+    "name": "Germany"
+   }
+  },
+  "referee": {
+   "id": 79,
+   "name": "François Letexier",
+   "country": {
+    "id": 78,
+    "name": "France"
+   }
+  }
+ }
+]

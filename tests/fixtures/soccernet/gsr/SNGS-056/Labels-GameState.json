@@ -1,0 +1,2657 @@
+{
+ "info": {
+  "version": "1.3",
+  "game_id": "3",
+  "id": "056",
+  "num_tracklets": "16",
+  "action_position": "2232037",
+  "action_class": "Goal",
+  "visibility": "visible",
+  "game_time_start": "2 - 36:48",
+  "game_time_stop": "2 - 37:18",
+  "clip_start": "2208000",
+  "clip_stop": "2238000",
+  "name": "SNGS-056",
+  "im_dir": "img1",
+  "frame_rate": 25,
+  "seq_length": 3,
+  "im_ext": ".jpg"
+ },
+ "images": [
+  {
+   "is_labeled": true,
+   "image_id": "2056000001",
+   "file_name": "000001.jpg",
+   "height": 1080,
+   "width": 1920,
+   "has_labeled_person": true,
+   "has_labeled_pitch": true,
+   "has_labeled_camera": true,
+   "ignore_regions_y": [],
+   "ignore_regions_x": []
+  },
+  {
+   "is_labeled": true,
+   "image_id": "2056000002",
+   "file_name": "000002.jpg",
+   "height": 1080,
+   "width": 1920,
+   "has_labeled_person": true,
+   "has_labeled_pitch": true,
+   "has_labeled_camera": true,
+   "ignore_regions_y": [],
+   "ignore_regions_x": []
+  },
+  {
+   "is_labeled": true,
+   "image_id": "2056000003",
+   "file_name": "000003.jpg",
+   "height": 1080,
+   "width": 1920,
+   "has_labeled_person": true,
+   "has_labeled_pitch": true,
+   "has_labeled_camera": true,
+   "ignore_regions_y": [],
+   "ignore_regions_x": []
+  }
+ ],
+ "annotations": [
+  {
+   "id": "2056000001",
+   "image_id": "2056000001",
+   "track_id": 1,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "43",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 1150,
+    "y": 760,
+    "x_center": 1181.5,
+    "y_center": 845.0,
+    "w": 63,
+    "h": 170
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 34.35427429362302,
+    "y_bottom_left": 16.713085240722055,
+    "x_bottom_right": 34.87210848734805,
+    "y_bottom_right": 17.09878027143052,
+    "x_bottom_middle": 34.613191336985125,
+    "y_bottom_middle": 16.905932716227866
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 34.31780890162649,
+    "y_bottom_left": 16.720244225853346,
+    "x_bottom_right": 34.867602522413684,
+    "y_bottom_right": 17.129743386053352,
+    "x_bottom_middle": 34.59270561935637,
+    "y_bottom_middle": 16.92499373693507
+   }
+  },
+  {
+   "id": "2056000002",
+   "image_id": "2056000001",
+   "track_id": 2,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "19",
+    "team": "left"
+   },
+   "bbox_image": {
+    "x": 948,
+    "y": 674,
+    "x_center": 982.0,
+    "y_center": 752.5,
+    "w": 68,
+    "h": 157
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 35.080423119653695,
+    "y_bottom_left": 12.00911323048621,
+    "x_bottom_right": 35.71349852710134,
+    "y_bottom_right": 12.480642615133663,
+    "x_bottom_middle": 35.396960820149964,
+    "y_bottom_middle": 12.244877920405832
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 35.0770056431437,
+    "y_bottom_left": 12.006567813973687,
+    "x_bottom_right": 35.710081052558586,
+    "y_bottom_right": 12.478097200086447,
+    "x_bottom_middle": 35.39354334167276,
+    "y_bottom_middle": 12.242332502428004
+   }
+  },
+  {
+   "id": "2056000003",
+   "image_id": "2056000001",
+   "track_id": 3,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "5",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 681,
+    "y": 647,
+    "x_center": 702.5,
+    "y_center": 722.0,
+    "w": 43,
+    "h": 150
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 33.52105822264454,
+    "y_bottom_left": 8.777836699385668,
+    "x_bottom_right": 33.93198748761958,
+    "y_bottom_right": 9.083906436366998,
+    "x_bottom_middle": 33.726522954365734,
+    "y_bottom_middle": 8.93087164178766
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 33.47859680850022,
+    "y_bottom_left": 8.836444397550467,
+    "x_bottom_right": 33.888325109738936,
+    "y_bottom_right": 9.141619628624746,
+    "x_bottom_middle": 33.683461060295706,
+    "y_bottom_middle": 8.989032088445693
+   }
+  },
+  {
+   "id": "2056000004",
+   "image_id": "2056000001",
+   "track_id": 4,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "33",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 714,
+    "y": 582,
+    "x_center": 745.0,
+    "y_center": 659.0,
+    "w": 62,
+    "h": 154
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 35.512678225365214,
+    "y_bottom_left": 6.556559861613734,
+    "x_bottom_right": 36.12004613002381,
+    "y_bottom_right": 7.008941696334456,
+    "x_bottom_middle": 35.81636222308055,
+    "y_bottom_middle": 6.782750812779014
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 35.50792514186263,
+    "y_bottom_left": 6.553019653744775,
+    "x_bottom_right": 36.12468192725259,
+    "y_bottom_right": 7.012394546640794,
+    "x_bottom_middle": 35.81630353455758,
+    "y_bottom_middle": 6.782707100193262
+   }
+  },
+  {
+   "id": "2056000005",
+   "image_id": "2056000001",
+   "track_id": 5,
+   "supercategory": "object",
+   "category_id": 2,
+   "attributes": {
+    "role": "goalkeeper",
+    "jersey": null,
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 1376,
+    "y": 369,
+    "x_center": 1391.5,
+    "y_center": 434.0,
+    "w": 31,
+    "h": 130
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 51.849069437746564,
+    "y_bottom_left": 0.11066459430083153,
+    "x_bottom_right": 52.288151820148734,
+    "y_bottom_right": 0.4377034322458886,
+    "x_bottom_middle": 52.06861053842218,
+    "y_bottom_middle": 0.2741839458476257
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 51.84026786444208,
+    "y_bottom_left": 0.15221600984476896,
+    "x_bottom_right": 52.21220982846057,
+    "y_bottom_right": 0.4292470923265228,
+    "x_bottom_middle": 52.02623859165431,
+    "y_bottom_middle": 0.2907313613069505
+   }
+  },
+  {
+   "id": "2056000006",
+   "image_id": "2056000001",
+   "track_id": 6,
+   "supercategory": "object",
+   "category_id": 3,
+   "attributes": {
+    "role": "referee",
+    "jersey": null,
+    "team": null
+   },
+   "bbox_image": {
+    "x": 1228,
+    "y": 421,
+    "x_center": 1258.5,
+    "y_center": 484.5,
+    "w": 61,
+    "h": 127
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 47.50899853906974,
+    "y_bottom_left": 1.7021940860899547,
+    "x_bottom_right": 48.10926983955781,
+    "y_bottom_right": 2.1492902038834414,
+    "x_bottom_middle": 47.809134104258554,
+    "y_bottom_middle": 1.9257420816357045
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 47.80589809110812,
+    "y_bottom_left": 1.5877201823403846,
+    "x_bottom_right": 48.50786911779109,
+    "y_bottom_right": 2.1105646371372924,
+    "x_bottom_middle": 48.15688348225844,
+    "y_bottom_middle": 1.849142318728294
+   }
+  },
+  {
+   "id": "2056000007",
+   "image_id": "2056000001",
+   "track_id": 7,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "3",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 823,
+    "y": 466,
+    "x_center": 843.0,
+    "y_center": 530.5,
+    "w": 40,
+    "h": 129
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 41.309255420517076,
+    "y_bottom_left": 0.7341458524741038,
+    "x_bottom_right": 41.765125612510616,
+    "y_bottom_right": 1.0736886440289977,
+    "x_bottom_middle": 41.537190515616615,
+    "y_bottom_middle": 0.9039172475833638
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 41.321589744927,
+    "y_bottom_left": 0.6890061463886128,
+    "x_bottom_right": 41.76453264994751,
+    "y_bottom_right": 1.0189203919599596,
+    "x_bottom_middle": 41.543061197437275,
+    "y_bottom_middle": 0.8539632691748177
+   }
+  },
+  {
+   "id": "2056000008",
+   "image_id": "2056000001",
+   "track_id": 8,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "8",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 748,
+    "y": 485,
+    "x_center": 793.0,
+    "y_center": 552.0,
+    "w": 90,
+    "h": 134
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 39.761554947398245,
+    "y_bottom_left": 1.2336567270235308,
+    "x_bottom_right": 40.72330266193474,
+    "y_bottom_right": 1.949988940668017,
+    "x_bottom_middle": 40.24242886218629,
+    "y_bottom_middle": 1.5918228766879083
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 39.62759759425578,
+    "y_bottom_left": 1.322338405978488,
+    "x_bottom_right": 40.60538248660299,
+    "y_bottom_right": 2.050615485109179,
+    "x_bottom_middle": 40.11649009810886,
+    "y_bottom_middle": 1.68647698850497
+   }
+  },
+  {
+   "id": "2056000009",
+   "image_id": "2056000001",
+   "track_id": 9,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "99",
+    "team": "left"
+   },
+   "bbox_image": {
+    "x": 584,
+    "y": 498,
+    "x_center": 618.0,
+    "y_center": 547.0,
+    "w": 68,
+    "h": 98
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 38.611016095174605,
+    "y_bottom_left": -1.1993744073610448,
+    "x_bottom_right": 39.36303890991536,
+    "y_bottom_right": -0.6392502090373883,
+    "x_bottom_middle": 38.987027547975146,
+    "y_bottom_middle": -0.919312274361873
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 38.6398203336696,
+    "y_bottom_left": -1.228021169252116,
+    "x_bottom_right": 39.3922195587171,
+    "y_bottom_right": -0.6676166117200919,
+    "x_bottom_middle": 39.01602006368036,
+    "y_bottom_middle": -0.9478188029793345
+   }
+  },
+  {
+   "id": "2056000010",
+   "image_id": "2056000001",
+   "track_id": 10,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "17",
+    "team": "left"
+   },
+   "bbox_image": {
+    "x": 348,
+    "y": 586,
+    "x_center": 372.5,
+    "y_center": 653.5,
+    "w": 49,
+    "h": 135
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 32.272342328972464,
+    "y_bottom_left": 3.1582062560639215,
+    "x_bottom_right": 32.75059166922436,
+    "y_bottom_right": 3.514417561168729,
+    "x_bottom_middle": 32.511466987491964,
+    "y_bottom_middle": 3.3363118999714443
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 32.27231499697659,
+    "y_bottom_left": 3.158185898553517,
+    "x_bottom_right": 32.76508192139998,
+    "y_bottom_right": 3.525210240227031,
+    "x_bottom_middle": 32.51869824562539,
+    "y_bottom_middle": 3.3416979103232074
+   }
+  },
+  {
+   "id": "2056000011",
+   "image_id": "2056000001",
+   "track_id": 11,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": null,
+    "team": "left"
+   },
+   "bbox_image": {
+    "x": 119,
+    "y": 486,
+    "x_center": 136.0,
+    "y_center": 556.5,
+    "w": 34,
+    "h": 141
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 32.50274840885759,
+    "y_bottom_left": -3.304740092846119,
+    "x_bottom_right": 32.86989955865019,
+    "y_bottom_right": -3.0312773209591146,
+    "x_bottom_middle": 32.68632396445014,
+    "y_bottom_middle": -3.168008721280539
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 32.556134999833944,
+    "y_bottom_left": -3.3287860632673922,
+    "x_bottom_right": 32.923208185227175,
+    "y_bottom_right": -3.055381361090431,
+    "x_bottom_middle": 32.73967113398369,
+    "y_bottom_middle": -3.1920840537152118
+   }
+  },
+  {
+   "id": "2056000012",
+   "image_id": "2056000001",
+   "track_id": 12,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "13",
+    "team": "left"
+   },
+   "bbox_image": {
+    "x": 80,
+    "y": 423,
+    "x_center": 103.0,
+    "y_center": 487.0,
+    "w": 46,
+    "h": 128
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 34.5795743614181,
+    "y_bottom_left": -8.12043320077116,
+    "x_bottom_right": 35.13476473012032,
+    "y_bottom_right": -7.706914416379489,
+    "x_bottom_middle": 34.85716943212409,
+    "y_bottom_middle": -7.913673893220795
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 34.49570894764799,
+    "y_bottom_left": -8.0659222666107,
+    "x_bottom_right": 35.02374322973897,
+    "y_bottom_right": -7.672629971289687,
+    "x_bottom_middle": 34.7597260886935,
+    "y_bottom_middle": -7.869276118950193
+   }
+  },
+  {
+   "id": "2056000013",
+   "image_id": "2056000001",
+   "track_id": 13,
+   "supercategory": "object",
+   "category_id": 4,
+   "attributes": {
+    "role": "ball",
+    "jersey": null,
+    "team": null
+   },
+   "bbox_image": {
+    "x": 790,
+    "y": 563,
+    "x_center": 797.0,
+    "y_center": 572.0,
+    "w": 14,
+    "h": 18
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 41.51160438111316,
+    "y_bottom_left": -0.37024894037286754,
+    "x_bottom_right": 41.6684910635174,
+    "y_bottom_right": -0.2533960663812943,
+    "x_bottom_middle": 41.59004772231529,
+    "y_bottom_middle": -0.31182250337721246
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 41.48067965411701,
+    "y_bottom_left": -0.3320524692891449,
+    "x_bottom_right": 41.6374716619929,
+    "y_bottom_right": -0.21527011110250424,
+    "x_bottom_middle": 41.55907565805497,
+    "y_bottom_middle": -0.2736612901958246
+   }
+  },
+  {
+   "id": "2056000014",
+   "image_id": "2056000001",
+   "track_id": 14,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "14",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 0,
+    "y": 682,
+    "x_center": 12.0,
+    "y_center": 699.5,
+    "w": 24,
+    "h": 35
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 28.871881599005352,
+    "y_bottom_left": 0.3594918140566228,
+    "x_bottom_right": 29.11394172084457,
+    "y_bottom_right": 0.539783859768027,
+    "x_bottom_middle": 28.992911659924953,
+    "y_bottom_middle": 0.4496378369118408
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 28.871997513117712,
+    "y_bottom_left": 0.35926741573727466,
+    "x_bottom_right": 29.11405845860401,
+    "y_bottom_right": 0.5395600749203117,
+    "x_bottom_middle": 28.993027985860845,
+    "y_bottom_middle": 0.4494137453283091
+   }
+  },
+  {
+   "id": "2056000015",
+   "image_id": "2056000001",
+   "track_id": 15,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "36",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 155,
+    "y": 419,
+    "x_center": 173.5,
+    "y_center": 481.0,
+    "w": 37,
+    "h": 124
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 35.62837477647935,
+    "y_bottom_left": -7.918786016976893,
+    "x_bottom_right": 36.05647468278379,
+    "y_bottom_right": -7.599927184343834,
+    "x_bottom_middle": 35.84242519788645,
+    "y_bottom_middle": -7.759356251893295
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 35.62837477647935,
+    "y_bottom_left": -7.918786016976892,
+    "x_bottom_right": 36.05594355684405,
+    "y_bottom_right": -7.600322779378138,
+    "x_bottom_middle": 35.84215965747354,
+    "y_bottom_middle": -7.7595540326095085
+   }
+  },
+  {
+   "id": "2056000016",
+   "image_id": "2056000001",
+   "supercategory": "pitch",
+   "category_id": 5,
+   "lines": {
+    "Side line right": [
+     {
+      "x": 1.0,
+      "y": 0.5673555676388917
+     },
+     {
+      "x": 0.907381467013889,
+      "y": 0.5302988629765096
+     },
+     {
+      "x": 0.8147629340277777,
+      "y": 0.49324215831412777
+     },
+     {
+      "x": 0.6499004774305556,
+      "y": 0.42582240309801983
+     },
+     {
+      "x": 0.5140744791666667,
+      "y": 0.36835648148148165
+     },
+     {
+      "x": 0.33110868055555553,
+      "y": 0.2915038660802491
+     },
+     {
+      "x": 0.1482296875,
+      "y": 0.21341666666666678
+     }
+    ],
+    "Side line top": [
+     {
+      "x": 0.0,
+      "y": 0.23444351851851847
+     },
+     {
+      "x": 0.07417994791666667,
+      "y": 0.22387222222222217
+     },
+     {
+      "x": 0.14835989583333334,
+      "y": 0.21330092592592592
+     }
+    ],
+    "Goal right crossbar": [
+     {
+      "x": 0.8169411458333333,
+      "y": 0.3384185185185185
+     },
+     {
+      "x": 0.7308729166666666,
+      "y": 0.30909722222222225
+     },
+     {
+      "x": 0.6448046875000001,
+      "y": 0.27977592592592593
+     }
+    ],
+    "Goal right post left": [
+     {
+      "x": 0.6450843749999999,
+      "y": 0.27956481481481477
+     },
+     {
+      "x": 0.6442924479166666,
+      "y": 0.35122825357928555
+     },
+     {
+      "x": 0.6435005208333333,
+      "y": 0.4228916923437564
+     }
+    ],
+    "Goal right post right": [
+     {
+      "x": 0.8167640625,
+      "y": 0.33828425925925926
+     },
+     {
+      "x": 0.8151148437500001,
+      "y": 0.41544583333333324
+     },
+     {
+      "x": 0.813465625,
+      "y": 0.4926074074074074
+     }
+    ],
+    "Small rect. right main": [
+     {
+      "x": 0.8019637152777777,
+      "y": 0.5973929052623467
+     },
+     {
+      "x": 0.5999672743055555,
+      "y": 0.5038733044830253
+     },
+     {
+      "x": 0.39797083333333333,
+      "y": 0.4103537037037037
+     }
+    ],
+    "Small rect. right bottom": [
+     {
+      "x": 0.8022244791666666,
+      "y": 0.5974703703703704
+     },
+     {
+      "x": 0.8803113281249999,
+      "y": 0.574196373330922
+     },
+     {
+      "x": 0.9583981770833332,
+      "y": 0.5509223762914737
+     }
+    ],
+    "Small rect. right top": [
+     {
+      "x": 0.39817708333333335,
+      "y": 0.409987037037037
+     },
+     {
+      "x": 0.4674261284722222,
+      "y": 0.39416883118827256
+     },
+     {
+      "x": 0.536675173611111,
+      "y": 0.3783506253395081
+     }
+    ],
+    "Big rect. right top": [
+     {
+      "x": 0.34765642361111115,
+      "y": 0.2984882786535511
+     },
+     {
+      "x": 0.17382821180555558,
+      "y": 0.33016312080825694
+     },
+     {
+      "x": 0.0,
+      "y": 0.36183796296296294
+     }
+    ],
+    "Big rect. right main": [
+     {
+      "x": 0.0,
+      "y": 0.4408518518518519
+     },
+     {
+      "x": 0.10946197916666667,
+      "y": 0.5038537037037037
+     },
+     {
+      "x": 0.298459375,
+      "y": 0.6150435185185186
+     },
+     {
+      "x": 0.3929580729166667,
+      "y": 0.670638425925926
+     },
+     {
+      "x": 0.48745677083333333,
+      "y": 0.7262333333333334
+     },
+     {
+      "x": 0.7661026041666666,
+      "y": 0.8978407407407406
+     }
+    ],
+    "Big rect. right bottom": [
+     {
+      "x": 0.7659286458333334,
+      "y": 0.8976861111111111
+     },
+     {
+      "x": 0.8829643229166667,
+      "y": 0.8572148148148148
+     },
+     {
+      "x": 1.0,
+      "y": 0.8167435185185186
+     }
+    ],
+    "Circle right": [
+     {
+      "x": 0.10230052083333334,
+      "y": 0.4999953703703704
+     },
+     {
+      "x": 0.08756510416666667,
+      "y": 0.5129972222222222
+     },
+     {
+      "x": 0.08463541666666667,
+      "y": 0.5167203703703703
+     },
+     {
+      "x": 0.08170572916666667,
+      "y": 0.5204435185185184
+     },
+     {
+      "x": 0.07877604166666667,
+      "y": 0.5241666666666667
+     },
+     {
+      "x": 0.07584635416666667,
+      "y": 0.5278898148148148
+     },
+     {
+      "x": 0.073486328125,
+      "y": 0.5316708272916651
+     },
+     {
+      "x": 0.07112630208333333,
+      "y": 0.5354518397685156
+     },
+     {
+      "x": 0.06865768229166666,
+      "y": 0.5412388888888889
+     },
+     {
+      "x": 0.06820729166666667,
+      "y": 0.5461
+     },
+     {
+      "x": 0.06772994791666666,
+      "y": 0.5525814814814815
+     },
+     {
+      "x": 0.06803385416666667,
+      "y": 0.5595259319675939
+     },
+     {
+      "x": 0.06924921875000001,
+      "y": 0.5639240740740741
+     },
+     {
+      "x": 0.070725,
+      "y": 0.5687851851851852
+     },
+     {
+      "x": 0.07400182291666667,
+      "y": 0.5772731602314843
+     },
+     {
+      "x": 0.07819010416666666,
+      "y": 0.5839092592592593
+     },
+     {
+      "x": 0.08678394097222224,
+      "y": 0.5942102033101898
+     },
+     {
+      "x": 0.095725,
+      "y": 0.6017333333333335
+     },
+     {
+      "x": 0.1093534722222222,
+      "y": 0.6122271705632741
+     },
+     {
+      "x": 0.12332916666666667,
+      "y": 0.6211777777777778
+     },
+     {
+      "x": 0.14596354166666667,
+      "y": 0.6328675925925926
+     },
+     {
+      "x": 0.17473958333333334,
+      "y": 0.6436314814814815
+     },
+     {
+      "x": 0.20399322916666665,
+      "y": 0.6524287037037038
+     },
+     {
+      "x": 0.23018645833333334,
+      "y": 0.6586009259259259
+     },
+     {
+      "x": 0.26664479166666666,
+      "y": 0.6660083333333333
+     },
+     {
+      "x": 0.3228515625,
+      "y": 0.6729148148148149
+     },
+     {
+      "x": 0.3901473958333333,
+      "y": 0.6765416666666666
+     },
+     {
+      "x": 0.4027125,
+      "y": 0.6767731481481482
+     }
+    ]
+   }
+  },
+  {
+   "id": "2056000018",
+   "image_id": "2056000002",
+   "track_id": 1,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "43",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 1150,
+    "y": 760,
+    "x_center": 1181.0,
+    "y_center": 845.0,
+    "w": 62,
+    "h": 170
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 34.35529952554731,
+    "y_bottom_left": 16.712970220744953,
+    "x_bottom_right": 34.87232706952884,
+    "y_bottom_right": 17.09806443983966,
+    "x_bottom_middle": 34.613813243985234,
+    "y_bottom_middle": 16.905517290404827
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 34.31780890162651,
+    "y_bottom_left": 16.720244225853346,
+    "x_bottom_right": 34.85887563954406,
+    "y_bottom_right": 17.123243399383004,
+    "x_bottom_middle": 34.58834227058529,
+    "y_bottom_middle": 16.921743812618175
+   }
+  },
+  {
+   "id": "2056000019",
+   "image_id": "2056000002",
+   "track_id": 2,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "19",
+    "team": "left"
+   },
+   "bbox_image": {
+    "x": 948,
+    "y": 674,
+    "x_center": 982.0,
+    "y_center": 752.5,
+    "w": 68,
+    "h": 157
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 35.080610091503594,
+    "y_bottom_left": 12.00925249149729,
+    "x_bottom_right": 35.71368549886895,
+    "y_bottom_right": 12.480781876083443,
+    "x_bottom_middle": 35.39714779208215,
+    "y_bottom_middle": 12.245017181478207
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 35.07700564314376,
+    "y_bottom_left": 12.006567813973687,
+    "x_bottom_right": 35.710081052558586,
+    "y_bottom_right": 12.478097200086447,
+    "x_bottom_middle": 35.39354334167276,
+    "y_bottom_middle": 12.242332502428004
+   }
+  },
+  {
+   "id": "2056000020",
+   "image_id": "2056000002",
+   "track_id": 3,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "5",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 681,
+    "y": 646,
+    "x_center": 702.5,
+    "y_center": 721.0,
+    "w": 43,
+    "h": 150
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 33.52153446024758,
+    "y_bottom_left": 8.776987010018505,
+    "x_bottom_right": 33.932612079735975,
+    "y_bottom_right": 9.083167244914588,
+    "x_bottom_middle": 33.72707336891238,
+    "y_bottom_middle": 8.930077201144684
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 33.50532648739892,
+    "y_bottom_left": 8.796721523046536,
+    "x_bottom_right": 33.915337984862575,
+    "y_bottom_right": 9.102107685299151,
+    "x_bottom_middle": 33.71033233737679,
+    "y_bottom_middle": 8.949414679583017
+   }
+  },
+  {
+   "id": "2056000021",
+   "image_id": "2056000002",
+   "track_id": 4,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "33",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 714,
+    "y": 582,
+    "x_center": 745.0,
+    "y_center": 659.0,
+    "w": 62,
+    "h": 154
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 35.51289422237628,
+    "y_bottom_left": 6.556720741244368,
+    "x_bottom_right": 36.11993144487056,
+    "y_bottom_right": 7.008856276147379,
+    "x_bottom_middle": 35.81641287924146,
+    "y_bottom_middle": 6.782788542673587
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 35.50792514186263,
+    "y_bottom_left": 6.553019653744775,
+    "x_bottom_right": 36.12468192725265,
+    "y_bottom_right": 7.012394546640794,
+    "x_bottom_middle": 35.81630353455764,
+    "y_bottom_middle": 6.782707100193262
+   }
+  },
+  {
+   "id": "2056000022",
+   "image_id": "2056000002",
+   "track_id": 5,
+   "supercategory": "object",
+   "category_id": 2,
+   "attributes": {
+    "role": "goalkeeper",
+    "jersey": null,
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 1376,
+    "y": 369,
+    "x_center": 1392.5,
+    "y_center": 434.0,
+    "w": 33,
+    "h": 130
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 51.85109720373886,
+    "y_bottom_left": 0.10817107820800162,
+    "x_bottom_right": 52.29137181874353,
+    "y_bottom_right": 0.4360979189072363,
+    "x_bottom_middle": 52.07123441887514,
+    "y_bottom_middle": 0.27213442976098595
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 51.84026786444212,
+    "y_bottom_left": 0.15221600984476896,
+    "x_bottom_right": 52.23620610064221,
+    "y_bottom_right": 0.4471200776339458,
+    "x_bottom_middle": 52.03823698254213,
+    "y_bottom_middle": 0.29966804373935735
+   }
+  },
+  {
+   "id": "2056000023",
+   "image_id": "2056000002",
+   "track_id": 6,
+   "supercategory": "object",
+   "category_id": 3,
+   "attributes": {
+    "role": "referee",
+    "jersey": null,
+    "team": null
+   },
+   "bbox_image": {
+    "x": 1226,
+    "y": 421,
+    "x_center": 1255.5,
+    "y_center": 485.0,
+    "w": 59,
+    "h": 128
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 47.499339096504144,
+    "y_bottom_left": 1.703727462697179,
+    "x_bottom_right": 48.09864681765582,
+    "y_bottom_right": 2.150105884042176,
+    "x_bottom_middle": 47.79899287240665,
+    "y_bottom_middle": 1.9269166103031214
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 47.73872796683732,
+    "y_bottom_left": 1.62453416930907,
+    "x_bottom_right": 48.41711765938341,
+    "y_bottom_right": 2.1298146943674796,
+    "x_bottom_middle": 48.077922691020994,
+    "y_bottom_middle": 1.8771743409035853
+   }
+  },
+  {
+   "id": "2056000024",
+   "image_id": "2056000002",
+   "track_id": 7,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "3",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 823,
+    "y": 466,
+    "x_center": 843.0,
+    "y_center": 530.5,
+    "w": 40,
+    "h": 129
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 41.30871099101021,
+    "y_bottom_left": 0.736016332077447,
+    "x_bottom_right": 41.76496381984854,
+    "y_bottom_right": 1.0758441205124,
+    "x_bottom_middle": 41.53683740439645,
+    "y_bottom_middle": 0.9059302255256572
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 41.32158974492704,
+    "y_bottom_left": 0.6890061463886128,
+    "x_bottom_right": 41.76453264994755,
+    "y_bottom_right": 1.0189203919599596,
+    "x_bottom_middle": 41.54306119743731,
+    "y_bottom_middle": 0.8539632691748177
+   }
+  },
+  {
+   "id": "2056000025",
+   "image_id": "2056000002",
+   "track_id": 8,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "8",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 749,
+    "y": 484,
+    "x_center": 794.0,
+    "y_center": 551.0,
+    "w": 90,
+    "h": 134
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 39.765912113656555,
+    "y_bottom_left": 1.231504510804152,
+    "x_bottom_right": 40.726497704108915,
+    "y_bottom_right": 1.9469711472238447,
+    "x_bottom_middle": 40.246204966338354,
+    "y_bottom_middle": 1.589237871808328
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 39.67379633122203,
+    "y_bottom_left": 1.279218936922619,
+    "x_bottom_right": 40.6523518610979,
+    "y_bottom_right": 2.0080700049263602,
+    "x_bottom_middle": 40.1630741538849,
+    "y_bottom_middle": 1.6436445139194857
+   }
+  },
+  {
+   "id": "2056000026",
+   "image_id": "2056000002",
+   "track_id": 9,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "99",
+    "team": "left"
+   },
+   "bbox_image": {
+    "x": 584,
+    "y": 498,
+    "x_center": 618.0,
+    "y_center": 547.0,
+    "w": 68,
+    "h": 98
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 38.61092090267485,
+    "y_bottom_left": -1.1995012280941748,
+    "x_bottom_right": 39.36294413538237,
+    "y_bottom_right": -0.6393767184590811,
+    "x_bottom_middle": 38.98693256346083,
+    "y_bottom_middle": -0.9194389401825713
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 38.63982033366963,
+    "y_bottom_left": -1.228021169252116,
+    "x_bottom_right": 39.3922195587171,
+    "y_bottom_right": -0.6676166117200919,
+    "x_bottom_middle": 39.01602006368036,
+    "y_bottom_middle": -0.9478188029793345
+   }
+  },
+  {
+   "id": "2056000027",
+   "image_id": "2056000002",
+   "track_id": 10,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "17",
+    "team": "left"
+   },
+   "bbox_image": {
+    "x": 348,
+    "y": 586,
+    "x_center": 372.0,
+    "y_center": 653.5,
+    "w": 48,
+    "h": 135
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 32.272349964206114,
+    "y_bottom_left": 3.1582119429646975,
+    "x_bottom_right": 32.75026588826957,
+    "y_bottom_right": 3.514174911886618,
+    "x_bottom_middle": 32.511307915944954,
+    "y_bottom_middle": 3.336193419759139
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 32.27231499697659,
+    "y_bottom_left": 3.158185898553517,
+    "x_bottom_right": 32.755025244350165,
+    "y_bottom_right": 3.517719791718426,
+    "x_bottom_middle": 32.51367012066339,
+    "y_bottom_middle": 3.3379528451359715
+   }
+  },
+  {
+   "id": "2056000028",
+   "image_id": "2056000002",
+   "track_id": 11,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": null,
+    "team": "left"
+   },
+   "bbox_image": {
+    "x": 118,
+    "y": 486,
+    "x_center": 135.0,
+    "y_center": 556.5,
+    "w": 34,
+    "h": 141
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 32.501177945216085,
+    "y_bottom_left": -3.3038523556558372,
+    "x_bottom_right": 32.86839030132822,
+    "y_bottom_right": -3.0303439958691136,
+    "x_bottom_middle": 32.68478410614835,
+    "y_bottom_middle": -3.1670981885167193
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 32.54533897243545,
+    "y_bottom_left": -3.336827197224089,
+    "x_bottom_right": 32.91241124073495,
+    "y_bottom_right": -3.063423178119729,
+    "x_bottom_middle": 32.72887510658517,
+    "y_bottom_middle": -3.200125187671909
+   }
+  },
+  {
+   "id": "2056000029",
+   "image_id": "2056000002",
+   "track_id": 12,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "13",
+    "team": "left"
+   },
+   "bbox_image": {
+    "x": 81,
+    "y": 423,
+    "x_center": 104.5,
+    "y_center": 487.0,
+    "w": 47,
+    "h": 128
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 34.583243633200524,
+    "y_bottom_left": -8.123598138994653,
+    "x_bottom_right": 35.13890591181599,
+    "y_bottom_right": -7.709727865051522,
+    "x_bottom_middle": 34.861074661863796,
+    "y_bottom_middle": -7.9166630844336
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 34.50718867449862,
+    "y_bottom_left": -8.057371897296001,
+    "x_bottom_right": 35.04670073326157,
+    "y_bottom_right": -7.655530685198436,
+    "x_bottom_middle": 34.77694421633542,
+    "y_bottom_middle": -7.856451654381756
+   }
+  },
+  {
+   "id": "2056000030",
+   "image_id": "2056000002",
+   "track_id": 13,
+   "supercategory": "object",
+   "category_id": 4,
+   "attributes": {
+    "role": "ball",
+    "jersey": null,
+    "team": null
+   },
+   "bbox_image": {
+    "x": 790,
+    "y": 564,
+    "x_center": 797.0,
+    "y_center": 572.5,
+    "w": 14,
+    "h": 17
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 41.51282171062756,
+    "y_bottom_left": -0.3716707751086968,
+    "x_bottom_right": 41.66971199343602,
+    "y_bottom_right": -0.2548152194517924,
+    "x_bottom_middle": 41.59126685203181,
+    "y_bottom_middle": -0.31324299728038313
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 41.48067965411705,
+    "y_bottom_left": -0.3320524692891449,
+    "x_bottom_right": 41.6374716619929,
+    "y_bottom_right": -0.21527011110250424,
+    "x_bottom_middle": 41.55907565805497,
+    "y_bottom_middle": -0.2736612901958246
+   }
+  },
+  {
+   "id": "2056000031",
+   "image_id": "2056000002",
+   "track_id": 14,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "14",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 0,
+    "y": 682,
+    "x_center": 12.0,
+    "y_center": 699.5,
+    "w": 24,
+    "h": 35
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 28.871852711179155,
+    "y_bottom_left": 0.3595477380465163,
+    "x_bottom_right": 29.1139126277511,
+    "y_bottom_right": 0.5398396308700492,
+    "x_bottom_middle": 28.992882669465118,
+    "y_bottom_middle": 0.4496936844577986
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 28.871997513117712,
+    "y_bottom_left": 0.35926741573727466,
+    "x_bottom_right": 29.114058458604042,
+    "y_bottom_right": 0.5395600749203117,
+    "x_bottom_middle": 28.993027985860877,
+    "y_bottom_middle": 0.4494137453283091
+   }
+  },
+  {
+   "id": "2056000032",
+   "image_id": "2056000002",
+   "track_id": 15,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "36",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 155,
+    "y": 419,
+    "x_center": 173.5,
+    "y_center": 481.0,
+    "w": 37,
+    "h": 124
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 35.62837477647935,
+    "y_bottom_left": -7.918786016976893,
+    "x_bottom_right": 36.05654433111402,
+    "y_bottom_right": -7.599875308636909,
+    "x_bottom_middle": 35.8424600190936,
+    "y_bottom_middle": -7.759330316242996
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 35.62837477647935,
+    "y_bottom_left": -7.918786016976892,
+    "x_bottom_right": 36.055943556844085,
+    "y_bottom_right": -7.600322779378138,
+    "x_bottom_middle": 35.84215965747354,
+    "y_bottom_middle": -7.7595540326095085
+   }
+  },
+  {
+   "id": "2056000033",
+   "image_id": "2056000002",
+   "supercategory": "pitch",
+   "category_id": 5,
+   "lines": {
+    "Side line right": [
+     {
+      "x": 1.0,
+      "y": 0.5673508911842995
+     },
+     {
+      "x": 0.907381467013889,
+      "y": 0.5302965247492135
+     },
+     {
+      "x": 0.8147629340277777,
+      "y": 0.49324215831412777
+     },
+     {
+      "x": 0.6499004774305556,
+      "y": 0.42582240309801983
+     },
+     {
+      "x": 0.5140744791666667,
+      "y": 0.36835648148148165
+     },
+     {
+      "x": 0.33110868055555553,
+      "y": 0.2915038660802491
+     },
+     {
+      "x": 0.1482296875,
+      "y": 0.21341666666666678
+     }
+    ],
+    "Side line top": [
+     {
+      "x": 0.0,
+      "y": 0.23444351851851847
+     },
+     {
+      "x": 0.07417830387205387,
+      "y": 0.22387163766539814
+     },
+     {
+      "x": 0.14835660774410775,
+      "y": 0.21329975681227786
+     }
+    ],
+    "Goal right crossbar": [
+     {
+      "x": 0.8169411458333333,
+      "y": 0.3384185185185185
+     },
+     {
+      "x": 0.7308729166666666,
+      "y": 0.30909722222222225
+     },
+     {
+      "x": 0.6448046875000001,
+      "y": 0.27977592592592593
+     }
+    ],
+    "Goal right post left": [
+     {
+      "x": 0.6450843749999999,
+      "y": 0.27956481481481477
+     },
+     {
+      "x": 0.6442924479166666,
+      "y": 0.35122825357928555
+     },
+     {
+      "x": 0.6435005208333333,
+      "y": 0.4228916923437564
+     }
+    ],
+    "Goal right post right": [
+     {
+      "x": 0.8167640625,
+      "y": 0.33828425925925926
+     },
+     {
+      "x": 0.8151148437500001,
+      "y": 0.41544583333333324
+     },
+     {
+      "x": 0.813465625,
+      "y": 0.4926074074074074
+     }
+    ],
+    "Small rect. right main": [
+     {
+      "x": 0.8019637152777777,
+      "y": 0.5973929052623467
+     },
+     {
+      "x": 0.5999672743055555,
+      "y": 0.5038733044830253
+     },
+     {
+      "x": 0.39797083333333333,
+      "y": 0.4103537037037037
+     }
+    ],
+    "Small rect. right bottom": [
+     {
+      "x": 0.8022244791666666,
+      "y": 0.5974703703703704
+     },
+     {
+      "x": 0.8803113281249999,
+      "y": 0.5741916968763298
+     },
+     {
+      "x": 0.9583981770833332,
+      "y": 0.5509130233822892
+     }
+    ],
+    "Small rect. right top": [
+     {
+      "x": 0.39817708333333335,
+      "y": 0.409987037037037
+     },
+     {
+      "x": 0.4674261284722222,
+      "y": 0.39416883118827256
+     },
+     {
+      "x": 0.536675173611111,
+      "y": 0.3783506253395081
+     }
+    ],
+    "Big rect. right top": [
+     {
+      "x": 0.34765642361111115,
+      "y": 0.29848360219895886
+     },
+     {
+      "x": 0.17382821180555558,
+      "y": 0.3301607825809608
+     },
+     {
+      "x": 0.0,
+      "y": 0.36183796296296294
+     }
+    ],
+    "Big rect. right main": [
+     {
+      "x": 0.0,
+      "y": 0.4408518518518519
+     },
+     {
+      "x": 0.10946197916666667,
+      "y": 0.5038537037037037
+     },
+     {
+      "x": 0.29847691147586985,
+      "y": 0.6150404008821236
+     },
+     {
+      "x": 0.39296684115460156,
+      "y": 0.6706368671077286
+     },
+     {
+      "x": 0.48745677083333333,
+      "y": 0.7262333333333334
+     },
+     {
+      "x": 0.7661026041666666,
+      "y": 0.8978407407407406
+     }
+    ],
+    "Big rect. right bottom": [
+     {
+      "x": 0.7659286458333334,
+      "y": 0.8976861111111111
+     },
+     {
+      "x": 0.8829643229166667,
+      "y": 0.8572148148148148
+     },
+     {
+      "x": 1.0,
+      "y": 0.8167435185185186
+     }
+    ],
+    "Circle right": [
+     {
+      "x": 0.10230052083333334,
+      "y": 0.4999953703703704
+     },
+     {
+      "x": 0.08756510416666667,
+      "y": 0.5129972222222222
+     },
+     {
+      "x": 0.08463541666666667,
+      "y": 0.5167203703703703
+     },
+     {
+      "x": 0.08170572916666667,
+      "y": 0.5204435185185184
+     },
+     {
+      "x": 0.07877604166666667,
+      "y": 0.5241666666666667
+     },
+     {
+      "x": 0.07584635416666667,
+      "y": 0.5278898148148148
+     },
+     {
+      "x": 0.073486328125,
+      "y": 0.5316708272916651
+     },
+     {
+      "x": 0.07112630208333333,
+      "y": 0.5354518397685156
+     },
+     {
+      "x": 0.06866097038089225,
+      "y": 0.5412377197752408
+     },
+     {
+      "x": 0.06820729166666667,
+      "y": 0.5461
+     },
+     {
+      "x": 0.06772994791666666,
+      "y": 0.5525814814814815
+     },
+     {
+      "x": 0.06803385416666667,
+      "y": 0.5595259319675939
+     },
+     {
+      "x": 0.06924921875000001,
+      "y": 0.5639240740740741
+     },
+     {
+      "x": 0.070725,
+      "y": 0.5687851851851852
+     },
+     {
+      "x": 0.07400182291666667,
+      "y": 0.5772731602314843
+     },
+     {
+      "x": 0.07819010416666666,
+      "y": 0.5839092592592593
+     },
+     {
+      "x": 0.08678394097222224,
+      "y": 0.5942102033101898
+     },
+     {
+      "x": 0.095725,
+      "y": 0.6017333333333335
+     },
+     {
+      "x": 0.1093534722222222,
+      "y": 0.6122271705632741
+     },
+     {
+      "x": 0.12332916666666667,
+      "y": 0.6211777777777778
+     },
+     {
+      "x": 0.14596354166666667,
+      "y": 0.6328675925925926
+     },
+     {
+      "x": 0.17473958333333334,
+      "y": 0.6436314814814815
+     },
+     {
+      "x": 0.20399322916666665,
+      "y": 0.6524287037037038
+     },
+     {
+      "x": 0.23018645833333334,
+      "y": 0.6586009259259259
+     },
+     {
+      "x": 0.26664479166666666,
+      "y": 0.6660083333333333
+     },
+     {
+      "x": 0.3228515625,
+      "y": 0.6729148148148149
+     },
+     {
+      "x": 0.3901473958333333,
+      "y": 0.6765416666666666
+     },
+     {
+      "x": 0.4027125,
+      "y": 0.6767731481481482
+     }
+    ]
+   }
+  },
+  {
+   "id": "2056000035",
+   "image_id": "2056000003",
+   "track_id": 1,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "43",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 1151,
+    "y": 760,
+    "x_center": 1181.5,
+    "y_center": 845.0,
+    "w": 61,
+    "h": 170
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 34.357302458898936,
+    "y_bottom_left": 16.712734491956127,
+    "x_bottom_right": 34.87275133591071,
+    "y_bottom_right": 17.096652882932954,
+    "x_bottom_middle": 34.61502684372503,
+    "y_bottom_middle": 16.904693647462505
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 34.32653578449614,
+    "y_bottom_left": 16.726744212523695,
+    "x_bottom_right": 34.85887563954403,
+    "y_bottom_right": 17.123243399383004,
+    "x_bottom_middle": 34.59270561935637,
+    "y_bottom_middle": 16.92499373693507
+   }
+  },
+  {
+   "id": "2056000036",
+   "image_id": "2056000003",
+   "track_id": 2,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "19",
+    "team": "left"
+   },
+   "bbox_image": {
+    "x": 948,
+    "y": 674,
+    "x_center": 982.0,
+    "y_center": 752.5,
+    "w": 68,
+    "h": 157
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 35.08097985139776,
+    "y_bottom_left": 12.009527897323064,
+    "x_bottom_right": 35.71405525860305,
+    "y_bottom_right": 12.481057281789989,
+    "x_bottom_middle": 35.397517552136385,
+    "y_bottom_middle": 12.245292587423208
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 35.0770056431437,
+    "y_bottom_left": 12.006567813973687,
+    "x_bottom_right": 35.710081052558586,
+    "y_bottom_right": 12.478097200086447,
+    "x_bottom_middle": 35.39354334167276,
+    "y_bottom_middle": 12.242332502428004
+   }
+  },
+  {
+   "id": "2056000037",
+   "image_id": "2056000003",
+   "track_id": 3,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "5",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 681,
+    "y": 646,
+    "x_center": 702.5,
+    "y_center": 721.0,
+    "w": 43,
+    "h": 150
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 33.52243462731291,
+    "y_bottom_left": 8.775313842465524,
+    "x_bottom_right": 33.933820536081896,
+    "y_bottom_right": 9.081723698435269,
+    "x_bottom_middle": 33.72812767997492,
+    "y_bottom_middle": 8.928518843649547
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 33.50532648739892,
+    "y_bottom_left": 8.796721523046536,
+    "x_bottom_right": 33.915337984862575,
+    "y_bottom_right": 9.102107685299151,
+    "x_bottom_middle": 33.71033233737679,
+    "y_bottom_middle": 8.949414679583017
+   }
+  },
+  {
+   "id": "2056000038",
+   "image_id": "2056000003",
+   "track_id": 4,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "33",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 714,
+    "y": 582,
+    "x_center": 745.0,
+    "y_center": 659.0,
+    "w": 62,
+    "h": 154
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 35.5133206347686,
+    "y_bottom_left": 6.557038343177074,
+    "x_bottom_right": 36.11970552615857,
+    "y_bottom_right": 7.008688006601626,
+    "x_bottom_middle": 35.816513126521976,
+    "y_bottom_middle": 6.782863209195041
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 35.50792514186257,
+    "y_bottom_left": 6.553019653744775,
+    "x_bottom_right": 36.12468192725259,
+    "y_bottom_right": 7.012394546640794,
+    "x_bottom_middle": 35.81630353455758,
+    "y_bottom_middle": 6.782707100193262
+   }
+  },
+  {
+   "id": "2056000039",
+   "image_id": "2056000003",
+   "track_id": 5,
+   "supercategory": "object",
+   "category_id": 2,
+   "attributes": {
+    "role": "goalkeeper",
+    "jersey": null,
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 1375,
+    "y": 369,
+    "x_center": 1392.0,
+    "y_center": 434.0,
+    "w": 34,
+    "h": 130
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 51.855156584333336,
+    "y_bottom_left": 0.10325423710709405,
+    "x_bottom_right": 52.29773826277196,
+    "y_bottom_right": 0.43289943266352066,
+    "x_bottom_middle": 52.07644732765071,
+    "y_bottom_middle": 0.2680767634550571
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 51.828269473554236,
+    "y_bottom_left": 0.1432793274123621,
+    "x_bottom_right": 52.23620610064217,
+    "y_bottom_right": 0.4471200776339458,
+    "x_bottom_middle": 52.032238041895255,
+    "y_bottom_middle": 0.29519989230184934
+   }
+  },
+  {
+   "id": "2056000040",
+   "image_id": "2056000003",
+   "track_id": 6,
+   "supercategory": "object",
+   "category_id": 3,
+   "attributes": {
+    "role": "referee",
+    "jersey": null,
+    "team": null
+   },
+   "bbox_image": {
+    "x": 1224,
+    "y": 421,
+    "x_center": 1252.0,
+    "y_center": 485.5,
+    "w": 56,
+    "h": 129
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 47.48032180954921,
+    "y_bottom_left": 1.7066261234130564,
+    "x_bottom_right": 48.077804006718694,
+    "y_bottom_right": 2.151644851758055,
+    "x_bottom_middle": 47.77906282422795,
+    "y_bottom_middle": 1.9291354250905264
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 47.67166971819166,
+    "y_bottom_left": 1.6612868405073058,
+    "x_bottom_right": 48.3150287976504,
+    "y_bottom_right": 2.1404757448228175,
+    "x_bottom_middle": 47.993349257921025,
+    "y_bottom_middle": 1.9008812926645102
+   }
+  },
+  {
+   "id": "2056000041",
+   "image_id": "2056000003",
+   "track_id": 7,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "3",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 823,
+    "y": 466,
+    "x_center": 843.5,
+    "y_center": 530.5,
+    "w": 41,
+    "h": 129
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 41.30763319234107,
+    "y_bottom_left": 0.739714911542312,
+    "x_bottom_right": 41.76464139254719,
+    "y_bottom_right": 1.0801053182562799,
+    "x_bottom_middle": 41.53613729113373,
+    "y_bottom_middle": 0.9099101139233444
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 41.321589744927,
+    "y_bottom_left": 0.6890061463886128,
+    "x_bottom_right": 41.775606222573074,
+    "y_bottom_right": 1.0271682480988447,
+    "x_bottom_middle": 41.54859798375004,
+    "y_bottom_middle": 0.8580871972437288
+   }
+  },
+  {
+   "id": "2056000042",
+   "image_id": "2056000003",
+   "track_id": 8,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "8",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 750,
+    "y": 484,
+    "x_center": 795.0,
+    "y_center": 551.0,
+    "w": 90,
+    "h": 134
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 39.774542103168024,
+    "y_bottom_left": 1.227356872556811,
+    "x_bottom_right": 40.73275638683991,
+    "y_bottom_right": 1.941057304170808,
+    "x_bottom_middle": 40.25364930232192,
+    "y_bottom_middle": 1.5842071310555959
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 39.68466916916008,
+    "y_bottom_left": 1.2873172811678655,
+    "x_bottom_right": 40.66322469903594,
+    "y_bottom_right": 2.016168349170563,
+    "x_bottom_middle": 40.17394699182298,
+    "y_bottom_middle": 1.6517428581647322
+   }
+  },
+  {
+   "id": "2056000043",
+   "image_id": "2056000003",
+   "track_id": 9,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "99",
+    "team": "left"
+   },
+   "bbox_image": {
+    "x": 584,
+    "y": 498,
+    "x_center": 618.0,
+    "y_center": 547.5,
+    "w": 68,
+    "h": 99
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 38.6107422504823,
+    "y_bottom_left": -1.19975864821411,
+    "x_bottom_right": 39.362766413339386,
+    "y_bottom_right": -0.6396334457818436,
+    "x_bottom_middle": 38.98675437445079,
+    "y_bottom_middle": -0.9196960153133334
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 38.60469152823245,
+    "y_bottom_left": -1.173897494701575,
+    "x_bottom_right": 39.356487772651505,
+    "y_bottom_right": -0.6139420512582382,
+    "x_bottom_middle": 38.98058976783483,
+    "y_bottom_middle": -0.893919685543266
+   }
+  },
+  {
+   "id": "2056000044",
+   "image_id": "2056000003",
+   "track_id": 10,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "17",
+    "team": "left"
+   },
+   "bbox_image": {
+    "x": 348,
+    "y": 586,
+    "x_center": 372.0,
+    "y_center": 653.5,
+    "w": 48,
+    "h": 135
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 32.27236648084949,
+    "y_bottom_left": 3.158224244947362,
+    "x_bottom_right": 32.749625024296584,
+    "y_bottom_right": 3.5136975813960274,
+    "x_bottom_middle": 32.510995744734984,
+    "y_bottom_middle": 3.3359609073335887
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 32.27231499697659,
+    "y_bottom_left": 3.158185898553517,
+    "x_bottom_right": 32.755025244350136,
+    "y_bottom_right": 3.517719791718426,
+    "x_bottom_middle": 32.51367012066339,
+    "y_bottom_middle": 3.3379528451359715
+   }
+  },
+  {
+   "id": "2056000045",
+   "image_id": "2056000003",
+   "track_id": 11,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": null,
+    "team": "left"
+   },
+   "bbox_image": {
+    "x": 118,
+    "y": 486,
+    "x_center": 135.0,
+    "y_center": 556.5,
+    "w": 34,
+    "h": 141
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 32.49808634422735,
+    "y_bottom_left": -3.3021093211930914,
+    "x_bottom_right": 32.865429526197346,
+    "y_bottom_right": -3.028503519244617,
+    "x_bottom_middle": 32.68175792236357,
+    "y_bottom_middle": -3.1653064297889526
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 32.545338972435424,
+    "y_bottom_left": -3.336827197224089,
+    "x_bottom_right": 32.91241124073495,
+    "y_bottom_right": -3.063423178119729,
+    "x_bottom_middle": 32.72887510658517,
+    "y_bottom_middle": -3.200125187671909
+   }
+  },
+  {
+   "id": "2056000046",
+   "image_id": "2056000003",
+   "track_id": 12,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "13",
+    "team": "left"
+   },
+   "bbox_image": {
+    "x": 81,
+    "y": 422,
+    "x_center": 104.5,
+    "y_center": 486.0,
+    "w": 47,
+    "h": 128
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 34.590551554263016,
+    "y_bottom_left": -8.129975674431353,
+    "x_bottom_right": 35.147128119427734,
+    "y_bottom_right": -7.715424418461599,
+    "x_bottom_middle": 34.868839731970496,
+    "y_bottom_middle": -7.922700124559668
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 34.54025087628824,
+    "y_bottom_left": -8.119301337805059,
+    "x_bottom_right": 35.080212228907946,
+    "y_bottom_right": -7.717125481124386,
+    "x_bottom_middle": 34.810231064647404,
+    "y_bottom_middle": -7.91821377290167
+   }
+  },
+  {
+   "id": "2056000047",
+   "image_id": "2056000003",
+   "track_id": 13,
+   "supercategory": "object",
+   "category_id": 4,
+   "attributes": {
+    "role": "ball",
+    "jersey": null,
+    "team": null
+   },
+   "bbox_image": {
+    "x": 790,
+    "y": 564,
+    "x_center": 797.0,
+    "y_center": 572.5,
+    "w": 14,
+    "h": 17
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 41.51520336495862,
+    "y_bottom_left": -0.3744530475059862,
+    "x_bottom_right": 41.67210069259935,
+    "y_bottom_right": -0.2575922446930947,
+    "x_bottom_middle": 41.593652028779,
+    "y_bottom_middle": -0.3160226460996926
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 41.48067965411701,
+    "y_bottom_left": -0.3320524692891449,
+    "x_bottom_right": 41.6374716619929,
+    "y_bottom_right": -0.21527011110250424,
+    "x_bottom_middle": 41.55907565805497,
+    "y_bottom_middle": -0.2736612901958246
+   }
+  },
+  {
+   "id": "2056000048",
+   "image_id": "2056000003",
+   "track_id": 14,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "14",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 0,
+    "y": 682,
+    "x_center": 12.0,
+    "y_center": 699.5,
+    "w": 24,
+    "h": 35
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 28.8717909987907,
+    "y_bottom_left": 0.3596672071600721,
+    "x_bottom_right": 29.11385047685496,
+    "y_bottom_right": 0.5399587733728158,
+    "x_bottom_middle": 28.99282073782282,
+    "y_bottom_middle": 0.4498129902659599
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 28.871997513117712,
+    "y_bottom_left": 0.35926741573727466,
+    "x_bottom_right": 29.11405845860401,
+    "y_bottom_right": 0.5395600749203117,
+    "x_bottom_middle": 28.993027985860845,
+    "y_bottom_middle": 0.4494137453283091
+   }
+  },
+  {
+   "id": "2056000049",
+   "image_id": "2056000003",
+   "track_id": 15,
+   "supercategory": "object",
+   "category_id": 1,
+   "attributes": {
+    "role": "player",
+    "jersey": "36",
+    "team": "right"
+   },
+   "bbox_image": {
+    "x": 155,
+    "y": 419,
+    "x_center": 173.5,
+    "y_center": 481.0,
+    "w": 37,
+    "h": 124
+   },
+   "bbox_pitch": {
+    "x_bottom_left": 35.62837477647935,
+    "y_bottom_left": -7.918786016976893,
+    "x_bottom_right": 36.056685434870296,
+    "y_bottom_right": -7.599770211255802,
+    "x_bottom_middle": 35.84253056497906,
+    "y_bottom_middle": -7.759277772015932
+   },
+   "bbox_pitch_raw": {
+    "x_bottom_left": 35.62837477647935,
+    "y_bottom_left": -7.918786016976892,
+    "x_bottom_right": 36.05594355684405,
+    "y_bottom_right": -7.600322779378138,
+    "x_bottom_middle": 35.84215965747354,
+    "y_bottom_middle": -7.7595540326095085
+   }
+  },
+  {
+   "id": "2056000050",
+   "image_id": "2056000003",
+   "supercategory": "pitch",
+   "category_id": 5,
+   "lines": {
+    "Side line right": [
+     {
+      "x": 1.0,
+      "y": 0.5673462147297073
+     },
+     {
+      "x": 0.907381467013889,
+      "y": 0.5302941865219174
+     },
+     {
+      "x": 0.8147629340277777,
+      "y": 0.49324215831412777
+     },
+     {
+      "x": 0.6499004774305556,
+      "y": 0.42582240309801983
+     },
+     {
+      "x": 0.5140744791666667,
+      "y": 0.36835648148148165
+     },
+     {
+      "x": 0.33110868055555553,
+      "y": 0.2915038660802491
+     },
+     {
+      "x": 0.1482296875,
+      "y": 0.21341666666666678
+     }
+    ],
+    "Side line top": [
+     {
+      "x": 0.0,
+      "y": 0.23444351851851847
+     },
+     {
+      "x": 0.07417665982744108,
+      "y": 0.2238710531085741
+     },
+     {
+      "x": 0.14835331965488216,
+      "y": 0.2132985876986298
+     }
+    ],
+    "Goal right crossbar": [
+     {
+      "x": 0.8169411458333333,
+      "y": 0.3384185185185185
+     },
+     {
+      "x": 0.7308729166666666,
+      "y": 0.30909722222222225
+     },
+     {
+      "x": 0.6448046875000001,
+      "y": 0.27977592592592593
+     }
+    ],
+    "Goal right post left": [
+     {
+      "x": 0.6450843749999999,
+      "y": 0.27956481481481477
+     },
+     {
+      "x": 0.6442924479166666,
+      "y": 0.35122825357928555
+     },
+     {
+      "x": 0.6435005208333333,
+      "y": 0.4228916923437564
+     }
+    ],
+    "Goal right post right": [
+     {
+      "x": 0.8167640625,
+      "y": 0.33828425925925926
+     },
+     {
+      "x": 0.8151148437500001,
+      "y": 0.41544583333333324
+     },
+     {
+      "x": 0.813465625,
+      "y": 0.4926074074074074
+     }
+    ],
+    "Small rect. right main": [
+     {
+      "x": 0.8019637152777777,
+      "y": 0.5973929052623467
+     },
+     {
+      "x": 0.5999672743055555,
+      "y": 0.5038733044830253
+     },
+     {
+      "x": 0.39797083333333333,
+      "y": 0.4103537037037037
+     }
+    ],
+    "Small rect. right bottom": [
+     {
+      "x": 0.8022244791666666,
+      "y": 0.5974703703703704
+     },
+     {
+      "x": 0.8803113281249999,
+      "y": 0.5741870204217375
+     },
+     {
+      "x": 0.9583981770833332,
+      "y": 0.5509036704731047
+     }
+    ],
+    "Small rect. right top": [
+     {
+      "x": 0.39817708333333335,
+      "y": 0.409987037037037
+     },
+     {
+      "x": 0.4674261284722222,
+      "y": 0.39416883118827256
+     },
+     {
+      "x": 0.536675173611111,
+      "y": 0.3783506253395081
+     }
+    ],
+    "Big rect. right top": [
+     {
+      "x": 0.34765642361111115,
+      "y": 0.29847892574436663
+     },
+     {
+      "x": 0.17382821180555558,
+      "y": 0.3301584443536647
+     },
+     {
+      "x": 0.0,
+      "y": 0.36183796296296294
+     }
+    ],
+    "Big rect. right main": [
+     {
+      "x": 0.0,
+      "y": 0.4408518518518519
+     },
+     {
+      "x": 0.10946197916666667,
+      "y": 0.5038537037037037
+     },
+     {
+      "x": 0.2984944479517396,
+      "y": 0.615037283245729
+     },
+     {
+      "x": 0.3929756093925365,
+      "y": 0.6706353082895311
+     },
+     {
+      "x": 0.48745677083333333,
+      "y": 0.7262333333333334
+     },
+     {
+      "x": 0.7661026041666666,
+      "y": 0.8978407407407406
+     }
+    ],
+    "Big rect. right bottom": [
+     {
+      "x": 0.7659286458333334,
+      "y": 0.8976861111111111
+     },
+     {
+      "x": 0.8829643229166667,
+      "y": 0.8572148148148148
+     },
+     {
+      "x": 1.0,
+      "y": 0.8167435185185186
+     }
+    ],
+    "Circle right": [
+     {
+      "x": 0.10230052083333334,
+      "y": 0.4999953703703704
+     },
+     {
+      "x": 0.08756510416666667,
+      "y": 0.5129972222222222
+     },
+     {
+      "x": 0.08463541666666667,
+      "y": 0.5167203703703703
+     },
+     {
+      "x": 0.08170572916666667,
+      "y": 0.5204435185185184
+     },
+     {
+      "x": 0.07877604166666667,
+      "y": 0.5241666666666667
+     },
+     {
+      "x": 0.07584635416666667,
+      "y": 0.5278898148148148
+     },
+     {
+      "x": 0.073486328125,
+      "y": 0.5316708272916651
+     },
+     {
+      "x": 0.07112630208333333,
+      "y": 0.5354518397685156
+     },
+     {
+      "x": 0.06866425847011784,
+      "y": 0.5412365506615928
+     },
+     {
+      "x": 0.06820729166666667,
+      "y": 0.5461
+     },
+     {
+      "x": 0.06772994791666666,
+      "y": 0.5525814814814815
+     },
+     {
+      "x": 0.06803385416666667,
+      "y": 0.5595259319675939
+     },
+     {
+      "x": 0.06924921875000001,
+      "y": 0.5639240740740741
+     },
+     {
+      "x": 0.070725,
+      "y": 0.5687851851851852
+     },
+     {
+      "x": 0.07400182291666667,
+      "y": 0.5772731602314843
+     },
+     {
+      "x": 0.07819010416666666,
+      "y": 0.5839092592592593
+     },
+     {
+      "x": 0.08678394097222224,
+      "y": 0.5942102033101898
+     },
+     {
+      "x": 0.095725,
+      "y": 0.6017333333333335
+     },
+     {
+      "x": 0.1093534722222222,
+      "y": 0.6122271705632741
+     },
+     {
+      "x": 0.12332916666666667,
+      "y": 0.6211777777777778
+     },
+     {
+      "x": 0.14596354166666667,
+      "y": 0.6328675925925926
+     },
+     {
+      "x": 0.17473958333333334,
+      "y": 0.6436314814814815
+     },
+     {
+      "x": 0.20399322916666665,
+      "y": 0.6524287037037038
+     },
+     {
+      "x": 0.23018645833333334,
+      "y": 0.6586009259259259
+     },
+     {
+      "x": 0.26664479166666666,
+      "y": 0.6660083333333333
+     },
+     {
+      "x": 0.3228515625,
+      "y": 0.6729148148148149
+     },
+     {
+      "x": 0.3901473958333333,
+      "y": 0.6765416666666666
+     },
+     {
+      "x": 0.4027125,
+      "y": 0.6767731481481482
+     }
+    ]
+   }
+  }
+ ],
+ "categories": [
+  {
+   "supercategory": "object",
+   "id": 1,
+   "name": "player"
+  },
+  {
+   "supercategory": "object",
+   "id": 2,
+   "name": "goalkeeper"
+  },
+  {
+   "supercategory": "object",
+   "id": 3,
+   "name": "referee"
+  },
+  {
+   "supercategory": "object",
+   "id": 4,
+   "name": "ball"
+  },
+  {
+   "supercategory": "pitch",
+   "id": 5,
+   "name": "pitch",
+   "lines": [
+    "Big rect. left bottom",
+    "Big rect. left main",
+    "Big rect. left top",
+    "Big rect. right bottom",
+    "Big rect. right main",
+    "Big rect. right top",
+    "Circle central",
+    "Circle left",
+    "Circle right",
+    "Goal left crossbar",
+    "Goal left post left",
+    "Goal left post right",
+    "Goal right crossbar",
+    "Goal right post left",
+    "Goal right post right",
+    "Middle line",
+    "Side line bottom",
+    "Side line left",
+    "Side line right",
+    "Side line top",
+    "Small rect. left bottom",
+    "Small rect. left main",
+    "Small rect. left top",
+    "Small rect. right bottom",
+    "Small rect. right main",
+    "Small rect. right top"
+   ]
+  },
+  {
+   "supercategory": "camera",
+   "id": 6,
+   "name": "camera"
+  },
+  {
+   "supercategory": "object",
+   "id": 7,
+   "name": "other"
+  }
+ ]
+}

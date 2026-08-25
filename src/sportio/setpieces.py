@@ -72,10 +72,13 @@ def _expand_window(ev: pd.DataFrame, seeds: pd.DataFrame, window: float) -> pd.D
         times = ev["t"].astype("float64")
         for start in block["t"].astype("float64"):
             keep |= same & (times >= start) & (times <= start + window)
-    return ev.loc[keep].sort_values(["match_id", "period", "t"], kind="stable").reset_index(drop=True)
+    out = ev.loc[keep].sort_values(["match_id", "period", "t"], kind="stable")
+    return out.reset_index(drop=True)
 
 
-def corners(ev: pd.DataFrame, *, window: float = 0.0, with_freeze_frame: bool = False) -> pd.DataFrame:
+def corners(
+    ev: pd.DataFrame, *, window: float = 0.0, with_freeze_frame: bool = False
+) -> pd.DataFrame:
     """Corner deliveries (and optionally the seconds that follow).
 
     Args:

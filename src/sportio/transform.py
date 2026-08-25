@@ -83,7 +83,9 @@ def resample_tracking(
         return df.iloc[0:0]
     resampled = pd.concat(out, ignore_index=True)
     resampled = resampled.dropna(subset=["x", "y"], how="all")
-    return conform_tracking(resampled).sort_values(["period", "t", "team", "player_id"], kind="stable").reset_index(drop=True)
+    resampled = conform_tracking(resampled)
+    order = ["period", "t", "team", "player_id"]
+    return resampled.sort_values(order, kind="stable").reset_index(drop=True)
 
 
 def _resample_track(

@@ -271,7 +271,7 @@ def _validate(
 
     rows = df if sample is None or len(df) <= sample else df.sample(sample, random_state=0)
     for idx, record in zip(rows.index, rows.to_dict(orient="records"), strict=True):
-        payload = {k: (None if v is pd.NA or v != v else v) for k, v in record.items()}  # noqa: PLR0124
+        payload = {k: (None if v is pd.NA or v != v else v) for k, v in record.items()}
         try:
             model.model_validate(payload)
         except Exception as exc:  # pydantic.ValidationError

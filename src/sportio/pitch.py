@@ -75,7 +75,9 @@ class PitchSpec:
 
 
 #: StatsBomb: 120x80 "yards", origin top-left, y increasing downward.
-STATSBOMB = PitchSpec(x_range=(0.0, 120.0), y_range=(0.0, 80.0), y_increases_up=False, name="statsbomb")
+STATSBOMB = PitchSpec(
+    x_range=(0.0, 120.0), y_range=(0.0, 80.0), y_increases_up=False, name="statsbomb"
+)
 
 #: Metrica: both axes normalised to 0-1, origin top-left, y increasing downward.
 METRICA = PitchSpec(x_range=(0.0, 1.0), y_range=(0.0, 1.0), y_increases_up=False, name="metrica")

@@ -1,0 +1,513 @@
+{
+ "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/plays?lang=en&region=us",
+ "count": 58,
+ "pageIndex": 1,
+ "pageSize": 500,
+ "pageCount": 1,
+ "items": [
+  {
+   "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/plays/1705632?lang=en&region=us",
+   "id": "1705632",
+   "sequenceNumber": "0",
+   "type": {
+    "id": "8",
+    "text": "substitute on"
+   },
+   "awayScore": 0,
+   "homeScore": 0,
+   "period": {
+    "number": 1
+   },
+   "clock": {
+    "value": 233.0,
+    "displayValue": "4'"
+   },
+   "priority": false,
+   "modified": "2025-06-22T23:41Z",
+   "team": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/seasons/2025/teams/3?lang=en&region=us"
+   },
+   "participants": [
+    {
+     "athlete": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/athletes/169067?lang=en&region=us"
+     },
+     "position": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/positions/3?lang=en&region=us"
+     },
+     "statistics": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/competitors/3/roster/169067/statistics/0?lang=en&region=us"
+     },
+     "order": 1,
+     "type": "player"
+    }
+   ],
+   "addedClock": {
+    "value": 0.0,
+    "displayValue": "4'"
+   }
+  },
+  {
+   "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/plays/1705633?lang=en&region=us",
+   "id": "1705633",
+   "sequenceNumber": "0",
+   "type": {
+    "id": "7",
+    "text": "player substituted"
+   },
+   "awayScore": 0,
+   "homeScore": 0,
+   "period": {
+    "number": 1
+   },
+   "clock": {
+    "value": 233.0,
+    "displayValue": "4'"
+   },
+   "priority": false,
+   "modified": "2025-06-22T23:41Z",
+   "team": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/seasons/2025/teams/3?lang=en&region=us"
+   },
+   "participants": [
+    {
+     "athlete": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/athletes/292699?lang=en&region=us"
+     },
+     "position": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/positions/2?lang=en&region=us"
+     },
+     "statistics": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/competitors/3/roster/292699/statistics/0?lang=en&region=us"
+     },
+     "order": 1,
+     "type": "player"
+    }
+   ],
+   "addedClock": {
+    "value": 0.0,
+    "displayValue": "4'"
+   }
+  },
+  {
+   "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/plays/1705977?lang=en&region=us",
+   "id": "1705977",
+   "sequenceNumber": "0",
+   "type": {
+    "id": "1",
+    "text": "try"
+   },
+   "awayScore": 5,
+   "homeScore": 0,
+   "period": {
+    "number": 1
+   },
+   "clock": {
+    "value": 521.0,
+    "displayValue": "9'"
+   },
+   "priority": false,
+   "modified": "2025-06-22T23:41Z",
+   "team": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/seasons/2025/teams/1?lang=en&region=us"
+   },
+   "participants": [
+    {
+     "athlete": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/athletes/292217?lang=en&region=us"
+     },
+     "position": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/positions/3?lang=en&region=us"
+     },
+     "statistics": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/competitors/1/roster/292217/statistics/0?lang=en&region=us"
+     },
+     "order": 1,
+     "type": "player"
+    }
+   ],
+   "addedClock": {
+    "value": 0.0,
+    "displayValue": "9'"
+   }
+  },
+  {
+   "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/plays/1705636?lang=en&region=us",
+   "id": "1705636",
+   "sequenceNumber": "0",
+   "type": {
+    "id": "2",
+    "text": "conversion"
+   },
+   "awayScore": 7,
+   "homeScore": 0,
+   "period": {
+    "number": 1
+   },
+   "clock": {
+    "value": 579.0,
+    "displayValue": "10'"
+   },
+   "priority": false,
+   "modified": "2025-06-22T23:41Z",
+   "team": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/seasons/2025/teams/1?lang=en&region=us"
+   },
+   "participants": [
+    {
+     "athlete": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/athletes/290946?lang=en&region=us"
+     },
+     "position": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/positions/4?lang=en&region=us"
+     },
+     "statistics": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/competitors/1/roster/290946/statistics/0?lang=en&region=us"
+     },
+     "order": 1,
+     "type": "player"
+    }
+   ],
+   "addedClock": {
+    "value": 0.0,
+    "displayValue": "10'"
+   }
+  },
+  {
+   "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/plays/1705925?lang=en&region=us",
+   "id": "1705925",
+   "sequenceNumber": "0",
+   "type": {
+    "id": "8",
+    "text": "substitute on"
+   },
+   "awayScore": 7,
+   "homeScore": 0,
+   "period": {
+    "number": 1
+   },
+   "clock": {
+    "value": 996.0,
+    "displayValue": "17'"
+   },
+   "priority": false,
+   "modified": "2025-06-22T23:41Z",
+   "team": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/seasons/2025/teams/3?lang=en&region=us"
+   },
+   "participants": [
+    {
+     "athlete": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/athletes/292699?lang=en&region=us"
+     },
+     "position": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/positions/2?lang=en&region=us"
+     },
+     "statistics": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/competitors/3/roster/292699/statistics/0?lang=en&region=us"
+     },
+     "order": 1,
+     "type": "player"
+    }
+   ],
+   "addedClock": {
+    "value": 0.0,
+    "displayValue": "17'"
+   }
+  },
+  {
+   "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/plays/1705926?lang=en&region=us",
+   "id": "1705926",
+   "sequenceNumber": "0",
+   "type": {
+    "id": "7",
+    "text": "player substituted"
+   },
+   "awayScore": 7,
+   "homeScore": 0,
+   "period": {
+    "number": 1
+   },
+   "clock": {
+    "value": 996.0,
+    "displayValue": "17'"
+   },
+   "priority": false,
+   "modified": "2025-06-22T23:41Z",
+   "team": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/seasons/2025/teams/3?lang=en&region=us"
+   },
+   "participants": [
+    {
+     "athlete": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/athletes/169067?lang=en&region=us"
+     },
+     "position": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/positions/3?lang=en&region=us"
+     },
+     "statistics": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/competitors/3/roster/169067/statistics/0?lang=en&region=us"
+     },
+     "order": 1,
+     "type": "player"
+    }
+   ],
+   "addedClock": {
+    "value": 0.0,
+    "displayValue": "17'"
+   }
+  },
+  {
+   "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/plays/1705642?lang=en&region=us",
+   "id": "1705642",
+   "sequenceNumber": "0",
+   "type": {
+    "id": "5",
+    "text": "yellow card"
+   },
+   "awayScore": 7,
+   "homeScore": 0,
+   "period": {
+    "number": 1
+   },
+   "clock": {
+    "value": 1469.0,
+    "displayValue": "25'"
+   },
+   "priority": false,
+   "modified": "2025-06-22T23:41Z",
+   "team": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/seasons/2025/teams/1?lang=en&region=us"
+   },
+   "participants": [
+    {
+     "athlete": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/athletes/290946?lang=en&region=us"
+     },
+     "position": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/positions/4?lang=en&region=us"
+     },
+     "statistics": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/competitors/1/roster/290946/statistics/0?lang=en&region=us"
+     },
+     "order": 1,
+     "type": "player"
+    }
+   ],
+   "addedClock": {
+    "value": 0.0,
+    "displayValue": "25'"
+   }
+  },
+  {
+   "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/plays/1705643?lang=en&region=us",
+   "id": "1705643",
+   "sequenceNumber": "0",
+   "type": {
+    "id": "1",
+    "text": "try"
+   },
+   "awayScore": 7,
+   "homeScore": 5,
+   "period": {
+    "number": 1
+   },
+   "clock": {
+    "value": 2066.0,
+    "displayValue": "35'"
+   },
+   "priority": false,
+   "modified": "2025-06-22T23:41Z",
+   "team": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/seasons/2025/teams/3?lang=en&region=us"
+   },
+   "participants": [
+    {
+     "athlete": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/athletes/172719?lang=en&region=us"
+     },
+     "position": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/positions/5?lang=en&region=us"
+     },
+     "statistics": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/competitors/3/roster/172719/statistics/0?lang=en&region=us"
+     },
+     "order": 1,
+     "type": "player"
+    }
+   ],
+   "addedClock": {
+    "value": 0.0,
+    "displayValue": "35'"
+   }
+  },
+  {
+   "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/plays/1705644?lang=en&region=us",
+   "id": "1705644",
+   "sequenceNumber": "0",
+   "type": {
+    "id": "8",
+    "text": "substitute on"
+   },
+   "awayScore": 7,
+   "homeScore": 5,
+   "period": {
+    "number": 1
+   },
+   "clock": {
+    "value": 2239.0,
+    "displayValue": "38'"
+   },
+   "priority": false,
+   "modified": "2025-06-22T23:41Z",
+   "team": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/seasons/2025/teams/1?lang=en&region=us"
+   },
+   "participants": [
+    {
+     "athlete": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/athletes/294374?lang=en&region=us"
+     },
+     "position": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/positions/6?lang=en&region=us"
+     },
+     "statistics": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/competitors/1/roster/294374/statistics/0?lang=en&region=us"
+     },
+     "order": 1,
+     "type": "player"
+    }
+   ],
+   "addedClock": {
+    "value": 0.0,
+    "displayValue": "38'"
+   }
+  },
+  {
+   "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/plays/1705645?lang=en&region=us",
+   "id": "1705645",
+   "sequenceNumber": "0",
+   "type": {
+    "id": "7",
+    "text": "player substituted"
+   },
+   "awayScore": 7,
+   "homeScore": 5,
+   "period": {
+    "number": 1
+   },
+   "clock": {
+    "value": 2239.0,
+    "displayValue": "38'"
+   },
+   "priority": false,
+   "modified": "2025-06-22T23:41Z",
+   "team": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/seasons/2025/teams/1?lang=en&region=us"
+   },
+   "participants": [
+    {
+     "athlete": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/athletes/285791?lang=en&region=us"
+     },
+     "position": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/positions/6?lang=en&region=us"
+     },
+     "statistics": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/competitors/1/roster/285791/statistics/0?lang=en&region=us"
+     },
+     "order": 1,
+     "type": "player"
+    }
+   ],
+   "addedClock": {
+    "value": 0.0,
+    "displayValue": "38'"
+   }
+  },
+  {
+   "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/plays/1705648?lang=en&region=us",
+   "id": "1705648",
+   "sequenceNumber": "0",
+   "type": {
+    "id": "3",
+    "text": "penalty goal"
+   },
+   "awayScore": 10,
+   "homeScore": 5,
+   "period": {
+    "number": 1
+   },
+   "clock": {
+    "value": 2419.0,
+    "displayValue": "41'"
+   },
+   "priority": false,
+   "modified": "2025-06-22T23:41Z",
+   "team": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/seasons/2025/teams/1?lang=en&region=us"
+   },
+   "participants": [
+    {
+     "athlete": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/athletes/290946?lang=en&region=us"
+     },
+     "position": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/positions/4?lang=en&region=us"
+     },
+     "statistics": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/competitors/1/roster/290946/statistics/0?lang=en&region=us"
+     },
+     "order": 1,
+     "type": "player"
+    }
+   ],
+   "addedClock": {
+    "value": 0.0,
+    "displayValue": "41'"
+   }
+  },
+  {
+   "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/plays/1705927?lang=en&region=us",
+   "id": "1705927",
+   "sequenceNumber": "0",
+   "type": {
+    "id": "8",
+    "text": "substitute on"
+   },
+   "awayScore": 10,
+   "homeScore": 5,
+   "period": {
+    "number": 2
+   },
+   "clock": {
+    "value": 2402.0,
+    "displayValue": "41'"
+   },
+   "priority": false,
+   "modified": "2025-06-22T23:41Z",
+   "team": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/seasons/2025/teams/1?lang=en&region=us"
+   },
+   "participants": [
+    {
+     "athlete": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/athletes/285791?lang=en&region=us"
+     },
+     "position": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/positions/6?lang=en&region=us"
+     },
+     "statistics": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/rugby/leagues/180659/events/600252/competitions/600252/competitors/1/roster/285791/statistics/0?lang=en&region=us"
+     },
+     "order": 1,
+     "type": "player"
+    }
+   ],
+   "addedClock": {
+    "value": 0.0,
+    "displayValue": "41'"
+   }
+  }
+ ]
+}

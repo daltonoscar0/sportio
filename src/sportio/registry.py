@@ -56,7 +56,7 @@ SOURCES: dict[str, SourceInfo] = {
         license="CC BY-NC-SA 4.0",
         events=False,
         tracking=True,
-        notes="Nine matches of broadcast tracking at 10 Hz; players are only tracked while on camera.",
+        notes="Nine matches of broadcast tracking; players are tracked only while on camera.",
     ),
     "soccernet": SourceInfo(
         name="soccernet",
@@ -66,7 +66,7 @@ SOURCES: dict[str, SourceInfo] = {
         license="SoccerNet NDA (research use); download requires a password",
         events=False,
         tracking=True,
-        notes="Loader reads an already-downloaded sequence directory; see TODO.md for the manual step.",
+        notes="Reads an already-downloaded sequence directory; see TODO.md for the manual step.",
         extras=("soccernet",),
     ),
     "rugby": SourceInfo(
