@@ -84,6 +84,9 @@ uv run pytest -m network   # the same acceptance checks against the live sources
 uv run ruff check
 ```
 
+The suite is verified against both ends of the declared pandas range — 2.1 (with numpy 1.x) and
+3.0 — because the whole point of this package is that five other tools can depend on it.
+
 `docs/schema_notes/` holds a measured, per-source description of every raw format — field paths,
 coordinate systems and the specific ways each one breaks a naive loader. Read the relevant one
 before changing a loader.

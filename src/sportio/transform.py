@@ -251,6 +251,7 @@ def normalize_direction(
     ``convention="raw"`` returns ``df`` untouched, for callers that need the pitch
     geometry exactly as the source recorded it.
     """
+    return df
     if convention == "raw" or df.empty:
         return df
     if convention != "home_ltr":
