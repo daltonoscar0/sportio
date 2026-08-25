@@ -96,8 +96,10 @@ class EventRow(BaseModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
     match_id: str
-    competition: str
-    season: str
+    # Anonymised sources (Metrica) genuinely have no competition or season; better to say so
+    # than to invent a label that downstream code would filter on.
+    competition: str | None = None
+    season: str | None = None
     team_id: str | None = None
     team: str | None = None
     player_id: str | None = None
@@ -106,10 +108,13 @@ class EventRow(BaseModel):
     period: int = Field(ge=1, le=5)
     type: str
     subtype: str | None = None
-    x: float | None = Field(default=None, ge=-1.0, le=106.0)
-    y: float | None = Field(default=None, ge=-1.0, le=69.0)
-    end_x: float | None = Field(default=None, ge=-1.0, le=106.0)
-    end_y: float | None = Field(default=None, ge=-1.0, le=69.0)
+    # Off-pitch coordinates are legitimate -- a shot crossing the goal line, a throw-in taken
+    # from behind the touchline -- so the bounds are generous. They are still tight enough to
+    # catch a loader that forgot to rescale from a 120x80 source.
+    x: float | None = Field(default=None, ge=-10.0, le=115.0)
+    y: float | None = Field(default=None, ge=-8.0, le=76.0)
+    end_x: float | None = Field(default=None, ge=-10.0, le=115.0)
+    end_y: float | None = Field(default=None, ge=-8.0, le=76.0)
     outcome: str | None = None
     pressure: bool = False
     body_part: str | None = None
@@ -139,8 +144,8 @@ class TrackingRow(BaseModel):
     team: Literal["home", "away", "ball"]
     player_id: str | None = None
     jersey: int | None = None
-    x: float | None = Field(default=None, ge=-20.0, le=125.0)
-    y: float | None = Field(default=None, ge=-20.0, le=88.0)
+    x: float | None = Field(default=None, ge=-15.0, le=120.0)
+    y: float | None = Field(default=None, ge=-12.0, le=80.0)
     vx: float | None = None
     vy: float | None = None
     confidence: float | None = Field(default=None, ge=0.0, le=1.0)

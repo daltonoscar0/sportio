@@ -205,19 +205,34 @@ def flip_events(df: pd.DataFrame, mask: pd.Series | np.ndarray | None = None) ->
 def attacking_sign(df: pd.DataFrame, team: str = "home") -> dict[int, int]:
     """Per period, ``+1`` if ``team`` attacks toward +x, ``-1`` otherwise.
 
-    The team's most extreme average x is its goalkeeper, and which half the keeper sits in
-    is the single most reliable signal of which way the team is attacking.
+    Both goalkeepers are found at once: across *both* teams, the player with the lowest mean
+    x is the keeper defending the left goal and the one with the highest is defending the
+    right. Whichever team owns the leftmost player is attacking toward +x.
+
+    Looking at one team in isolation does not work -- a keeper playing a high line while his
+    own winger camps on the opposite byline is more "central" than that winger, and a
+    single-team heuristic then picks the wrong end.
     """
     signs: dict[int, int] = {}
     mid = PITCH_LENGTH / 2.0
-    for period, block in df.loc[df["team"] == team].groupby("period", sort=True):
-        per_player = block.groupby("player_id", dropna=True)["x"].mean().astype("float64")
-        if per_player.empty:
+    players = df.loc[df["team"].isin(("home", "away")) & df["player_id"].notna()]
+    for period, block in players.groupby("period", sort=True):
+        means = block.groupby(["team", "player_id"], dropna=True)["x"].mean().astype("float64")
+        means = means.dropna()
+        if means.empty:
             signs[int(period)] = 1
             continue
-        lo, hi = float(per_player.min()), float(per_player.max())
+        left_team = str(means.idxmin()[0])
+        right_team = str(means.idxmax()[0])
+        if left_team != right_team:
+            signs[int(period)] = 1 if left_team == team else -1
+            continue
+        # Only one side is present (or both keepers are on the same flank of the data);
+        # fall back to which half that side's most extreme player occupies.
+        lo, hi = float(means.min()), float(means.max())
         keeper_x = lo if (mid - lo) >= (hi - mid) else hi
-        signs[int(period)] = 1 if keeper_x < mid else -1
+        own = 1 if left_team == team else -1
+        signs[int(period)] = own * (1 if keeper_x < mid else -1)
     return signs
 
 

@@ -54,9 +54,9 @@ SOURCES: dict[str, SourceInfo] = {
         title="SkillCorner Open Data",
         url="https://github.com/SkillCorner/opendata",
         license="CC BY-NC-SA 4.0",
-        events=False,
+        events=True,
         tracking=True,
-        notes="Nine matches of broadcast tracking; players are tracked only while on camera.",
+        notes="Ten A-League matches: 10 Hz broadcast tracking plus derived dynamic events.",
     ),
     "soccernet": SourceInfo(
         name="soccernet",

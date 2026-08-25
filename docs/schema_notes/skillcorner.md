@@ -57,16 +57,21 @@ The upstream README still says *"10 matches"*; the older *9-match* dataset is th
 
 | match_id | date | home v away | `pitch_length` | `pitch_width` | `home_team_side` (P1, P2) |
 |---|---|---|---|---|---|
-| 1886347 | 2024-11-30 | Auckland FC v Newcastle | 104 | 68 | right_to_left, left_to_right |
-| 1899585 | 2024-12-14 | Auckland FC v Wellington P FC | 104 | 68 | right_to_left, left_to_right |
-| 1925299 | 2025-01-18 | Brisbane FC v Perth Glory | 105 | 68 | right_to_left, left_to_right |
-| 1953632 | 2025-02-15 | CC Mariners v Melbourne City | 105 | 68 | left_to_right, right_to_left |
-| 1996435 | 2025-03-29 | Sydney FC v Adelaide United | 105 | 68 | left_to_right, right_to_left |
-| 2006229 | 2025-04-05 | Melbourne City v Macarthur FC | 105 | 68 | right_to_left, left_to_right |
-| 2011166 | 2025-04-12 | Wellington P FC v Melbourne V FC | 105 | 68 | right_to_left, left_to_right |
-| 2013725 | 2025-04-27 | Western United v Sydney FC | 106 | 68 | left_to_right, right_to_left |
-| 2015213 | 2025-05-03 | Western United v Auckland FC | 106 | 68 | left_to_right, right_to_left |
-| 2017461 | 2025-05-17 | Melbourne V FC v Auckland FC | 105 | 68 | left_to_right, right_to_left |
+| 1886347 | 2024-11-30T04:00:00Z | Auckland FC v Newcastle | 104 | 68 | right_to_left, left_to_right |
+| 1899585 | 2024-12-07T04:00:00Z | Auckland FC v Wellington P FC | 104 | 68 | right_to_left, left_to_right |
+| 1925299 | 2024-12-21T06:00:00Z | Brisbane FC v Perth Glory | 105 | 68 | right_to_left, left_to_right |
+| 1953632 | 2024-12-31T08:00:00Z | CC Mariners v Melbourne City | 105 | 68 | left_to_right, right_to_left |
+| 1996435 | 2025-02-01T06:00:00Z | Sydney FC v Adelaide United | 105 | 68 | left_to_right, right_to_left |
+| 2006229 | 2025-03-07T08:35:00Z | Melbourne City v Macarthur FC | 105 | 68 | right_to_left, left_to_right |
+| 2011166 | 2025-04-12T05:00:00Z | Wellington P FC v Melbourne V FC | 105 | 68 | right_to_left, left_to_right |
+| 2013725 | 2025-04-27T07:00:00Z | Western United v Sydney FC | 106 | 68 | left_to_right, right_to_left |
+| 2015213 | 2025-05-03T08:00:00Z | Western United v Auckland FC | 106 | 68 | left_to_right, right_to_left |
+| 2017461 | 2025-05-17T09:35:00Z | Melbourne V FC v Auckland FC | 105 | 68 | left_to_right, right_to_left |
+
+`data/matches.json` is a flat list; each entry has exactly
+`id`, `date_time`, `home_team{id,short_name}`, `away_team{id,short_name}`, `status`,
+`competition_id`, `season_id`, `competition_edition_id`. Its `date_time` agrees with each
+`{match_id}_match.json` for all 10.
 
 `pitch_length` varies (**104 / 105 / 106**); `pitch_width` is 68 in all 10.
 
