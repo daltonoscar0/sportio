@@ -155,6 +155,20 @@ def test_set_piece_subtypes_use_the_shared_vocabulary(events: dict[str, pd.DataF
     assert "corner" in seen
 
 
+def test_set_piece_window_survives_a_null_group_key(events: dict[str, pd.DataFrame]) -> None:
+    # groupby hands back float('nan') from .indices but pd.NA as a group key, so matching one
+    # against the other silently drops that whole group. A single-match, single-period slice
+    # stays one group whichever key is nulled, so the row count must not move.
+    df = events["metrica"]
+    df = df.loc[df["period"] == 1].reset_index(drop=True)
+    baseline = len(sportio.set_pieces(df, window=5.0))
+    assert baseline > 0
+    for column in ("match_id", "period"):
+        holed = df.copy()
+        holed[column] = pd.NA
+        assert len(sportio.set_pieces(holed, window=5.0)) == baseline, column
+
+
 def test_registry_reports_what_each_source_actually_provides() -> None:
     table = sportio.source_table()
     assert set(table["source"]) == set(sportio.sources())

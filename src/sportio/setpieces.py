@@ -70,11 +70,14 @@ def _expand_window(ev: pd.DataFrame, seeds: pd.DataFrame, window: float) -> pd.D
     """Union of ``[start, start + window]`` around every seed, per match and period."""
     keep = np.zeros(len(ev), dtype=bool)
     times = ev["t"].astype("float64").to_numpy()
-    blocks = ev.groupby(["match_id", "period"], dropna=False, sort=False).indices
+    match_ids, periods = ev["match_id"], ev["period"]
 
-    for key, seed_block in seeds.groupby(["match_id", "period"], dropna=False):
-        rows = blocks.get(key)
-        if rows is None:
+    # Matching on values rather than groupby keys, because a null key is spelled differently
+    # on the two sides (pandas hands back float('nan') from .indices and pd.NA from a group
+    # key), and a mismatch would silently drop every set piece in that group.
+    for (match_id, period), seed_block in seeds.groupby(["match_id", "period"], dropna=False):
+        rows = np.flatnonzero(_matches(match_ids, match_id) & _matches(periods, period))
+        if rows.size == 0:
             continue
         order = np.argsort(times[rows], kind="stable")
         rows, block_times = rows[order], times[rows][order]
@@ -85,6 +88,13 @@ def _expand_window(ev: pd.DataFrame, seeds: pd.DataFrame, window: float) -> pd.D
 
     out = ev.loc[keep].sort_values(["match_id", "period", "t"], kind="stable")
     return out.reset_index(drop=True)
+
+
+def _matches(values: pd.Series, wanted: object) -> np.ndarray:
+    """Boolean mask for ``values == wanted``, with NA compared by identity, not equality."""
+    if pd.isna(wanted):
+        return values.isna().to_numpy(dtype=bool)
+    return values.eq(wanted).fillna(False).to_numpy(dtype=bool)
 
 
 def corners(
