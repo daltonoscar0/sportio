@@ -70,6 +70,13 @@ Consequences, all reflected in `sportio.loaders.rugby`:
 
 ### Metrica
 
+- **Events and tracking anchor `t` to different things in period 2.** Tracking sets `t = 0` at
+  the period's first *frame* (game 1: frame 71269), while events set it at the period's first
+  *event*, which is later — the second half restarts play well after the tracking file resumes.
+  So `events.t` and `tracking.t` are on different period clocks in period 2 and must not be
+  joined directly. Join on frames instead: every event carries `extra["start_frame"]`, which
+  indexes straight into `tracking.frame`. Giving `load_events` an optional `period_starts=`
+  argument (or having it read the tracking header) would remove the trap.
 - **Game 3 (FIFA EPTS format) is not implemented.** It is a different file set entirely:
   `Sample_Game_3_metadata.xml` (EPTS XML), `Sample_Game_3_tracking.txt` (a
   `frame:player_x,player_y;…:ball_x,ball_y` stream) and `Sample_Game_3_events.json`. The
@@ -104,6 +111,10 @@ Consequences, all reflected in `sportio.loaders.rugby`:
   Decide per consumer whether to drop them.
 - 360 freeze frames are attached per event into `extra`, which makes a full-competition events
   frame large. `three_sixty=False` turns it off.
+- `extra["length"]` and `extra["angle"]` are **recomputed** from the canonical coordinates, not
+  copied from `pass.length` / `pass.angle`. StatsBomb measures those in 120x80 units on a
+  y-down axis and the rescale is anisotropic (0.875 in x, 0.85 in y), so a copied value drifts
+  from the coordinates beside it by up to ~15% in length and ~0.8 degrees in angle.
 
 ### SkillCorner
 
@@ -113,6 +124,14 @@ Consequences, all reflected in `sportio.loaders.rugby`:
 - The feed is **extrapolated**: all 22 players have a position in every live frame, but only
   ~63% are `is_detected`. That maps to `confidence` 1.0 vs 0.5. Do not treat 0.5 rows as
   measurements.
+- **Event coordinates are already in the acting team's attacking frame.** This is undocumented
+  upstream; it was established by joining `x_start` against the same player's tracked position
+  in the same frame, where a `right_to_left` row comes back negated on *both* axes. So the
+  loader applies no rotation by default and only mirrors `on_ball_engagement` rows (the one
+  event type whose actor is the team *off* the ball) to reach the canonical possession frame.
+  `frame="acting"` opts out. If SkillCorner ever changes this, the join in
+  `tests/test_sources.py::test_skillcorner_events_are_already_in_the_acting_teams_frame`
+  is what will catch it.
 - `dynamic_events.csv` is Game Intelligence output, not a conventional event feed. `event_type`
   has four values; a pass is a `player_possession` row with `end_type == "pass"`. The committed
   fixture happens to contain **no** `end_type == "shot"` row, so that branch of the mapping is
