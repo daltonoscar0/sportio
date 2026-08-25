@@ -105,9 +105,11 @@ class Fetcher:
                 if retry_after is not None:
                     time.sleep(min(retry_after, 60.0))
                     continue
+            if attempt == self.max_retries - 1:
+                break  # no point sleeping before a retry that will never happen
             backoff = min(self.min_interval * (2**attempt), 60.0)
             backoff += random.uniform(0, self.min_interval)
-            log.warning("retry %d/%d for %s in %.1fs", attempt + 1, self.max_retries, url, backoff)
+            log.warning("retry %d/%d for %s in %.1fs", attempt + 2, self.max_retries, url, backoff)
             time.sleep(backoff)
         raise requests.RequestException(
             f"giving up on {url} after {self.max_retries} attempts"

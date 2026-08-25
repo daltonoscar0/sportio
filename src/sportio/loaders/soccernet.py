@@ -300,6 +300,12 @@ def _mot_tracking(path: str | Path) -> pd.DataFrame:
         stacklevel=3,
     )
 
+    # Referees, "other" tracklets and track_ids missing from gameinfo.ini have no side in
+    # the canonical schema; dropping them beats filing them under "home".
+    det = det.loc[det["role"].isin(("player", "goalkeeper", "ball")) | det["team"].notna()]
+    is_ball = det["role"].eq("ball")
+    side = det["team"].map(_SIDES)
+    det = det.loc[is_ball.to_numpy() | side.notna().to_numpy()]
     is_ball = det["role"].eq("ball")
     side = det["team"].map(_SIDES)
     out = pd.DataFrame(
@@ -308,7 +314,7 @@ def _mot_tracking(path: str | Path) -> pd.DataFrame:
             "t": offset + (det["frame"].astype("float64") - 1.0) / fps,
             "period": period,
             "frame": det["frame"].astype("Int64"),
-            "team": np.where(is_ball, "ball", side.fillna("home")),
+            "team": np.where(is_ball, "ball", side),
             "player_id": np.where(is_ball, None, name + "-" + det["track_id"].astype("string")),
             "jersey": np.where(is_ball, None, det["jersey"]),
             "x": np.nan,

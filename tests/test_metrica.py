@@ -199,6 +199,29 @@ def test_pressure_is_false_because_metrica_has_no_such_flag(events: pd.DataFrame
     assert not events["pressure"].any()
 
 
+def test_subtype_raw_keeps_its_internal_spaces(events: pd.DataFrame) -> None:
+    # Metrica's atomic tags contain spaces ("ON TARGET", "CORNER KICK"). The player-id
+    # cleaner strips internal whitespace, which would corrupt them.
+    raws = set(sportio.extra_field(events, "subtype_raw").dropna())
+    assert any(" " in value for value in raws)
+    assert not any(bad in value for value in raws for bad in ("ONTARGET", "CORNERKICK"))
+
+
+def test_attack_directions_alternate_away_from_a_period_with_evidence() -> None:
+    # A period with no shots and no goal kicks must still switch ends, anchored on a period
+    # that did have evidence -- not on the parity of whichever period came first.
+    events = metrica.load_events(1, events_file=fixture_path("metrica", EVENTS))
+    signs = metrica.attack_directions(events)
+    home = sorted({team for team, _ in signs})[0]
+    assert signs[(home, 1)] == -signs[(home, 2)]
+
+    blinded = events.loc[~((events["period"] == 1) & (events["type"] == "shot"))].copy()
+    blinded.loc[blinded["period"] == 1, "subtype"] = None
+    blind_signs = metrica.attack_directions(blinded)
+    assert blind_signs[(home, 1)] == -blind_signs[(home, 2)]
+    assert blind_signs[(home, 2)] == signs[(home, 2)]
+
+
 def test_player_ids_are_whitespace_normalised() -> None:
     # Game 2 writes "Player 26" with a space for the same player tracking calls "Player26".
     assert metrica._clean_player_id("Player 26") == "Player26"

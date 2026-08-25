@@ -124,7 +124,10 @@ def _interp_with_gaps(
     left = np.clip(idx - 1, 0, ts_ok.size - 1)
     right = np.clip(idx, 0, ts_ok.size - 1)
     span = ts_ok[right] - ts_ok[left]
-    out[span > max_gap] = np.nan
+    # A grid point sitting exactly on a real observation is not inside anything; only blank
+    # points that genuinely fall in the interior of an over-long gap.
+    on_sample = (grid == ts_ok[left]) | (grid == ts_ok[right])
+    out[(span > max_gap) & ~on_sample] = np.nan
     return out
 
 
@@ -251,7 +254,6 @@ def normalize_direction(
     ``convention="raw"`` returns ``df`` untouched, for callers that need the pitch
     geometry exactly as the source recorded it.
     """
-    return df
     if convention == "raw" or df.empty:
         return df
     if convention != "home_ltr":

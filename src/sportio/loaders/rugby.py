@@ -164,7 +164,7 @@ def load_events(
     slug = LEAGUES.get(str(league), league)
     fetcher = fetcher or default_fetcher()
     payload = fetcher.json(
-        f"{SITE}/{slug}/summary?event={event}", f"espn_rugby/summary_{event}.json"
+        f"{SITE}/{slug}/summary?event={event}", f"espn_rugby/summary_{slug}_{event}.json"
     )
     return finish_events(_from_summary(payload))
 

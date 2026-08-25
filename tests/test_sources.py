@@ -98,6 +98,70 @@ def test_skillcorner_events_are_rotated_by_their_own_attacking_side() -> None:
     assert sides == {"left_to_right", "right_to_left"}
 
 
+def _sc_events(**kwargs: object) -> pd.DataFrame:
+    return skillcorner.load_events(
+        1886347,
+        match_file=fixture_path(SC, "1886347_match.json"),
+        events_file=fixture_path(SC, "1886347_dynamic_events_head.csv"),
+        **kwargs,
+    )
+
+
+def test_skillcorner_events_are_already_in_the_acting_teams_frame() -> None:
+    """Verified against tracking: a right_to_left row's x_start is the negation of the same
+    player's tracked position in the same frame, so the feed is pre-rotated. Flipping by
+    attacking_side would undo that and leave events in the absolute match frame."""
+    import json as _json
+
+    raw = pd.read_csv(fixture_path(SC, "1886347_dynamic_events_head.csv"), low_memory=False)
+    positions: dict[int, dict[int, tuple[float, float]]] = {}
+    with fixture_path(SC, "1886347_tracking_head.jsonl").open() as fh:
+        for line in fh:
+            frame = _json.loads(line)
+            if frame.get("period") is None:
+                continue
+            positions[frame["frame"]] = {
+                p["player_id"]: (p["x"], p["y"]) for p in frame.get("player_data") or []
+            }
+
+    overlap = raw.loc[raw["frame_start"].isin(positions)]
+    assert len(overlap) > 0
+    checked = 0
+    for _, row in overlap.iterrows():
+        tracked = positions[int(row["frame_start"])].get(int(row["player_id"]))
+        if tracked is None:
+            continue
+        sign = 1.0 if row["attacking_side"] == "left_to_right" else -1.0
+        assert row["x_start"] == pytest.approx(sign * tracked[0], abs=0.01)
+        assert row["y_start"] == pytest.approx(sign * tracked[1], abs=0.01)
+        checked += 1
+    assert checked > 0
+
+    # ...so in "acting" mode the loader must apply no rotation at all.
+    acting = _sc_events(frame="acting")
+    assert len(acting) == len(raw)
+
+
+def test_skillcorner_only_out_of_possession_rows_are_mirrored() -> None:
+    possession = _sc_events()
+    acting = _sc_events(frame="acting")
+    mirrored = sportio.extra_field(possession, "mirrored").map(bool)
+    source_type = sportio.extra_field(possession, "event_type")
+    # on_ball_engagement is the one type whose actor is the team OFF the ball.
+    assert set(source_type[mirrored]) == {"on_ball_engagement"}
+    assert "on_ball_engagement" not in set(source_type[~mirrored])
+
+    differs = (
+        possession["x"].astype("float64") - acting["x"].astype("float64")
+    ).abs() > 1e-9
+    assert differs.sum() == mirrored.sum()
+
+
+def test_skillcorner_rejects_an_unknown_frame() -> None:
+    with pytest.raises(ValueError, match="unknown frame"):
+        _sc_events(frame="sideways")
+
+
 def test_skillcorner_pressure_is_derived_from_the_engagement_subtype() -> None:
     events = skillcorner.load_events(
         1886347,
@@ -168,6 +232,17 @@ def test_soccernet_mot_is_image_space_and_says_so() -> None:
     # Roles, teams and jerseys still come through from gameinfo.ini.
     assert set(tracking["team"]) <= {"home", "away", "ball"}
     assert tracking["jersey"].notna().any()
+
+
+def test_soccernet_mot_drops_referees_rather_than_calling_them_home() -> None:
+    _, det = soccernet.read_mot(fixture_path("soccernet", "mot", "SNMOT-116"))
+    assert (det["role"] == "referee").any(), "fixture should contain referee tracklets"
+    with pytest.warns(UserWarning):
+        tracking = soccernet.load_tracking(fixture_path("soccernet", "mot", "SNMOT-116"))
+    # Referees have no side in the canonical schema; filing them under "home" would put
+    # extra bodies on one team.
+    assert len(tracking) == int((det["role"] != "referee").sum())
+    assert tracking["team"].value_counts()["home"] == tracking["team"].value_counts()["away"]
 
 
 def test_soccernet_rejects_a_directory_that_is_neither_format(tmp_path) -> None:

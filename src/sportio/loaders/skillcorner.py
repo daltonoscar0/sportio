@@ -20,6 +20,7 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import pandas as pd
 
 from ..http import Fetcher, default_fetcher
@@ -196,6 +197,7 @@ def _iter_frames(
     """Yield tracking frames, streaming the 85 MB JSONL rather than loading it whole."""
     if tracking_file is not None:
         with Path(tracking_file).open("rb") as fh:
+            _reject_lfs_stub(fh, Path(tracking_file))
             yield from _iter_lines(fh, max_frames)
         return
     name = f"{match}_tracking_extrapolated.jsonl"
@@ -203,14 +205,19 @@ def _iter_frames(
         f"{MEDIA}/data/matches/{match}/{name}", f"skillcorner/{name}", desc=name
     )
     with path.open("rb") as fh:
-        head = fh.readline()
-        if head.startswith(LFS_STUB):
-            raise ValueError(
-                f"{path} is a Git LFS pointer, not tracking data. Delete it and re-fetch "
-                "from media.githubusercontent.com."
-            )
-        fh.seek(0)
+        _reject_lfs_stub(fh, path)
         yield from _iter_lines(fh, max_frames)
+
+
+def _reject_lfs_stub(fh: Any, path: Path) -> None:
+    """A pointer stub is 133 bytes of valid text, so nothing downstream would notice it."""
+    head = fh.readline()
+    fh.seek(0)
+    if head.startswith(LFS_STUB):
+        raise ValueError(
+            f"{path} is a Git LFS pointer, not tracking data. Delete it and re-fetch from "
+            "media.githubusercontent.com."
+        )
 
 
 def _iter_lines(fh: Any, max_frames: int | None) -> Iterator[dict[str, Any]]:
@@ -246,6 +253,11 @@ _END_TYPE_TO_EVENT = {
 
 _PRESSURE_SUBTYPES = frozenset({"pressure", "pressing", "counter_press", "recovery_press"})
 
+#: The one event_type whose acting team is the team *out* of possession -- pressing and
+#: engaging the ball carrier. Everything else (player_possession, passing_option,
+#: off_ball_run) is an action by the team on the ball.
+_OUT_OF_POSSESSION_TYPES = frozenset({"on_ball_engagement"})
+
 #: ``start_type`` is where SkillCorner records the restart that began a possession.
 _START_TYPE_TO_SETPIECE = {
     "corner_reception": "corner",
@@ -262,6 +274,7 @@ def load_events(
     *,
     match_file: str | Path | None = None,
     events_file: str | Path | None = None,
+    frame: str = "possession",
     fetcher: Fetcher | None = None,
 ) -> pd.DataFrame:
     """Load SkillCorner's tracking-derived "dynamic events" as canonical events.
@@ -270,7 +283,17 @@ def load_events(
     ``player_possession``, ``passing_option``, ``off_ball_run``, ``on_ball_engagement``. Where a
     possession ends in a recognisable action the canonical ``type`` becomes that action
     (``pass``, ``shot``, ...); otherwise the SkillCorner type is carried through as-is.
+
+    Args:
+        frame: like the StatsBomb loader. SkillCorner already writes each row in the **acting
+            team's** attacking frame -- verified by joining ``x_start`` against the tracking
+            position of the same player in the same frame, where a ``right_to_left`` row comes
+            back negated on both axes. ``"possession"`` (default) additionally rotates the
+            out-of-possession rows so the team on the ball always attacks +x, as the canonical
+            schema requires; ``"acting"`` leaves every row in its own team's frame.
     """
+    if frame not in {"possession", "acting"}:
+        raise ValueError(f"unknown frame {frame!r}; use 'possession' or 'acting'")
     fetcher = fetcher or default_fetcher()
     meta = _match_meta(match, fetcher, match_file)
     starts = _period_starts(meta)
@@ -303,11 +326,14 @@ def load_events(
         for rec in raw.to_dict(orient="records")
     ]
     out = conform_events(pd.DataFrame(rows, columns=list(_EVENT_KEYS)))
-    # Canonical events attack left-to-right; SkillCorner records the acting team's direction
-    # per row, so this needs no goalkeeper inference.
-    sides = raw.get("attacking_side")
-    if sides is not None:
-        out = flip_events(out, (sides.astype("string") == "right_to_left").to_numpy())
+    if frame == "possession":
+        event_types = raw.get("event_type")
+        mirror = (
+            event_types.astype("string").map(snake).isin(_OUT_OF_POSSESSION_TYPES).to_numpy()
+            if event_types is not None
+            else np.zeros(len(out), dtype=bool)
+        )
+        out = flip_events(out, mirror)
     return finish_events(out)
 
 
@@ -372,7 +398,14 @@ def _event_row(
         "pressure": snake(rec.get("event_subtype")) in _PRESSURE_SUBTYPES,
         "body_part": body_part,
         "extra": encode_extra(
-            {k: _clean(rec.get(k)) for k in _EXTRA_COLUMNS if _clean(rec.get(k)) is not None}
+            {
+                **{k: _clean(rec.get(k)) for k in _EXTRA_COLUMNS if _clean(rec.get(k)) is not None},
+                **(
+                    {"mirrored": True}
+                    if event_type in _OUT_OF_POSSESSION_TYPES
+                    else {}
+                ),
+            }
         ),
     }
 

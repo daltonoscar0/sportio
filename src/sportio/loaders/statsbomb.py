@@ -21,6 +21,7 @@ already on the canonical pitch. See ``docs/schema_notes/statsbomb.md``.
 from __future__ import annotations
 
 import json
+import math
 import re
 from pathlib import Path
 from typing import Any
@@ -59,8 +60,16 @@ _SET_PIECES = {
     "penalty": "penalty",
 }
 
+#: The type sub-dict is normally ``snake(type.name)``. "Goal Keeper" is the one exception --
+#: StatsBomb spells that sub-dict "goalkeeper", so all 30 keeper events in a match would
+#: otherwise lose their end_location, outcome, body_part and Shot Faced/Goal Conceded type.
+_SUBDICT_ALIASES = {"goal_keeper": "goalkeeper"}
+
 #: Keys promoted out of the type sub-dict into canonical columns; not repeated in ``extra``.
-_PROMOTED = frozenset({"end_location", "outcome", "body_part", "type"})
+#: ``length`` and ``angle`` go too: StatsBomb measures them in its own 120x80 axes, and the
+#: rescale is anisotropic (x by 0.875, y by 0.85), so neither survives the transform. They are
+#: recomputed from the canonical coordinates by :func:`_geometry`.
+_PROMOTED = frozenset({"end_location", "outcome", "body_part", "type", "length", "angle"})
 
 _TOKEN = re.compile(r"[a-z0-9]+")
 
@@ -266,7 +275,8 @@ def _event_row(
 ) -> dict[str, Any]:
     type_name = (event.get("type") or {}).get("name", "")
     key = snake(type_name) or "unknown"
-    body = event.get(key) if isinstance(event.get(key), dict) else {}
+    payload = event.get(_SUBDICT_ALIASES.get(key, key))
+    body = payload if isinstance(payload, dict) else {}
 
     team = event.get("team") or {}
     possession_team = event.get("possession_team") or {}
@@ -287,6 +297,7 @@ def _event_row(
         outcome = "Complete"
 
     extra = _extra(event, body, key, end_z, freeze, mirror)
+    extra.update(_geometry(x, y, end_x, end_y))
 
     return {
         "match_id": match_id,
@@ -355,6 +366,21 @@ def _extra(
         extra["visible_area"] = _visible_area(blob.get("visible_area"), mirror)
 
     return {k: v for k, v in extra.items() if v is not None}
+
+
+def _geometry(
+    x: float | None, y: float | None, end_x: float | None, end_y: float | None
+) -> dict[str, float]:
+    """``length`` in metres and ``angle`` in radians, on the canonical pitch.
+
+    Recomputed rather than copied: StatsBomb's own ``pass.length``/``pass.angle`` are measured
+    in 120x80 units on a y-down axis, and the rescale to 105x68 is anisotropic, so a copied
+    value would quietly disagree with the coordinates sitting next to it.
+    """
+    if x is None or y is None or end_x is None or end_y is None:
+        return {}
+    dx, dy = end_x - x, end_y - y
+    return {"length": math.hypot(dx, dy), "angle": math.atan2(dy, dx)}
 
 
 def _flatten(value: Any) -> Any:

@@ -24,15 +24,21 @@ def repo_root() -> Path | None:
     return None
 
 
-def data_root() -> Path:
-    """Root of the gitignored raw-download cache. Created on first use."""
+def data_root(*, create: bool = True) -> Path:
+    """Root of the gitignored raw-download cache.
+
+    Args:
+        create: make the directory. Pass ``False`` to merely *report* the location -- a
+            read-only command should not litter the working directory just by printing it.
+    """
     env = os.environ.get("SPORTIO_DATA_DIR")
     if env:
         root = Path(env).expanduser()
     else:
         base = repo_root() or Path.cwd()
         root = base / "data" / "raw"
-    root.mkdir(parents=True, exist_ok=True)
+    if create:
+        root.mkdir(parents=True, exist_ok=True)
     return root
 
 

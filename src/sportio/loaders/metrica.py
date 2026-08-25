@@ -282,11 +282,20 @@ def _extras(raw: pd.DataFrame, tags: pd.Series) -> list[dict[str, Any]]:
             # 1-based frame index.
             "end_frame": _int(end_frame) or None,
             "to": _clean_optional(rec.get("To")),
-            "subtype_raw": _clean_optional(rec.get("Subtype")),
+            # _clean_optional strips *internal* whitespace too, which is right for player
+            # ids and wrong here: "ON TARGET" would become "ONTARGET".
+            "subtype_raw": _text_or_none(rec.get("Subtype")),
             "tags": sorted(tag_set),
         }
         out.append({k: v for k, v in payload.items() if v not in (None, [])})
     return out
+
+
+def _text_or_none(value: Any) -> str | None:
+    """Trim the ends only, preserving a value's internal spaces."""
+    if value is None or (isinstance(value, float) and value != value):
+        return None
+    return str(value).strip() or None
 
 
 def _clean_optional(value: Any) -> str | None:
@@ -368,15 +377,28 @@ def attack_directions(events: pd.DataFrame) -> dict[tuple[str, int], int]:
         return {}
 
     home = teams[0]
-    signs: dict[tuple[str, int], int] = {}
+    scores: dict[int, float] = {}
     for period in periods:
         score = votes.get((home, period), 0.0)
         for other in teams[1:]:
             score -= votes.get((other, period), 0.0)
+        scores[period] = score
+
+    voted = [p for p, score in scores.items() if score != 0.0]
+    signs: dict[tuple[str, int], int] = {}
+    for period in periods:
+        score = scores[period]
         if score == 0.0:
-            # Nothing to go on: assume the usual alternation from the first period.
-            score = 1.0 if period % 2 == periods[0] % 2 else -1.0
-        home_sign = 1 if score > 0 else -1
+            if not voted:
+                home_sign = 1  # nothing anywhere in the file to go on
+            else:
+                # Teams change ends every period, so alternate away from the nearest period
+                # that did have evidence.
+                anchor = min(voted, key=lambda p: abs(p - period))
+                flips = abs(period - anchor) % 2
+                home_sign = (1 if scores[anchor] > 0 else -1) * (-1 if flips else 1)
+        else:
+            home_sign = 1 if score > 0 else -1
         signs[(home, period)] = home_sign
         for other in teams[1:]:
             signs[(other, period)] = -home_sign

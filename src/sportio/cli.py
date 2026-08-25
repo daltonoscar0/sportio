@@ -14,7 +14,15 @@ import pandas as pd
 from . import __version__
 from .paths import data_root
 from .registry import SOURCES, get_source, load_events, load_tracking, source_table, sources
-from .schema import EVENT_COLUMNS, TRACKING_COLUMNS, SchemaError, validate_events, validate_tracking
+from .schema import (
+    EVENT_COLUMNS,
+    TRACKING_COLUMNS,
+    SchemaError,
+    conform_events,
+    conform_tracking,
+    validate_events,
+    validate_tracking,
+)
 from .setpieces import corners
 from .writers import to_csv, to_parquet
 
@@ -101,7 +109,7 @@ def _cmd_info(args: argparse.Namespace) -> int:
     if args.json:
         print(table.to_json(orient="records", indent=2))
         return 0
-    print(f"sportio {__version__}   cache: {data_root()}")
+    print(f"sportio {__version__}   cache: {data_root(create=False)}")
     print()
     print(_render(table[["source", "events", "tracking", "title", "license"]]))
     print()
@@ -147,7 +155,7 @@ def _cmd_fetch(args: argparse.Namespace) -> int:
             path = _out_path(args.out, kind, len(frames))
             (to_parquet if path.suffix == ".parquet" else to_csv)(frame, path)
             print(f"  wrote {path}")
-    print(f"cache: {data_root()}")
+    print(f"cache: {data_root(create=False)}")
     return 0
 
 
@@ -247,29 +255,23 @@ def _read_canonical(path: Path) -> tuple[pd.DataFrame, str] | None:
     if path.suffix.lower() not in {".csv", ".parquet"}:
         return None
     try:
-        head = (
-            pd.read_parquet(path).head(0)
-            if path.suffix.lower() == ".parquet"
-            else pd.read_csv(path, nrows=0)
-        )
-    except Exception:  # not a table we can read; fall through to the loaders
-        return None
-    columns = tuple(head.columns)
+        if path.suffix.lower() == ".parquet":
+            table = pd.read_parquet(path)
+        else:
+            if tuple(pd.read_csv(path, nrows=0).columns) not in {
+                EVENT_COLUMNS,
+                TRACKING_COLUMNS,
+            }:
+                return None
+            table = pd.read_csv(path)
+    except (OSError, ValueError, ImportError, pd.errors.ParserError):
+        return None  # not a table we can read; fall through to the source loaders
+    columns = tuple(table.columns)
     if columns == EVENT_COLUMNS:
-        from .schema import conform_events
-
-        return conform_events(_read_table(path)), "events"
+        return conform_events(table), "events"
     if columns == TRACKING_COLUMNS:
-        from .schema import conform_tracking
-
-        return conform_tracking(_read_table(path)), "tracking"
+        return conform_tracking(table), "tracking"
     return None
-
-
-def _read_table(path: Path) -> pd.DataFrame:
-    if path.suffix.lower() == ".parquet":
-        return pd.read_parquet(path)
-    return pd.read_csv(path)
 
 
 def _detect_source(path: Path) -> str | None:
@@ -311,11 +313,16 @@ def _validation_kwargs(source: str, path: Path, kind: str) -> dict[str, Any]:
         return {"home_file": home, "away_file": away}
     if source == "skillcorner":
         match_file = _sibling(path, "_match.json")
+        if match_file is None:
+            # Without the sibling the loader would fall back to its default match id and
+            # happily validate this file against a different match's roster and pitch.
+            raise FileNotFoundError(
+                f"{path} needs its metadata sibling; expected "
+                f"{path.with_name(path.name.split('_')[0] + '_match.json')}"
+            )
         key = "events_file" if kind == "events" else "tracking_file"
-        kwargs: dict[str, Any] = {key: path}
-        if match_file is not None:
-            kwargs["match_file"] = match_file
-        return kwargs
+        match_id = path.name.split("_")[0]
+        return {key: path, "match_file": match_file, "match": match_id}
     return {"path": path}  # pragma: no cover - every source is covered above
 
 

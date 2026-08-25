@@ -96,6 +96,24 @@ def test_validate_asks_for_help_when_the_source_is_unguessable(
     assert "pass --source" in capsys.readouterr().err
 
 
+def test_validate_refuses_a_skillcorner_file_without_its_metadata(
+    tmp_path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    # Without the _match.json sibling the loader would fall back to its default match id and
+    # cheerfully report "ok" for a file measured against a different match's roster and pitch.
+    orphan = tmp_path / "1899585_tracking_head.jsonl"
+    orphan.write_text(fixture_path("skillcorner", "1886347_tracking_head.jsonl").read_text())
+    assert run("validate", str(orphan), "--source", "skillcorner") == 1
+    assert "needs its metadata sibling" in capsys.readouterr().err
+
+
+def test_info_does_not_create_a_cache_directory(tmp_path, monkeypatch) -> None:
+    # Reporting where the cache lives must not be what brings it into existence.
+    monkeypatch.setenv("SPORTIO_DATA_DIR", str(tmp_path / "nowhere"))
+    assert run("info") == 0
+    assert not (tmp_path / "nowhere").exists()
+
+
 def test_fetch_needs_to_know_what_to_fetch(capsys: pytest.CaptureFixture[str]) -> None:
     assert run("fetch", "statsbomb") == 1
     assert "--competition" in capsys.readouterr().err

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -133,6 +134,35 @@ def test_shot_height_is_kept_when_end_location_has_three_components(
     heights = sportio.extra_field(shots, "end_z").dropna()
     assert len(heights) > 0
     assert all(0.0 <= float(z) < 10.0 for z in heights)
+
+
+def test_goalkeeper_events_keep_their_payload(events: pd.DataFrame) -> None:
+    # "Goal Keeper" is the one type whose sub-dict StatsBomb spells differently from its
+    # type name ("goalkeeper", not "goal_keeper"). Looking it up by the snake-cased name
+    # silently drops the whole payload on every keeper event.
+    keepers = events.loc[events["type"] == "goal_keeper"]
+    assert len(keepers) > 0
+    assert keepers["subtype"].notna().all()
+    assert set(keepers["subtype"]) <= {
+        "shot_faced", "shot_saved", "goal_conceded", "collected", "punch", "smother",
+        "keeper_sweeper", "save", "penalty_saved", "penalty_conceded",
+    }
+    # Shot Faced events carry an end_location; at least one must have survived.
+    assert keepers["end_x"].notna().any()
+
+
+def test_pass_length_and_angle_are_recomputed_in_canonical_space(events: pd.DataFrame) -> None:
+    # The 120x80 -> 105x68 rescale is anisotropic (0.875 vs 0.85), so StatsBomb's own
+    # pass.length (yards) and pass.angle (y-down axes) cannot simply be copied across.
+    passes = events.loc[(events["type"] == "pass") & events["end_x"].notna()]
+    assert len(passes) > 0
+    length = sportio.extra_field(passes, "length").astype("float64")
+    angle = sportio.extra_field(passes, "angle").astype("float64")
+    dx = passes["end_x"].astype("float64") - passes["x"].astype("float64")
+    dy = passes["end_y"].astype("float64") - passes["y"].astype("float64")
+    assert length.to_numpy() == pytest.approx(np.hypot(dx, dy).to_numpy(), abs=1e-9)
+    assert angle.to_numpy() == pytest.approx(np.arctan2(dy, dx).to_numpy(), abs=1e-9)
+    assert length.max() < 110.0  # metres, not yards on a 120-unit pitch
 
 
 def test_under_pressure_absence_means_false(events: pd.DataFrame) -> None:
