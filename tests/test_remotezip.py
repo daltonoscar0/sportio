@@ -11,9 +11,11 @@ import io
 import os
 import struct
 import zipfile
+from dataclasses import replace
 
 import pytest
 
+from sportio.http import Fetcher
 from sportio.remotezip import RemoteZip, _apply_zip64, _locate_central_directory
 
 
@@ -122,6 +124,53 @@ def test_a_truncated_archive_is_rejected_rather_than_misread() -> None:
     )
     with pytest.raises(ValueError, match="end-of-central-directory"):
         remote.namelist()
+
+
+def test_a_member_that_decompresses_to_the_wrong_size_is_rejected(sample) -> None:
+    # The directory says how big a member should be. If the two disagree the slice boundaries
+    # were wrong, and returning the bytes anyway hands the caller a silently truncated file.
+    blob, _ = sample
+    remote = RemoteZip("memory://h.zip", cache_key="rz-size", fetcher=SlicingFetcher(blob))
+    name = "SNGS-002/Labels-GameState.json"
+    original = remote.entries[name]
+    remote.entries[name] = replace(original, uncompressed_size=original.uncompressed_size + 1)
+
+    with pytest.raises(ValueError, match="directory said"):
+        remote.read(name)
+
+
+def test_a_server_that_ignores_the_range_header_is_refused() -> None:
+    """The guard that stops an accidental full download.
+
+    Ask for 64 KB of an 11.2 GB archive, get a 200 back, and treating it as a slice means
+    streaming the whole thing into memory. A 206 is the only acceptable answer.
+    """
+
+    class _Response:
+        status_code = 200
+        content = b"the entire archive"
+
+        def __init__(self) -> None:
+            self.headers: dict[str, str] = {}
+
+        def raise_for_status(self) -> None:
+            return None
+
+    class _Session:
+        def __init__(self) -> None:
+            self.headers: dict[str, str] = {}
+
+        def get(self, url, **kwargs):
+            return _Response()
+
+    monkey = os.environ.pop("SPORTIO_OFFLINE", None)
+    try:
+        fetcher = Fetcher(session=_Session())
+        with pytest.raises(ValueError, match="ignored Range"):
+            fetcher.byte_range("http://example.invalid/big.zip", 0, 65535)
+    finally:
+        if monkey is not None:
+            os.environ["SPORTIO_OFFLINE"] = monkey
 
 
 # --------------------------------------------------------------------------------------

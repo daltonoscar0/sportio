@@ -389,7 +389,9 @@ def test_soccernet_rejects_an_unknown_split_or_sequence() -> None:
     blob = _fake_split_archive()
     with pytest.raises(ValueError, match="unknown split"):
         soccernet.list_sequences("preseason", fetcher=_SplitServer(blob))
-    with pytest.raises(LookupError, match="SNGS-999"):
+    # Match the message, not just the type: an incidental KeyError from the download loop is
+    # also a LookupError, so a bare type check passes even with the guard removed.
+    with pytest.raises(LookupError, match="try list_sequences"):
         soccernet.download_labels("valid", ["SNGS-999"], fetcher=_SplitServer(blob))
 
 
