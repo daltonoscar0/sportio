@@ -246,20 +246,153 @@ i.e. scoreboard has **no `period`, no `homeScore`/`awayScore`, no `addedClock`**
 
 ### 2.5 Type vocabulary actually observed
 
-Across both 2025-02-01 Six Nations matches (106 details total):
+There is no play-type reference endpoint —
+`http://sports.core.api.espn.com/v2/sports/rugby/playtypes` returns
+`404 {"error":{"message":"application error","code":404}}` — so the enum can only be established by
+scanning real matches. It has now been scanned properly.
 
-| `type.id` | `type.text` | count |
-|---|---|---|
-| `1` | `try` | 13 |
-| `2` | `conversion` | 8 |
-| `3` | `penalty goal` | 6 |
-| `5` | `yellow card` | 1 |
-| `7` | `player substituted` | 39 |
-| `8` | `substitute on` | 39 |
+**Census, 2026-08-26.** 97 scoreboard requests — 82 `?dates=YYYYMMDD` across 6 league slugs, plus 14
+undated `scoreboard` calls to sweep 14 further slugs, plus the 2025-02-01 payload already cached — and
+one `summary?event=` for corroboration. That yields **184 matches with a non-empty `details[]` across 11
+competitions** and **9626 detail rows**: French Top 14 (50 matches), Rugby World Cup 2023 (48), United
+Rugby Championship (31), Six Nations 2024/2025/2026 (26), Gallagher Prem (20), and one or two each from
+The Rugby Championship, Olympic Men's 7s, Women's Rugby World Cup, Anglo-Welsh Cup, Super Rugby Pacific
+and the British and Irish Lions Tour.
 
-`4` and `6` were **not observed** — almost certainly `drop goal` and `red card` given the ordering, but
-that is inference, not measurement. There is no play-type reference endpoint:
-`http://sports.core.api.espn.com/v2/sports/rugby/playtypes` returns `404 {"error":{"message":"application error","code":404}}`.
+| `type.id` | `type.text` | rows | matches |
+|---|---|---|---|
+| `1` | `try` | 1174 | 184 |
+| `2` | `conversion` | 871 | 183 |
+| `3` | `penalty goal` | 567 | 163 |
+| `4` | **`drop goal`** | 21 | 19 |
+| `5` | `yellow card` | 236 | 131 |
+| `6` | **`red card`** | 23 | 20 |
+| `7` | `player substituted` | 3284 | 184 |
+| `8` | `substitute on` | 3275 | 184 |
+| `9` | **`start of first half`** | 37 | 36 |
+| `10` | **`end of first half`** | 37 | 36 |
+| `11` | **`start of second half`** | 37 | 36 |
+| `12` | **`end of second half`** | 37 | 36 |
+| `37` | **`drop goal-missed`** | 27 | 21 |
+
+Nothing else exists. **No id in `13`–`36`, and nothing above `37`, appeared in any of the 184 matches.**
+
+The scoreboard is the right tool for this kind of sweep: one request returns `details[]` for *every*
+match played that day in that competition, so a season costs tens of requests, not hundreds. The raw
+payloads are cached (gitignored) as `data/raw/espn_rugby/sb_{slug}_{YYYYMMDD}.json` and
+`sb_{slug}_current.json`, so the census can be recomputed offline without re-fetching anything.
+
+#### 2.5.1 Ids 4 and 6 — settled, with evidence
+
+Both were previously guessed from enum ordering. Both guesses were **right**, and both are now measured.
+The single best witness is **event `596158`, 2023-09-09, England 27–10 Argentina (Rugby World Cup pool
+stage, slug `164205`)**, which contains ids `4`, `6` *and* `37`. Verbatim from
+`scoreboard?dates=20230909`, `$.events[3].competitions[0].details[]`:
+
+```json
+{"type": {"id": "6", "text": "red card"},
+ "clock": {"value": 129.0, "displayValue": "3'"},
+ "team": {"id": "1"},
+ "athletesInvolved": [{"id": "290913", "fullName": "Tom Curry", "displayName": "Tom Curry",
+                       "shortName": "T. Curry", "position": "FL", "links": []}]}
+```
+```json
+{"type": {"id": "4", "text": "drop goal"},
+ "clock": {"value": 1595.0, "displayValue": "27'"},
+ "team": {"id": "1"},
+ "athletesInvolved": [{"id": "105032", "fullName": "George Ford", "displayName": "George Ford",
+                       "shortName": "G. Ford", "position": "FH", "links": []}]}
+```
+```json
+{"type": {"id": "37", "text": "drop goal-missed"},
+ "clock": {"value": 2016.0, "displayValue": "34'"},
+ "team": {"id": "10"},
+ "athletesInvolved": [{"id": "295319", "fullName": "Santiago Carreras", "displayName": "Santiago Carreras",
+                       "shortName": "S. Carreras", "position": "FB", "links": []}]}
+```
+
+The same match's `summary?event=596158` carries all three in the richer shape, and its running score
+**proves the point value**: Ford's three drop goals at 1595/1821/2180 s take England from 3 to 6 to 9 to
+12, i.e. **id 4 is worth exactly 3 points**, while Carreras's id 37 at 2016 s leaves the score at 9–3
+untouched.
+
+| index | id | text | clock | period | home | away | team |
+|---|---|---|---|---|---|---|---|
+| 8 | `4` | drop goal | 1595.0 | 1 | 6 | 3 | ENG |
+| 9 | `4` | drop goal | 1821.0 | 1 | 9 | 3 | ENG |
+| 10 | `37` | drop goal-missed | 2016.0 | 1 | 9 | 3 | ARG |
+| 11 | `4` | drop goal | 2180.0 | 1 | 12 | 3 | ENG |
+
+Further independent sightings (event id, date, fixture):
+
+- id `4`: `596170` 2023-09-20 Italy v Uruguay · `596177` 2023-09-24 Wales v Australia ·
+  `596191` 2023-10-08 Japan v Argentina · `596196` 2023-10-15 England v Fiji ·
+  `596199` 2023-10-21 England v South Africa · `597384` 2024-02-24 Scotland v England ·
+  `597387` 2024-03-09 England v Ireland · `597137` 2024-06-08 Northampton v Bath (Prem final) ·
+  `599703` 2025-01-04 La Rochelle v Toulouse · `599321` 2025-04-26 Stormers v Benetton.
+- id `6`: `596163` 2023-09-15 New Zealand v Namibia · `596165` 2023-09-16 Wales v Portugal ·
+  `596171` 2023-09-21 France v Namibia · `596176` 2023-09-24 Scotland v Tonga ·
+  `596178` 2023-09-27 Uruguay v Namibia · `596179` 2023-09-28 Japan v Samoa ·
+  `596201` 2023-10-28 New Zealand v South Africa (RWC final, Sam Cane) ·
+  `600256` 2025-02-22 Wales v Ireland · `600262` 2025-03-15 Italy v Ireland ·
+  `599949` 2024-10-26 Bath v Sale · `599729` 2025-03-01 Stade Français v La Rochelle.
+
+So `_UNVERIFIED_TYPE_IDS` can be emptied and the `extra["type_mapping"] = "unverified"` flag retired.
+
+#### 2.5.2 Id 37 — misses are emitted for drop goals only
+
+This is the counter-intuitive one. **A missed *drop goal* gets its own row (id 37); a missed
+*conversion* and a missed *penalty goal* get no row at all.** There is no `conversion-missed` or
+`penalty goal-missed` id anywhere in the census, and the totals confirm it: 1174 tries against only 871
+conversions. So id `2` and id `3` still mean "successful kick", but you cannot compute a drop-goal
+success rate the same way you'd compute a conversion rate — for drop goals both outcomes are present,
+for the other two kicks only the successes are.
+
+#### 2.5.3 Ids 9–12 are period markers, and they are not always there
+
+```json
+{"type": {"id": "9",  "text": "start of first half"},  "clock": {"value": 3.0,    "displayValue": "1'"},  "team": {"id": "25900"}}
+{"type": {"id": "10", "text": "end of first half"},    "clock": {"value": 2499.0, "displayValue": "42'"}, "team": {"id": "25900"}}
+{"type": {"id": "11", "text": "start of second half"}, "clock": {"value": 2401.0, "displayValue": "41'"}, "team": {"id": "25901"}}
+{"type": {"id": "12", "text": "end of second half"},   "clock": {"value": 5077.0, "displayValue": "85'"}, "team": {"id": "25901"}}
+```
+(event `597048`, 2023-10-14, Gloucester v Harlequins, indices 0/13/14/46.)
+
+Four things a consumer has to know:
+
+1. **They are structural, not player events.** All 148 marker rows measured have an **empty athlete
+   list** — no `athletesInvolved`, no `participants`. The `_athlete()` fallback already returns `{}`
+   here, so `player_id`/`player` come out null, which is correct.
+2. **`team.id` is meaningless on them but is still a real competitor.** All 148 rows carry a `team.id`
+   that *is* one of the two competitors, and it is arbitrary which — "start of first half" attributed to
+   Gloucester, "start of second half" to Harlequins. Do not read possession or kick-off into it.
+3. **Coverage is per-match, not per-competition.** Only **36 of 184** matches have them. They never
+   appear in a Rugby World Cup or Six Nations match; they show up in some Prem, URC and Anglo-Welsh Cup
+   matches and not others — 2023-10-14 in the Prem has them for `597048` but not for `597046` or
+   `597047`, the same day, same competition. Treat their absence as normal.
+4. **Their clocks break the "array is in ascending clock order" assumption.** Above, `end of first half`
+   is 2499.0 but the very next row, `start of second half`, is 2401.0 — the marker is stamped with the
+   nominal boundary, not the real one. §2.6 already warns that period-1 added time overruns 2400 s; these
+   rows make the array itself non-monotonic, so keep using array order and `period.number`.
+
+One data-quality wart: event `291839` (2018-03-30, Bath v Exeter, Anglo-Welsh Cup) has **every marker
+duplicated** — two id `9`s at 0.0, two id `10`s at 2451.0, and so on. Do not assume markers are unique.
+
+#### 2.5.4 A penalty try is an ordinary id 1 with no athlete
+
+There is no separate penalty-try id. It arrives as a normal `try` with an **empty athlete list** — which
+is right, since a penalty try has no scorer in law. Two in the census, both unmistakable in context:
+
+```json
+{"type": {"id": "1", "text": "try"}, "clock": {"value": 2490.0, "displayValue": "42'"}, "team": {"id": "25903"}}
+```
+event `599950`, 2024-10-26, Saracens v Leicester. The surrounding rows give it away — a yellow card to
+Saracens' Alec Clarey (a prop) at 2483 s, then this unattributed Leicester try 7 s later, and **no
+`conversion` row after it**, exactly as the law prescribes (7 points awarded, no kick taken). The other
+is event `597820`, 2024-01-06, Racing 92 v Castres, at 1528 s.
+
+Consequence: `type == "try" and player_id is None` is a usable penalty-try detector, and any code that
+derives "tries scored by player" must tolerate a null scorer.
 
 ### 2.6 Clock semantics (measured, important)
 
@@ -379,15 +512,41 @@ Source of record: ESPN `summary?event=` → `$.header.competitions[0].details[]`
 | `1` | `try` | `try` | NULL | `success` |
 | `2` | `conversion` | `conversion` | NULL | `success` (only made kicks are emitted — a missed conversion produces no detail row; the 600252 match has 7 tries but only 4 conversions) |
 | `3` | `penalty goal` | `penalty_goal` | NULL | `success` |
-| `4` | *(unobserved)* | `drop_goal` | NULL | `success` — **verify before shipping** |
+| `4` | `drop goal` | `drop_goal` | NULL | `success` — **verified**, worth exactly 3 points (§2.5.1) |
 | `5` | `yellow card` | `card` | `yellow` | NULL |
-| `6` | *(unobserved)* | `card` | `red` | NULL — **verify before shipping** |
+| `6` | `red card` | `card` | `red` | NULL — **verified** (§2.5.1) |
 | `7` | `player substituted` | `substitution` | `off` | NULL |
 | `8` | `substitute on` | `substitution` | `on` | NULL |
+| `9` | `start of first half` | *(skip — see below)* | | |
+| `10` | `end of first half` | *(skip)* | | |
+| `11` | `start of second half` | *(skip)* | | |
+| `12` | `end of second half` | *(skip)* | | |
+| `37` | `drop goal-missed` | `drop_goal` | NULL | `fail` |
+
+Nothing else exists: ids `13`–`36` and everything above `37` are absent from all 184 sampled matches
+(§2.5). A row whose `type.id` is outside this table should still fall through to `type = "unknown"`
+rather than raise, but on present evidence it will not happen.
+
+Two judgement calls this table makes:
+
+- **`37` folds into `drop_goal` with `outcome = "fail"`**, rather than becoming its own canonical type.
+  That keeps `drop_goal` symmetric with `try`/`conversion`/`penalty_goal` and puts the outcome where the
+  schema already expects it. Note the asymmetry it creates in practice: drop goals are the *only* kick
+  whose misses are recorded at all (§2.5.2), so `outcome == "fail"` rows exist for `drop_goal` and can
+  never exist for `conversion` or `penalty_goal`.
+- **`9`–`12` are dropped, not mapped.** They are period markers with no player and a meaningless team
+  (§2.5.3), they exist in only 36 of 184 matches, and emitting them would put rows in the events table
+  that are neither actions nor attributable. Everything they encode is already available from
+  `period.number` and `$.format`. If they are ever wanted, keep them out of `events` and expose them
+  separately. Whatever is decided, they must not be left to fall through to `type = "unknown"`, which is
+  what happens today.
 
 Unmapped and therefore **permanently empty** for this source:
 `carry, pass, kick, ruck, maul, lineout, scrum, tackle, turnover, penalty, knock_on`.
 Those 11 of the 16 vocabulary terms have no representation in any open rugby feed found.
+
+A penalty try is **not** a distinct id — it is an id `1` with an empty athlete list, so `player_id` and
+`player` are legitimately null on some `try` rows (§2.5.4).
 
 ### 4.2 Pairing substitutions
 

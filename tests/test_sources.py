@@ -385,6 +385,52 @@ def test_rugby_scoreboard_index() -> None:
     assert table["plays"].tolist() == [48, 58]
 
 
+def test_every_espn_type_id_maps_to_the_canonical_vocabulary() -> None:
+    """A census of 9626 detail rows over 184 matches found exactly 13 type ids: 1-12 and 37.
+
+    Ids 4 (drop goal) and 6 (red card) were previously guessed from enum ordering and are now
+    measured; 9-12 (half markers) and 37 (missed drop goal) were not known to exist at all and
+    used to fall through to "unknown".
+    """
+    events = rugby.load_events(
+        scoreboard_file=fixture_path("rugby", "espn_scoreboard_type_census.json")
+    )
+    sportio.validate_events(events, sample=None)
+    assert not (events["type"] == "unknown").any()
+    assert set(events["type"]) <= set(rugby.RUGBY_EVENT_TYPES)
+
+    ids = set(sportio.extra_field(events, "espn_type_id").dropna())
+    assert {"4", "6", "9", "10", "11", "12", "37"} <= ids
+
+    by_id = dict(
+        zip(sportio.extra_field(events, "espn_type_id"), events["type"], strict=True)
+    )
+    assert by_id["4"] == "drop_goal"
+    assert by_id["6"] == "card"
+    assert by_id["37"] == "drop_goal"
+    assert by_id["9"] == "half_start"
+    assert by_id["12"] == "half_end"
+
+
+def test_a_missed_drop_goal_is_distinguishable_from_a_made_one() -> None:
+    # Missed conversions and penalty goals produce no row at all, but a missed drop goal gets
+    # its own id -- so the three are not comparable attempt counts, and the outcome says which.
+    events = rugby.load_events(
+        scoreboard_file=fixture_path("rugby", "espn_scoreboard_type_census.json")
+    )
+    drops = events.loc[events["type"] == "drop_goal"]
+    assert set(drops["outcome"]) == {"success", "missed"}
+    assert (drops.loc[drops["outcome"] == "success"]).shape[0] == 3
+
+
+def test_red_and_yellow_cards_are_told_apart() -> None:
+    events = rugby.load_events(
+        scoreboard_file=fixture_path("rugby", "espn_scoreboard_type_census.json")
+    )
+    cards = events.loc[events["type"] == "card"]
+    assert set(cards["subtype"]) == {"red", "yellow"}
+
+
 def test_rugby_needs_something_to_look_up() -> None:
     with pytest.raises(ValueError, match="espn event id"):
         rugby.load_events()

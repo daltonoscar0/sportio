@@ -53,12 +53,18 @@ LEAGUES: dict[str, int] = {
 RUGBY_EVENT_TYPES: tuple[str, ...] = (
     "carry", "pass", "kick", "ruck", "maul", "lineout", "scrum", "tackle",
     "turnover", "knock_on", "penalty", "try", "conversion", "penalty_goal",
-    "drop_goal", "card", "substitution",
+    "drop_goal", "card", "substitution", "half_start", "half_end",
 )
 
 #: ``details[].type.id`` -> ``(type, subtype, outcome)``.
-#: Ids 4 and 6 were not observed in the sampled matches; their mapping follows the enum
-#: ordering and is flagged as unverified in ``extra["type_mapping"]``.
+#:
+#: Established by censusing 9626 detail rows across 184 matches and 11 competitions (see
+#: ``docs/schema_notes/rugby.md``). Ids 1-8 and 37 are actions; 9-12 are match-flow markers.
+#: Nothing in 13-36, and nothing above 37, occurs.
+#:
+#: Note the asymmetry in how misses are reported: a missed conversion or penalty goal produces
+#: **no row at all**, so those counts are conversions *made*, not attempted -- but a missed drop
+#: goal gets its own id 37. Do not read the three as comparable attempt counts.
 _TYPE_MAP: dict[str, tuple[str, str | None, str | None]] = {
     "1": ("try", None, "success"),
     "2": ("conversion", None, "success"),
@@ -68,9 +74,12 @@ _TYPE_MAP: dict[str, tuple[str, str | None, str | None]] = {
     "6": ("card", "red", None),
     "7": ("substitution", "off", None),
     "8": ("substitution", "on", None),
+    "9": ("half_start", "first", None),
+    "10": ("half_end", "first", None),
+    "11": ("half_start", "second", None),
+    "12": ("half_end", "second", None),
+    "37": ("drop_goal", None, "missed"),
 }
-
-_UNVERIFIED_TYPE_IDS = frozenset({"4", "6"})
 
 _HALF_SECONDS = 2400.0
 
@@ -311,7 +320,6 @@ def _detail_row(
         "jersey": roster.get("jersey"),
         "position": roster.get("position"),
         "substitution_partner": partners.get(index),
-        "type_mapping": "unverified" if type_id in _UNVERIFIED_TYPE_IDS else None,
         # Near half time the clock is genuinely ambiguous, so say when period was guessed.
         "period_inferred": True if inferred else None,
     }
