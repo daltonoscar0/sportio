@@ -39,14 +39,30 @@ __all__ = [
 SITE = "https://site.api.espn.com/apis/site/v2/sports/rugby"
 RUGBYDATA = "https://raw.githubusercontent.com/seanyboi/rugbydata/main/data/v3"
 
-#: ESPN site-API league slugs. These are slugs, not ESPN's internal league ids.
+#: ESPN site-API league slugs. These are slugs, **not** ESPN's internal league ids -- the two
+#: differ (slug 180659 is league id 8323), and the slug is what the URL takes.
+#:
+#: Every name here was read from ``leagues[0].name`` of a real scoreboard response rather than
+#: guessed. Three of them used to be wrong: 270559 and 270557 were swapped, and 2009 is URBA
+#: Primera A, which returns an empty event list -- Super Rugby Pacific is 242041.
 LEAGUES: dict[str, int] = {
     "six_nations": 180659,
-    "premiership": 267979,
     "rugby_world_cup": 164205,
-    "united_rugby_championship": 270559,
-    "top_14": 270557,
-    "super_rugby": 2009,
+    "womens_rugby_world_cup": 289237,
+    "rugby_championship": 244293,
+    "lions_tour": 268565,
+    "olympic_mens_sevens": 282,
+    "olympic_womens_sevens": 283,
+    "premiership": 267979,
+    "top_14": 270559,
+    "united_rugby_championship": 270557,
+    "super_rugby_pacific": 242041,
+    "champions_cup": 271937,
+    "challenge_cup": 272073,
+    "major_league_rugby": 289262,
+    "currie_cup": 270555,
+    "mitre_10_cup": 270563,
+    "anglo_welsh_cup": 236461,
 }
 
 #: The canonical rugby type vocabulary. Terms marked below are not populated by ESPN.

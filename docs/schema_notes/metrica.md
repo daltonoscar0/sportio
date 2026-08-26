@@ -532,6 +532,14 @@ Under `tests/fixtures/metrica/`:
 * `game3/Sample_Game_3_tracking.head.txt` — 3,984 B, first frames of the EPTS stream.
 * `game3/Sample_Game_3_events.head.json` — 58,087 B, first 120 events plus the full
   `metadata` code list.
+* `game3/Sample_Game_3_tracking.slice.txt` — 70,355 B, 190 real rows in two windows: frames
+  13560–13589 (period 1) and 120193–120352 (period 2). The second straddles the
+  `DataFormatSpecification` boundary at 120212/120213, where `player16_*` switches from P3588
+  (shirt 21) to P3700 (shirt 35), and reaches live ball again at 120305. This is the fixture
+  that makes the block switching testable at all — the `head` file covers only block 1.
+* `game3/Sample_Game_3_events.slice.json` — 34,529 B, 52 events (31 period 1, 21 period 2):
+  both Team B goals into opposite ends, a yellow card, set pieces with null x/y, and all three
+  `subtypes` shapes (null, object, list).
 
 Properties the tracking fixtures preserve (assert these in tests):
 

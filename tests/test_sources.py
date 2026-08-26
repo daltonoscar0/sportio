@@ -453,6 +453,21 @@ def test_red_and_yellow_cards_are_told_apart() -> None:
     assert set(cards["subtype"]) == {"red", "yellow"}
 
 
+def test_league_slugs_are_the_ones_that_were_measured() -> None:
+    """A name-ordered guess gets two of these backwards and invents a third.
+
+    270559/270557 look like they should be Top 14 / URC in that order and are not, and 2009 is
+    URBA Primera A rather than Super Rugby -- it returns an empty event list on every date. All
+    three were wrong until a census read leagues[0].name off real responses; see
+    docs/schema_notes/rugby.md section 2.1 for the full table.
+    """
+    assert rugby.LEAGUES["top_14"] == 270559
+    assert rugby.LEAGUES["united_rugby_championship"] == 270557
+    assert rugby.LEAGUES["super_rugby_pacific"] == 242041
+    assert 2009 not in rugby.LEAGUES.values()
+    assert len(set(rugby.LEAGUES.values())) == len(rugby.LEAGUES)
+
+
 def test_rugby_needs_something_to_look_up() -> None:
     with pytest.raises(ValueError, match="espn event id"):
         rugby.load_events()

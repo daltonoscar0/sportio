@@ -349,7 +349,7 @@ Columns sportio cares about:
 | `subtype` | `event_subtype` (+ `event_subtype_id`) | `pressing`, `pressure`, `recovery_press`, `counter_press`, `run_ahead_of_the_ball`, `coming_short`, `dropping_off`, `support`, `pulling_wide`, `cross_receiver`, `behind`, `pulling_half_space`, `underlap`, `other`, `""` |
 | `x`, `y` | `x_start`, `y_start` | same centred metric frame as tracking |
 | `end_x`, `end_y` | `x_end`, `y_end` | |
-| `outcome` | `pass_outcome` | `successful` / `unsuccessful` / `""` |
+| `outcome` | `pass_outcome` | `successful` / `unsuccessful` / `offside` / `""` — `offside` is rare (1 row in 5079 for match 1886347) and was missed by the first pass over the head fixture |
 | `body_part` | `is_header` (`True`/`False`/`""`), `hand_pass` | no full body-part enum |
 | direction | **`attacking_side`** (+`attacking_side_id`) | `"left_to_right"` / `"right_to_left"` **per row** |
 | `pressure` | no direct flag | derive from `event_subtype ∈ {pressure, pressing, counter_press, recovery_press}` on `on_ball_engagement` rows, or from `separation_start` / `close_at_player_possession_start` / `pressing_chain` |

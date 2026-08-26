@@ -152,10 +152,33 @@ GET http://sports.core.api.espn.com/v2/sports/rugby/leagues?limit=100
 returns `count: 25` `$ref`s. The numeric path segment is the **slug** used by the site API, and it is not
 the internal league id. Verified pairs:
 
-| site-API slug | `leagues[0].id` | `leagues[0].name` |
-|---|---|---|
-| `180659` | `8323` | **Six Nations** |
-| `267979` | `8007` | Gallagher Prem (`abbreviation: "Prem Rugby"`) |
+Every pair below was read from `leagues[0]` of a real scoreboard response during the 2026-08-26
+census, not guessed. `sportio.loaders.rugby.LEAGUES` is keyed off this table.
+
+| site-API slug | `leagues[0].id` | `leagues[0].name` | matches sampled | detail rows |
+|---|---|---|---|---|
+| `180659` | `8323` | **Six Nations** | 24 | 1189 |
+| `164205` | `8337` | Rugby World Cup | 48 | 2473 |
+| `289237` | `17953` | Women's Rugby World Cup | 2 | 99 |
+| `244293` | `8328` | The Rugby Championship | 2 | 104 |
+| `268565` | `8016` | British and Irish Lions Tour | 1 | 44 |
+| `282` | `10743` | Olympic Men's 7s | 10 | 54 |
+| `283` | `10729` | Olympic Women's Rugby Sevens | 10 | 0 |
+| `267979` | `8007` | Gallagher Prem (`abbreviation: "Prem Rugby"`) | 20 | 992 |
+| `270559` | `8005` | **French Top 14** | 51 | 2838 |
+| `270557` | `8331` | **United Rugby Championship** | 31 | 1625 |
+| `242041` | `8326` | Super Rugby Pacific | 1 | 51 |
+| `271937` | `8329` | European Rugby Champions Cup | 1 | 0 |
+| `272073` | `8010` | European Rugby Challenge Cup | 2 | 0 |
+| `289262` | `19114` | Major League Rugby | 2 | 0 |
+| `270555` | `8002` | Currie Cup | 1 | 0 |
+| `270563` | `8004` | Mitre 10 Cup | 1 | 0 |
+| `236461` | `8009` | Anglo-Welsh Cup | 1 | 51 |
+| `2009` | `4001` | URBA Primera A — returns `events: []` on every date tried | 0 | 0 |
+
+> **`270559` is Top 14 and `270557` is the URC**, which is the opposite of what a name-ordered
+> guess produces; sportio had them swapped until this census. And `2009` is **not** Super Rugby —
+> it is URBA Primera A and serves nothing. Super Rugby Pacific is `242041`.
 
 Full slug list returned: `268565, 164205, 180659, 244293, 271937, 272073, 267979, 270557, 270559, 2009,
 17567, 242041, 289271, 289272, 289277, 289279, 270555, 270563, 236461, 289274, 282, 283, 289237, 289262,
@@ -367,13 +390,18 @@ Four things a consumer has to know:
    that *is* one of the two competitors, and it is arbitrary which — "start of first half" attributed to
    Gloucester, "start of second half" to Harlequins. Do not read possession or kick-off into it.
 3. **Coverage is per-match, not per-competition.** Only **36 of 184** matches have them. They never
-   appear in a Rugby World Cup or Six Nations match; they show up in some Prem, URC and Anglo-Welsh Cup
-   matches and not others — 2023-10-14 in the Prem has them for `597048` but not for `597046` or
+   appear in a Rugby World Cup or Six Nations match; they show up in some URC (17), Prem (11),
+   French Top 14 (7) and Anglo-Welsh Cup (1) matches and not others — 2023-10-14 in the Prem has them for `597048` but not for `597046` or
    `597047`, the same day, same competition. Treat their absence as normal.
-4. **Their clocks break the "array is in ascending clock order" assumption.** Above, `end of first half`
-   is 2499.0 but the very next row, `start of second half`, is 2401.0 — the marker is stamped with the
-   nominal boundary, not the real one. §2.6 already warns that period-1 added time overruns 2400 s; these
-   rows make the array itself non-monotonic, so keep using array order and `period.number`.
+4. **Their clocks are stamped with the nominal boundary, not the real one.** Above, `end of first half`
+   is 2499.0 but the very next row, `start of second half`, is 2401.0.
+
+   This makes the non-monotonicity more visible but it is **not the cause of it**. Measured over the
+   184 census matches: 56 are non-monotonic in `clock.value`, and **24 of those are still
+   non-monotonic after deleting every id 9-12 row** — e.g. `596157` index 10 goes
+   `player substituted` 2513.0 -> 2403.0, and `596171` index 15 goes 2506.0 -> 2401.0. The real
+   cause is the period-1/period-2 clock overlap in §2.6. Dropping the markers does not restore
+   ascending order; keep using array order and `period.number` regardless.
 
 One data-quality wart: event `291839` (2018-03-30, Bath v Exeter, Anglo-Welsh Cup) has **every marker
 duplicated** — two id `9`s at 0.0, two id `10`s at 2451.0, and so on. Do not assume markers are unique.
@@ -420,8 +448,9 @@ meaning is unverified — treat it as an additive stoppage offset and carry it i
 
 `clock.displayValue` is minute-ceiling with an apostrophe: `233.0 -> "4'"`, `521.0 -> "9'"`. Do not parse it.
 
-`sequenceNumber` is the string `"0"` on **every** row — it is useless for ordering. Preserve array order
-(the array is already in ascending clock order across periods).
+`sequenceNumber` is the string `"0"` on **every** row — it is useless for ordering. Preserve array order.
+Do **not** assume that order is ascending in `clock.value`: it is not, in **56 of the 184** census
+matches, because period-1 added time overruns the nominal 2400 s boundary (§2.5.3 measures this).
 
 ### 2.7 What is NOT available
 
