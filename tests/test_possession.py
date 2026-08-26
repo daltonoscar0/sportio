@@ -68,10 +68,27 @@ def test_a_restart_always_begins_a_new_chain(metrica_events: pd.DataFrame) -> No
         assert ordered.loc[position, "chain"] != ordered.loc[position - 1, "chain"]
 
 
-def test_ids_never_collide_across_matches(
+def test_ids_never_collide_across_matches_from_the_same_source(
+    sb_events: pd.DataFrame,
+) -> None:
+    # StatsBomb counts possessions from 1 within each match, so two matches passed together
+    # would merge unless the match id is part of the key. Same source on purpose: mixing two
+    # sources would be kept apart by the source/derived tag even with a broken key.
+    other = sb_events.copy()
+    other["match_id"] = "9999999"
+    combined = pd.concat([sb_events, other], ignore_index=True)
+
+    ids = sportio.possessions(combined)
+    per_match = combined.assign(chain=ids).groupby("match_id")["chain"].apply(set)
+    assert len(per_match) == 2
+    first, second = per_match.tolist()
+    assert not (first & second)
+    assert ids.nunique() == 2 * sportio.possessions(sb_events).nunique()
+
+
+def test_ids_never_collide_across_sources(
     sb_events: pd.DataFrame, metrica_events: pd.DataFrame
 ) -> None:
-    # Both sources count from 1 within a match, so a naive pass-through would merge them.
     combined = pd.concat([sb_events, metrica_events], ignore_index=True)
     ids = sportio.possessions(combined)
     per_match = combined.assign(chain=ids).groupby("match_id")["chain"].apply(set)

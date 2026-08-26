@@ -167,6 +167,35 @@ def test_resample_accepts_pchip_and_still_honours_the_gap_rule() -> None:
     assert inside["x"].isna().all()
 
 
+def test_pchip_resampling_actually_differs_from_linear_on_a_curved_run() -> None:
+    # A straight-line track cannot tell the two methods apart -- they agree exactly on it. This
+    # bends the run so that choosing "pchip" has to change the numbers, and change them toward
+    # the truth rather than merely away from linear.
+    src = _synthetic(hz=5.0, seconds=6.0)
+    curved = src.copy()
+    # The ball has no player_id, so the comparison yields NA there; make it a real bool mask.
+    walker_rows = (
+        (curved["player_id"].astype("string") == "Player1").fillna(False).to_numpy(dtype=bool)
+    )
+    swerve = 34.0 + 8.0 * np.sin(curved["t"].astype("float64").to_numpy())
+    curved.loc[walker_rows, "y"] = swerve[walker_rows]
+
+    linear = resample_tracking(curved, hz=20.0, method="linear")
+    pchip = resample_tracking(curved, hz=20.0, method="pchip")
+
+    def error(frame: pd.DataFrame) -> float:
+        walker = frame.loc[frame["player_id"] == "Player1"].sort_values("t")
+        t = walker["t"].astype("float64").to_numpy()
+        got = walker["y"].astype("float64").to_numpy()
+        return float(np.nanmax(np.abs(got - (34.0 + 8.0 * np.sin(t)))))
+
+    assert not np.allclose(
+        linear.loc[linear["player_id"] == "Player1", "y"].astype("float64"),
+        pchip.loc[pchip["player_id"] == "Player1", "y"].astype("float64"),
+    )
+    assert error(pchip) < error(linear)
+
+
 def test_unknown_resample_method_is_rejected() -> None:
     with pytest.raises(ValueError, match="unknown method"):
         resample_tracking(_synthetic(hz=10.0, seconds=1.0), hz=5.0, method="quadratic")
