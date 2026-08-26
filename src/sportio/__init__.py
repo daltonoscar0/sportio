@@ -32,6 +32,7 @@ from .registry import (
     source_table,
     sources,
 )
+from .remotezip import RemoteZip
 from .schema import (
     EVENT_COLUMNS,
     LINEUP_COLUMNS,
@@ -83,6 +84,7 @@ __all__ = [
     "ZONES_24",
     "Grid",
     "PitchSpec",
+    "RemoteZip",
     "SchemaError",
     "SourceInfo",
     "__version__",

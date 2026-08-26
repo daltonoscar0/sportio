@@ -77,7 +77,7 @@ SOURCES: dict[str, SourceInfo] = {
         license="GPL-3.0 (GSR, public). SoccerNet-Tracking MOT is separate and NDA-gated.",
         events=False,
         tracking=True,
-        notes="Reads an already-extracted sequence directory; a split is 11.2 GB (see TODO.md).",
+        notes="Labels are range-fetched from the split zip: 192 MB, not the archive's 11.2 GB.",
     ),
     "rugby": SourceInfo(
         name="rugby",

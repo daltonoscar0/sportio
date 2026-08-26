@@ -318,6 +318,90 @@ def test_soccernet_mot_drops_referees_rather_than_calling_them_home() -> None:
     assert tracking["team"].value_counts()["home"] == tracking["team"].value_counts()["away"]
 
 
+def _fake_split_archive() -> bytes:
+    """A SoccerNet-shaped split: labels plus the images that make up the bulk."""
+    import io as _io
+    import os as _os
+    import zipfile as _zipfile
+
+    buffer = _io.BytesIO()
+    with _zipfile.ZipFile(buffer, "w", _zipfile.ZIP_DEFLATED) as archive:
+        real = fixture_path("soccernet", "gsr", "SNGS-056", "Labels-GameState.json").read_text()
+        for name in ("SNGS-021", "SNGS-035"):
+            archive.writestr(f"{name}/Labels-GameState.json", real)
+            archive.writestr(f"{name}/img1/000001.jpg", _os.urandom(200_000))
+    return buffer.getvalue()
+
+
+class _SplitServer:
+    """Answers byte ranges over an in-memory archive, and records the volume served."""
+
+    def __init__(self, blob: bytes) -> None:
+        self.blob = blob
+        self.served = 0
+
+    def content_length(self, url: str) -> int:
+        return len(self.blob)
+
+    def byte_range(self, url: str, start: int, end: int | None = None) -> bytes:
+        chunk = (
+            self.blob[start:]
+            if start < 0
+            else self.blob[start : len(self.blob) if end is None else end + 1]
+        )
+        self.served += len(chunk)
+        return chunk
+
+
+def test_soccernet_labels_are_pulled_without_the_images() -> None:
+    # The real split zip is 11.2 GB of which 192 MB is annotations; sportio never opens an
+    # image, so downloading the archive would be almost entirely waste.
+    blob = _fake_split_archive()
+    server = _SplitServer(blob)
+
+    assert soccernet.list_sequences("valid", fetcher=server) == ["SNGS-021", "SNGS-035"]
+    paths = soccernet.download_labels("valid", fetcher=server)
+    assert sorted(paths) == ["SNGS-021", "SNGS-035"]
+    assert all(path.is_file() and path.stat().st_size > 0 for path in paths.values())
+    assert server.served < len(blob) / 2
+
+    # And the files that land are loadable, not just present.
+    tracking = soccernet.load_tracking(paths["SNGS-021"].parent)
+    sportio.validate_tracking(tracking, sample=None)
+    assert len(tracking) > 0
+
+
+def test_soccernet_downloads_are_not_repeated() -> None:
+    blob = _fake_split_archive()
+    first = _SplitServer(blob)
+    soccernet.download_labels("valid", ["SNGS-021"], fetcher=first)
+
+    second = _SplitServer(blob)
+    soccernet.download_labels("valid", ["SNGS-021"], fetcher=second)
+    assert second.served == 0
+
+    third = _SplitServer(blob)
+    soccernet.download_labels("valid", ["SNGS-021"], fetcher=third, force=True)
+    assert third.served > 0
+
+
+def test_soccernet_rejects_an_unknown_split_or_sequence() -> None:
+    blob = _fake_split_archive()
+    with pytest.raises(ValueError, match="unknown split"):
+        soccernet.list_sequences("preseason", fetcher=_SplitServer(blob))
+    with pytest.raises(LookupError, match="SNGS-999"):
+        soccernet.download_labels("valid", ["SNGS-999"], fetcher=_SplitServer(blob))
+
+
+def test_soccernet_wants_a_path_or_a_split_but_not_both() -> None:
+    with pytest.raises(ValueError, match="split= and sequence="):
+        soccernet.load_tracking()
+    with pytest.raises(ValueError, match="not both"):
+        soccernet.load_tracking(
+            fixture_path("soccernet", "gsr", "SNGS-056"), split="valid", sequence="SNGS-021"
+        )
+
+
 def test_soccernet_rejects_a_directory_that_is_neither_format(tmp_path) -> None:
     with pytest.raises(FileNotFoundError, match="neither a GSR sequence"):
         soccernet.load_tracking(tmp_path)

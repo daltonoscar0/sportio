@@ -140,11 +140,17 @@ def test_fetch_needs_to_know_what_to_fetch(capsys: pytest.CaptureFixture[str]) -
     assert "--competition" in capsys.readouterr().err
 
 
-def test_fetch_explains_the_soccernet_manual_step(capsys: pytest.CaptureFixture[str]) -> None:
-    assert run("fetch", "soccernet") == 1
-    err = capsys.readouterr().err
-    assert "11.2 GB" in err
-    assert "huggingface.co" in err
+def test_fetch_soccernet_is_a_real_download_now(capsys: pytest.CaptureFixture[str]) -> None:
+    # It used to refuse outright on the grounds that a split is 11.2 GB. It is not a full
+    # download any more -- only the label members are fetched -- so the only thing that should
+    # stop it here is the suite's offline lock.
+    with pytest.raises(Exception, match=r"OFFLINE|not cached|offline"):
+        main(["fetch", "soccernet", "--split", "valid", "--match", "SNGS-021"])
+
+
+def test_fetch_soccernet_rejects_a_bad_split(capsys: pytest.CaptureFixture[str]) -> None:
+    assert run("fetch", "soccernet", "--split", "preseason") == 1
+    assert "unknown split" in capsys.readouterr().err
 
 
 def test_fetch_is_blocked_offline(capsys: pytest.CaptureFixture[str]) -> None:

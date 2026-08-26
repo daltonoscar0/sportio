@@ -84,6 +84,33 @@ def test_skillcorner_tracking_streams_from_the_lfs_media_host() -> None:
     assert sportio.native_hz(tracking) == pytest.approx(10.0)
 
 
+def test_soccernet_labels_come_out_of_the_archive_without_downloading_it() -> None:
+    """192 MB of annotations out of an 11.2 GB zip, via ZIP64 range requests.
+
+    This is the only test that exercises the real ZIP64 path: members sit past the 4 GB mark,
+    so their offsets arrive as 0xFFFFFFFF sentinels with the true value in the extra field.
+    """
+    from sportio.loaders import soccernet
+
+    sequences = soccernet.list_sequences("valid")
+    assert len(sequences) == 58
+    assert sequences[0] == "SNGS-021"
+
+    archive = soccernet._archive("valid", None)
+    labels = [n for n in archive.namelist() if n.endswith(soccernet.LABELS_NAME)]
+    assert len(archive.namelist()) > 40_000  # the images are the bulk
+    assert len(labels) == 58
+    # The spill really is being decoded: these live well past the 32-bit limit.
+    assert max(archive.entries[n].offset for n in labels) > 0xFFFFFFFF
+
+    paths = soccernet.download_labels("valid", ["SNGS-021"])
+    tracking = soccernet.load_tracking(paths["SNGS-021"].parent)
+    sportio.validate_tracking(tracking)
+    assert sportio.native_hz(tracking) == pytest.approx(25.0)
+    assert set(tracking["team"]) <= {"home", "away", "ball"}
+    assert int(tracking["frame"].max()) == 750
+
+
 def test_rugby_six_nations_day() -> None:
     events = sportio.load_events("rugby", date="20250201")
     sportio.validate_events(events)

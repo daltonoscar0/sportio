@@ -12,9 +12,11 @@ Two different datasets with two different on-disk formats:
   :func:`read_mot` parses it faithfully and :func:`load_tracking` will emit canonical rows
   from it with ``x``/``y`` null rather than inventing a homography.
 
-Neither path downloads anything: a GSR split is 11.2 GB and sportio will not pull that
-behind your back. Point the loader at an already-extracted sequence directory. TODO.md
-records the manual step.
+GSR labels **are** downloadable, cheaply. The split archives are ZIP64 and Hugging Face honours
+byte ranges, so :func:`download_labels` reads the central directory and pulls only the
+``Labels-GameState.json`` members: 192 MB for all 58 sequences of ``valid`` instead of 11.2 GB.
+The JPEGs are 98% of the archive and nothing here ever opens them. The MOT archives stay manual
+because they are NDA-gated; TODO.md records that.
 """
 
 from __future__ import annotations
@@ -23,19 +25,27 @@ import configparser
 import json
 import logging
 import warnings
+from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 import pandas as pd
+from tqdm.auto import tqdm
 
+from ..http import Fetcher
+from ..paths import cache_path
 from ..pitch import PitchSpec
+from ..remotezip import RemoteZip
 from ..schema import conform_tracking
 from ._common import finish_tracking
 
 __all__ = [
     "GSR_URL",
     "SOCCERNET_PITCH",
+    "SPLITS",
+    "download_labels",
+    "list_sequences",
     "load_tracking",
     "read_gsr",
     "read_mot",
@@ -46,6 +56,11 @@ log = logging.getLogger("sportio.soccernet")
 GSR_URL = "https://huggingface.co/datasets/SoccerNet/SN-GSR-2025"
 LABELS_NAME = "Labels-GameState.json"
 
+#: The four published splits. ``valid`` is the smallest useful one.
+SPLITS: tuple[str, ...] = ("train", "valid", "test", "challenge")
+
+_ARCHIVE = GSR_URL + "/resolve/main/{split}.zip"
+
 #: SoccerNet pitch coordinates are already metres on a 105x68 pitch centred on the spot,
 #: but +y points toward the *bottom* of the broadcast image, so y has to be flipped.
 SOCCERNET_PITCH = PitchSpec(
@@ -55,6 +70,82 @@ SOCCERNET_PITCH = PitchSpec(
 #: ``attributes.team`` is left/right relative to the camera, not a club. Home/away is a
 #: naming convention only; see the direction note in :func:`load_tracking`.
 _SIDES = {"left": "home", "right": "away"}
+
+# --------------------------------------------------------------------------------------
+# fetching
+# --------------------------------------------------------------------------------------
+
+
+def _archive(split: str, fetcher: Fetcher | None) -> RemoteZip:
+    if split not in SPLITS:
+        raise ValueError(f"unknown split {split!r}; use one of {SPLITS}")
+    return RemoteZip(
+        _ARCHIVE.format(split=split), cache_key=f"soccernet/{split}", fetcher=fetcher
+    )
+
+
+def list_sequences(split: str = "valid", *, fetcher: Fetcher | None = None) -> list[str]:
+    """Sequence names in a split, read from the archive index without downloading members.
+
+    Costs one HEAD plus two range requests the first time; the index is then cached.
+    """
+    zip_file = _archive(split, fetcher)
+    return sorted(
+        name.split("/")[0] for name in zip_file.namelist() if name.endswith(LABELS_NAME)
+    )
+
+
+def download_labels(
+    split: str = "valid",
+    sequences: Iterable[str] | None = None,
+    *,
+    limit: int | None = None,
+    force: bool = False,
+    fetcher: Fetcher | None = None,
+) -> dict[str, Path]:
+    """Fetch ``Labels-GameState.json`` for each sequence, skipping the images.
+
+    Args:
+        sequences: names like ``"SNGS-056"``. Omit for the whole split.
+        limit: stop after this many, for a quick look.
+        force: re-fetch sequences already on disk.
+
+    Returns:
+        ``{sequence: path}``, each path a directory-shaped drop that :func:`load_tracking`
+        reads directly.
+    """
+    zip_file = _archive(split, fetcher)
+    members = {
+        name.split("/")[0]: name
+        for name in zip_file.namelist()
+        if name.endswith(LABELS_NAME)
+    }
+    wanted = sorted(members) if sequences is None else [str(s) for s in sequences]
+    unknown = [s for s in wanted if s not in members]
+    if unknown:
+        raise LookupError(f"{split} has no sequence(s) {unknown}; try list_sequences({split!r})")
+    if limit is not None:
+        wanted = wanted[:limit]
+
+    out: dict[str, Path] = {}
+    for sequence in tqdm(wanted, desc=f"soccernet {split}", leave=False):
+        target = cache_path("soccernet", split, sequence, LABELS_NAME)
+        if not force and target.exists() and target.stat().st_size > 0:
+            out[sequence] = target
+            continue
+        out[sequence] = zip_file.extract(members[sequence], target)
+    return out
+
+
+def sequence_path(
+    split: str, sequence: str, *, fetcher: Fetcher | None = None
+) -> Path:
+    """Local directory for a sequence, downloading its labels if they are not cached yet."""
+    target = cache_path("soccernet", split, sequence, LABELS_NAME)
+    if not target.exists() or target.stat().st_size == 0:
+        download_labels(split, [sequence], fetcher=fetcher)
+    return target.parent
+
 
 # --------------------------------------------------------------------------------------
 # GSR
@@ -333,20 +424,26 @@ def _mot_tracking(path: str | Path) -> pd.DataFrame:
 
 
 def load_tracking(
-    path: str | Path,
+    path: str | Path | None = None,
     *,
+    split: str | None = None,
+    sequence: str | None = None,
     format: str | None = None,
     keep_uncalibrated: bool = False,
     margin: float | None = 15.0,
     hz: float | None = None,
     velocities: bool = True,
     direction: str = "raw",
+    fetcher: Fetcher | None = None,
 ) -> pd.DataFrame:
-    """Load one already-downloaded SoccerNet sequence as canonical tracking.
+    """Load one SoccerNet sequence as canonical tracking.
 
     Args:
         path: a GSR sequence directory (or its ``Labels-GameState.json``), or a MOT
-            sequence directory containing ``gt/gt.txt``.
+            sequence directory containing ``gt/gt.txt``. Omit it and give ``split``/``sequence``
+            instead to have the labels fetched.
+        split: one of :data:`SPLITS`, with ``sequence``.
+        sequence: a sequence name such as ``"SNGS-056"``. Downloads roughly 3 MB.
         format: ``"gsr"`` or ``"mot"``; auto-detected from the directory contents.
         keep_uncalibrated: GSR clips can lose camera calibration for hundreds of
             consecutive frames, leaving ``bbox_pitch`` null. Those detections are dropped
@@ -361,6 +458,13 @@ def load_tracking(
             and ``team`` is "left"/"right" w.r.t. the camera, not a club. Normalising
             direction here would be a guess, so it is left to the caller.
     """
+    if path is None:
+        if not (split and sequence):
+            raise ValueError("pass path=, or split= and sequence= to fetch the labels")
+        path = sequence_path(split, sequence, fetcher=fetcher)
+    elif split or sequence:
+        raise ValueError("pass path=, or split=/sequence=, but not both")
+
     kind = format or _detect(path)
     if kind == "gsr":
         df = _gsr_tracking(path, keep_uncalibrated=keep_uncalibrated, margin=margin)

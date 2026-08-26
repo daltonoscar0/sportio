@@ -5,22 +5,6 @@ each item is either a manual step, a limit of the source data, or a decision wor
 
 ## Manual steps
 
-### SoccerNet — download is manual, on purpose
-
-`sportio fetch soccernet` refuses to run. A SN-GSR-2025 split is **11.2 GB** and sportio will
-not pull that behind your back.
-
-1. Download a split from <https://huggingface.co/datasets/SoccerNet/SN-GSR-2025>
-   (`valid.zip` is the smallest useful one). It is **public** — no token, no NDA, despite what
-   most write-ups about SoccerNet say. Range requests work, so the annotations can be pulled
-   without the JPEGs if you only want positions.
-2. Extract one sequence directory, e.g. `SNGS-056/`, containing `Labels-GameState.json`.
-3. `sportio.load_tracking("soccernet", path="…/SNGS-056")`, or
-   `sportio validate …/SNGS-056`.
-
-The `SoccerNet` pip package is only needed if you want its downloader; sportio does not import
-it. It is declared as the optional extra `sportio[soccernet]`.
-
 ### SoccerNet-Tracking (MOT) — gated *and* image-space only
 
 The MOT-style archives (`gt/gt.txt`, `seqinfo.ini`, `gameinfo.ini`) need the SoccerNet NDA
@@ -120,6 +104,24 @@ matches and 11 competitions found exactly thirteen ids (1–12 and 37) and nothi
 - `load_lineups` infers full time from the events when you pass them and otherwise falls back
   to the last substitution, which is only a floor. `minutes_estimated` marks exactly the rows
   that fallback affected.
+
+### SoccerNet
+
+- Downloading is automatic and cheap: `sportio fetch soccernet --split valid`, or
+  `sportio.load_tracking("soccernet", split="valid", sequence="SNGS-056")`. The split archives
+  are ZIP64 and Hugging Face honours byte ranges, so only the `Labels-GameState.json` members
+  are fetched — **192 MB for all 58 sequences of `valid`, against 11.2 GB for the archive**.
+  The JPEGs are 98% of it and sportio never opens one. No token, no NDA, despite what most
+  write-ups about SoccerNet say.
+- The `SoccerNet` pip package is only needed if you want *its* downloader; sportio does not
+  import it. It stays declared as the optional extra `sportio[soccernet]`.
+- Clips lose camera calibration for stretches at a time — `bbox_pitch` goes null on every
+  object for hundreds of consecutive frames. Those detections are dropped by default;
+  `keep_uncalibrated=True` keeps them with null coordinates.
+- `attributes.team` is `left`/`right` **relative to the camera**, not a club, and a 30-second
+  clip carries no goal or possession context, so attacking direction genuinely cannot be
+  inferred. `direction` defaults to `"raw"` for this source alone.
+- There is no squad data in the labels beyond `attributes.jersey`, so no `load_lineups`.
 
 ### SkillCorner
 

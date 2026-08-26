@@ -86,6 +86,7 @@ class Fetcher:
         *,
         params: Mapping[str, Any] | None = None,
         stream: bool = False,
+        headers: Mapping[str, str] | None = None,
     ) -> requests.Response:
         """GET ``url`` with rate limiting and exponential backoff. Not cached."""
         if is_offline():
@@ -94,7 +95,9 @@ class Fetcher:
         for attempt in range(self.max_retries):
             self._wait_turn(url)
             try:
-                resp = self.session.get(url, params=params, timeout=self.timeout, stream=stream)
+                resp = self.session.get(
+                    url, params=params, timeout=self.timeout, stream=stream, headers=headers
+                )
             except requests.RequestException as exc:
                 last_exc = exc
             else:
@@ -115,6 +118,35 @@ class Fetcher:
         raise requests.RequestException(
             f"giving up on {url} after {self.max_retries} attempts"
         ) from last_exc
+
+    def content_length(self, url: str) -> int:
+        """Size of the resource, from a HEAD. Needed before you can read its tail."""
+        if is_offline():
+            raise OfflineError(f"SPORTIO_OFFLINE is set; refusing to HEAD {url}")
+        self._wait_turn(url)
+        resp = self.session.head(url, allow_redirects=True, timeout=self.timeout)
+        resp.raise_for_status()
+        length = resp.headers.get("Content-Length")
+        if length is None:
+            raise ValueError(f"{url} does not report a Content-Length, so it cannot be sliced")
+        return int(length)
+
+    def byte_range(self, url: str, start: int, end: int | None = None) -> bytes:
+        """Bytes ``start..end`` inclusive; a negative ``start`` counts back from the end.
+
+        Raises if the server ignores the range and sends the whole thing -- silently accepting
+        a 200 here is how you download 11 GB when you asked for 64 KB.
+        """
+        span = f"bytes={start}-" if end is None else f"bytes={start}-{end}"
+        if start < 0:
+            span = f"bytes={start}"
+        resp = self.get(url, headers={"Range": span})
+        if resp.status_code != 206:
+            raise ValueError(
+                f"{url} ignored Range {span} and answered {resp.status_code}; refusing to "
+                "treat a full-body response as a slice"
+            )
+        return resp.content
 
     def bytes(self, url: str, cache: str | Path, *, force: bool = False) -> bytes:
         """Return the body of ``url``, caching it at ``cache`` (relative to the data root)."""

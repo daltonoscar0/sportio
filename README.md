@@ -33,6 +33,7 @@ sportio.source_table()                   # what each source provides, and under 
 $ sportio info
 $ sportio fetch statsbomb --competition "Euro 2024" --match 3943043 --out final.csv
 $ sportio validate data/raw/metrica/Sample_Game_1_RawTrackingData_Home_Team.csv
+$ sportio fetch soccernet --split valid --match SNGS-056
 ```
 
 ## Canonical schemas
@@ -82,7 +83,7 @@ live here so that every tool computes them the same way.
 | **statsbomb** | ✅ | — | [StatsBomb Open Data](https://github.com/statsbomb/open-data): full event feeds plus 360 freeze frames, which land in `events.extra["freeze_frame"]` already on the canonical pitch. | StatsBomb Open Data User Agreement (non-commercial, attribution) |
 | **metrica** | ✅ | ✅ | [Metrica Sports sample data](https://github.com/metrica-sports/sample-data): three fully-tracked anonymised matches at 25 Hz with matching event files. Games 1-2 are CSV; game 3 is FIFA EPTS, whose column layout is rewritten at every substitution — both arrive as the same canonical frame. | CC BY-NC-SA 4.0 |
 | **skillcorner** | ✅ | ✅ | [SkillCorner open data](https://github.com/SkillCorner/opendata): ten A-League matches of 10 Hz broadcast tracking, plus their derived "dynamic events". | CC BY-NC-SA 4.0 |
-| **soccernet** | — | ✅ | [SN-GSR-2025](https://huggingface.co/datasets/SoccerNet/SN-GSR-2025): 30-second game-state clips with metric pitch positions. Public, but 11.2 GB per split — sportio reads an already-extracted sequence. | GPL-3.0 (the separate SoccerNet-Tracking MOT archives are NDA-gated) |
+| **soccernet** | — | ✅ | [SN-GSR-2025](https://huggingface.co/datasets/SoccerNet/SN-GSR-2025): 30-second game-state clips with metric pitch positions. The split archives are 11.2 GB, but sportio range-fetches only the annotation members — 192 MB for all 58 sequences. | GPL-3.0 (the separate SoccerNet-Tracking MOT archives are NDA-gated) |
 | **rugby** | ✅ | — | ESPN rugby play-by-play (tries, conversions, penalty goals, drop goals, cards, substitutions, half markers). The type enum was established by censusing 9,626 rows across 184 matches. **No positional data exists in any open rugby feed** — see `TODO.md`. | ESPN content, used for research |
 
 `sportio info` prints the same table, and `sportio info <source>` the detail.
@@ -94,8 +95,13 @@ rate-limited to one per second per host with exponential backoff. Set `SPORTIO_D
 the cache and `SPORTIO_OFFLINE=1` to forbid the network entirely — the test suite runs that way.
 
 Sizes worth knowing before you type a command: a full StatsBomb competition is ~500 MB
-(`--limit` caps it), a Metrica game is ~65 MB, a SkillCorner tracking file is ~85 MB behind Git
-LFS, and a SoccerNet split is 11.2 GB.
+(`--limit` caps it), a Metrica game is ~65 MB, and a SkillCorner tracking file is ~85 MB behind
+Git LFS.
+
+SoccerNet is the interesting one. Its split archives are 11.2 GB, but the annotations inside are
+192 MB and sportio never opens an image, so `sportio fetch soccernet --split valid` reads the
+ZIP64 central directory over HTTP ranges and pulls only the `Labels-GameState.json` members.
+`sportio.remotezip.RemoteZip` does that for any range-serving host.
 
 ## Development
 

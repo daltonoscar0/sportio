@@ -65,6 +65,9 @@ def _parser() -> argparse.ArgumentParser:
     fetch.add_argument("--season", help="season label, to disambiguate a competition")
     fetch.add_argument("--match", help="a single match id")
     fetch.add_argument("--date", help="YYYYMMDD (rugby)")
+    fetch.add_argument(
+        "--split", help="soccernet split: train, valid, test or challenge (default valid)"
+    )
     fetch.add_argument("--limit", type=int, help="cap how many matches are loaded")
     fetch.add_argument(
         "--kind",
@@ -134,6 +137,8 @@ def _render(table: pd.DataFrame) -> str:
 
 def _cmd_fetch(args: argparse.Namespace) -> int:
     info = get_source(args.source)
+    if info.name == "soccernet":
+        return _fetch_soccernet(args)
     kwargs = _fetch_kwargs(info.name, args)
 
     wanted = args.kind
@@ -182,13 +187,35 @@ def _fetch_kwargs(source: str, args: argparse.Namespace) -> dict[str, Any]:
             kwargs["date"] = args.date
         if not kwargs:
             raise ValueError("rugby needs --match <espn event id> or --date YYYYMMDD")
-    elif source == "soccernet":
-        raise ValueError(
-            "soccernet is not downloadable from sportio: a split is 11.2 GB. Download one "
-            "from https://huggingface.co/datasets/SoccerNet/SN-GSR-2025, extract a sequence, "
-            "then run: sportio validate <sequence dir> --source soccernet"
-        )
     return kwargs
+
+
+def _fetch_soccernet(args: argparse.Namespace) -> int:
+    """Pull only the annotation members out of the split archive.
+
+    The zip is 11.2 GB but its labels are 192 MB, and sportio never reads the images, so this
+    range-fetches the members it wants instead of downloading the archive.
+    """
+    from .loaders import soccernet
+
+    split = args.split or "valid"
+    sequences = [args.match] if args.match else None
+    paths = soccernet.download_labels(split, sequences, limit=args.limit)
+    print(f"soccernet {split}: {len(paths)} sequence(s) of labels")
+
+    if len(paths) == 1:
+        name, path = next(iter(paths.items()))
+        frame = soccernet.load_tracking(path.parent)
+        validate_tracking(frame)
+        print(f"  {name}: {len(frame):,} tracking rows")
+        if args.out:
+            written = (to_parquet if args.out.suffix == ".parquet" else to_csv)(frame, args.out)
+            print(f"  wrote {written}")
+    else:
+        print(f"  under {paths[next(iter(paths))].parent.parent}")
+        print("  load one with: sportio.load_tracking('soccernet', split=..., sequence=...)")
+    print(f"cache: {data_root(create=False)}")
+    return 0
 
 
 def _drop(kwargs: dict[str, Any], keys: tuple[str, ...]) -> dict[str, Any]:
