@@ -1,6 +1,6 @@
 [project]
 name = "sportio"
-version = "0.2.0"
+version = "0.3.0"
 description = "Shared data layer for the sports tools suite: one canonical events/tracking schema over every open soccer and rugby data source."
 readme = "README.md"
 requires-python = ">=3.11"
