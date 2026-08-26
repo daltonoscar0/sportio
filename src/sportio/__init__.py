@@ -53,7 +53,7 @@ from .setpieces import (
     set_pieces,
 )
 from .transform import add_velocities, native_hz, normalize_direction, resample_tracking
-from .writers import to_csv, to_metrica, to_parquet
+from .writers import to_csv, to_metrica, to_parquet, to_skillcorner, to_statsbomb
 from .zones import (
     CHANNELS,
     THIRDS,
@@ -119,6 +119,8 @@ __all__ = [
     "to_csv",
     "to_metrica",
     "to_parquet",
+    "to_skillcorner",
+    "to_statsbomb",
     "validate_events",
     "validate_tracking",
     "zone_centres",

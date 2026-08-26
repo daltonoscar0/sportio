@@ -56,7 +56,7 @@ SOURCES: dict[str, SourceInfo] = {
         license="CC BY-NC-SA 4.0",
         events=True,
         tracking=True,
-        notes="Two fully-tracked sample matches at 25 Hz plus a third in EPTS format.",
+        notes="Three fully-tracked sample matches at 25 Hz; game 3 is the FIFA EPTS format.",
     ),
     "skillcorner": SourceInfo(
         name="skillcorner",

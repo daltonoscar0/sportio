@@ -7,8 +7,18 @@ from pathlib import Path
 import pandas as pd
 
 from .metrica import metrica_paths, to_metrica
+from .skillcorner import skillcorner_paths, to_skillcorner
+from .statsbomb import to_statsbomb
 
-__all__ = ["metrica_paths", "to_csv", "to_metrica", "to_parquet"]
+__all__ = [
+    "metrica_paths",
+    "skillcorner_paths",
+    "to_csv",
+    "to_metrica",
+    "to_parquet",
+    "to_skillcorner",
+    "to_statsbomb",
+]
 
 
 def to_csv(df: pd.DataFrame, path: str | Path) -> Path:

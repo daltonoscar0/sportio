@@ -18,6 +18,10 @@ corners = sportio.corners(ev, with_freeze_frame=True)   # set-piece slice with 3
 players = sportio.freeze_frames(corners)                # one row per tracked player
 press   = sportio.set_pieces(ev, ["free_kick"], window=8.0)
 
+ev = sportio.add_possession(ev)          # possession chains, however the vendor counts them
+ev = sportio.add_zones(ev)               # the shared 18-zone grid, not one per tool
+squad = sportio.load_lineups("statsbomb", match=3943043)   # shirt numbers and minutes
+
 sportio.to_metrica(tr, "out.csv")        # round-trippable Metrica CSV pair
 sportio.to_csv(ev, "euro2024.csv")       # canonical CSV, re-readable by `sportio validate`
 
@@ -38,6 +42,11 @@ type, subtype, x, y, end_x, end_y, outcome, pressure, body_part, extra`
 
 **`tracking`** — `match_id, t, period, frame, team, player_id, jersey, x, y, vx, vy, confidence`
 
+**`lineups`** (auxiliary, not a third canonical plane) — `match_id, team_id, team, player_id,
+player, nickname, jersey, position, starter, on_at_full_time, minutes, minutes_estimated,
+yellow_cards, red_cards, positions`. It exists because a shirt number and a minutes total live
+nowhere in either canonical frame, and per-90 normalisation is impossible without them.
+
 Guarantees every loader makes:
 
 | | |
@@ -53,15 +62,28 @@ Guarantees every loader makes:
 
 `sportio.validate_events` / `validate_tracking` enforce all of it with a pydantic row model.
 
+### Derived views
+
+These take a canonical frame and hand back a copy with extra columns, or a summary. They are
+deliberately *not* part of the canonical schema — the column list above is a contract — but they
+live here so that every tool computes them the same way.
+
+| | |
+|---|---|
+| `possessions` / `add_possession` / `possession_frame` | Possession chains. Uses the vendor's own counter where there is one (StatsBomb chains, SkillCorner phases) and derives one from team changes and restarts where there is not. Ids never collide across matches. |
+| `zones` / `add_zones` / `zone_labels` | The shared pitch grid, `ZONES_18` (6x3) by default, numbered from the defending corner. |
+| `enrich_from_tracking` | Fills what an event feed omits but the tracking knows: set-piece positions from the ball, and a `pressure` flag from the nearest opponent. `metrica.load_events(enrich=True)` wires it up. |
+| `possession_spans` + `normalize_direction(convention="possession")` | Rotates tracking per possession so the team on the ball attacks +x, matching the events convention. |
+
 ## Sources
 
 | source | events | tracking | what it is | licence |
 |---|---|---|---|---|
 | **statsbomb** | ✅ | — | [StatsBomb Open Data](https://github.com/statsbomb/open-data): full event feeds plus 360 freeze frames, which land in `events.extra["freeze_frame"]` already on the canonical pitch. | StatsBomb Open Data User Agreement (non-commercial, attribution) |
-| **metrica** | ✅ | ✅ | [Metrica Sports sample data](https://github.com/metrica-sports/sample-data): two fully-tracked anonymised matches at 25 Hz with matching event files. | CC BY-NC-SA 4.0 |
+| **metrica** | ✅ | ✅ | [Metrica Sports sample data](https://github.com/metrica-sports/sample-data): three fully-tracked anonymised matches at 25 Hz with matching event files. Games 1-2 are CSV; game 3 is FIFA EPTS, whose column layout is rewritten at every substitution — both arrive as the same canonical frame. | CC BY-NC-SA 4.0 |
 | **skillcorner** | ✅ | ✅ | [SkillCorner open data](https://github.com/SkillCorner/opendata): ten A-League matches of 10 Hz broadcast tracking, plus their derived "dynamic events". | CC BY-NC-SA 4.0 |
 | **soccernet** | — | ✅ | [SN-GSR-2025](https://huggingface.co/datasets/SoccerNet/SN-GSR-2025): 30-second game-state clips with metric pitch positions. Public, but 11.2 GB per split — sportio reads an already-extracted sequence. | GPL-3.0 (the separate SoccerNet-Tracking MOT archives are NDA-gated) |
-| **rugby** | ✅ | — | ESPN rugby play-by-play (tries, conversions, penalty goals, cards, substitutions). **No positional data exists in any open rugby feed** — see `TODO.md`. | ESPN content, used for research |
+| **rugby** | ✅ | — | ESPN rugby play-by-play (tries, conversions, penalty goals, drop goals, cards, substitutions, half markers). The type enum was established by censusing 9,626 rows across 184 matches. **No positional data exists in any open rugby feed** — see `TODO.md`. | ESPN content, used for research |
 
 `sportio info` prints the same table, and `sportio info <source>` the detail.
 

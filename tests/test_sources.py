@@ -160,6 +160,28 @@ def test_skillcorner_rejects_an_unknown_frame() -> None:
         _sc_events(frame="sideways")
 
 
+def test_skillcorner_shots_come_from_the_end_type_not_the_event_type() -> None:
+    # SkillCorner has no top-level shot event: a shot is a player_possession row whose
+    # end_type is "shot". The head fixture happens to contain none, so this uses the slice
+    # picked specifically to cover the end_type branches.
+    events = skillcorner.load_events(
+        1886347,
+        match_file=fixture_path(SC, "1886347_match.json"),
+        events_file=fixture_path(SC, "1886347_dynamic_events_actions.csv"),
+    )
+    sportio.validate_events(events, sample=None)
+
+    end_types = sportio.extra_field(events, "end_type")
+    shots = events.loc[events["type"] == "shot"]
+    assert len(shots) >= 2
+    assert set(end_types[events["type"] == "shot"]) == {"shot"}
+    # No source row is typed "shot" -- the mapping is what produces it.
+    assert "shot" not in set(sportio.extra_field(events, "event_type"))
+
+    # The other end_type branches resolve too, rather than falling through to the raw type.
+    assert {"pass", "clearance", "recovery"} <= set(events["type"])
+
+
 def test_skillcorner_pressure_is_derived_from_the_engagement_subtype() -> None:
     events = skillcorner.load_events(
         1886347,

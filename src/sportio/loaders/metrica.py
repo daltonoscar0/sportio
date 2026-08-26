@@ -42,8 +42,11 @@ __all__ = [
 BASE = "https://raw.githubusercontent.com/metrica-sports/sample-data/master/data"
 FPS = 25.0
 
-#: Games that ship in the CSV format this loader understands.
+#: Games that ship in the CSV format this loader reads directly. Game 3 is published in the
+#: FIFA EPTS format instead and is routed to :mod:`sportio.loaders.metrica_epts`, so callers
+#: can just ask for ``match=3`` without knowing the difference.
 GAMES: tuple[int, ...] = (1, 2)
+EPTS_GAMES: tuple[int, ...] = (3,)
 
 COMPETITION = "Metrica Sample Data"
 
@@ -147,6 +150,8 @@ def load_tracking(
     *,
     home_file: str | Path | None = None,
     away_file: str | Path | None = None,
+    metadata_file: str | Path | None = None,
+    tracking_file: str | Path | None = None,
     hz: float | None = None,
     velocities: bool = True,
     direction: str = "home_ltr",
@@ -155,12 +160,33 @@ def load_tracking(
     """Load one Metrica sample game as canonical tracking.
 
     Args:
-        match: game number (1 or 2), or any label when explicit files are given.
-        home_file, away_file: read these CSVs instead of downloading ~65 MB.
+        match: game number. 1 and 2 are the CSV format read here; 3 is FIFA EPTS and is passed
+            through to :mod:`sportio.loaders.metrica_epts`, which returns the same canonical
+            frame.
+        home_file, away_file: read these CSVs instead of downloading ~65 MB (games 1 and 2).
+        metadata_file, tracking_file: the equivalents for game 3's two EPTS files.
         hz: resample target; ``None`` keeps the native 25 Hz.
         velocities: fill ``vx``/``vy``.
         direction: ``"home_ltr"`` (default) flips period 2 so the home team always attacks +x.
     """
+    if _is_epts(match):
+        from . import metrica_epts
+
+        return metrica_epts.load_tracking(
+            match,
+            metadata_file=metadata_file,
+            tracking_file=tracking_file,
+            hz=hz,
+            velocities=velocities,
+            direction=direction,
+            fetcher=fetcher,
+        )
+    if metadata_file is not None or tracking_file is not None:
+        raise ValueError(
+            "metadata_file/tracking_file describe the EPTS format, which only game 3 uses; "
+            "games 1 and 2 take home_file/away_file"
+        )
+
     fetcher = fetcher or default_fetcher()
     match_id = _match_id(match)
     home = Path(home_file) if home_file else _download(match, "Home", fetcher)
@@ -177,6 +203,13 @@ def load_tracking(
 
 def _match_id(match: int | str) -> str:
     return f"metrica-{match}"
+
+
+def _is_epts(match: int | str) -> bool:
+    try:
+        return int(match) in EPTS_GAMES
+    except (TypeError, ValueError):
+        return False
 
 
 def _download(match: int | str, side: str, fetcher: Fetcher) -> Path:
@@ -375,13 +408,15 @@ def load_events(
     enrich: bool = False,
     home_file: str | Path | None = None,
     away_file: str | Path | None = None,
+    metadata_file: str | Path | None = None,
     pressure_radius: float = 3.0,
     fetcher: Fetcher | None = None,
 ) -> pd.DataFrame:
     """Load one Metrica sample game as canonical events.
 
     Args:
-        match: game number (1 or 2), or any label when ``events_file`` is given.
+        match: game number. 1 and 2 are the CSV format read here; 3 is the EPTS events JSON and
+            is passed through to :mod:`sportio.loaders.metrica_epts`.
         events_file: read this CSV instead of downloading it.
         direction: ``"possession"`` (default) rotates each event so the acting team attacks +x,
             as the canonical schema requires; ``"raw"`` keeps Metrica's fixed match frame.
@@ -398,6 +433,19 @@ def load_events(
         home_file, away_file: tracking CSVs for ``enrich``; downloaded if omitted.
         pressure_radius: metres to the nearest opponent that counts as pressure.
     """
+    if _is_epts(match):
+        from . import metrica_epts
+
+        if enrich:
+            raise ValueError("enrich= is not supported for the EPTS-format game 3")
+        return metrica_epts.load_events(
+            match,
+            metadata_file=metadata_file,
+            events_file=events_file,
+            direction=direction,
+            fetcher=fetcher,
+        )
+
     fetcher = fetcher or default_fetcher()
     match_id = _match_id(match)
 

@@ -292,7 +292,7 @@ With origin at the **bottom-left corner**, `x ∈ [0,105]`, `y ∈ [0,68]`:
 
 ```python
 x_out = (x_sc / pitch_length + 0.5) * 105.0
-y_out = (y_sc / pitch_width  + 0.5) * 68.0
+y_out = (y_sc / pitch_width + 0.5) * 68.0
 ```
 
 Because `pitch_width == 68` for all 10 matches the y factor is exactly 1.0 (a pure +34 shift);
@@ -474,6 +474,7 @@ Committed under `tests/fixtures/skillcorner/` — all real bytes, all < 100 KB.
 | `1886347_tracking_head.jsonl` | 96 493 | frames **0–58** verbatim: 10 null-period frames then kickoff at frame 10 — covers the null→live transition |
 | `1886347_tracking_period2.jsonl` | 96 239 | frames **31783–31832** verbatim, period 2 — covers the +45:00 match-clock offset |
 | `1886347_dynamic_events_head.csv` | 96 832 | header + first 100 event rows, all 294 columns |
+| `1886347_dynamic_events_actions.csv` | 96 425 | header + **99 hand-picked, non-contiguous** rows, all 294 columns — covers every `end_type` |
 | `legacy/2068_match_data.json` | 16 914 | complete legacy metadata (has `referees`, lacks `match_periods`) |
 | `legacy/2068_structured_data_slice.json` | 96 901 | frames **1828–1899**, valid JSON array, spans the legacy null→live transition |
 
@@ -481,5 +482,35 @@ Every `.jsonl` / legacy slice was asserted to contain **strictly consecutive** f
 The tracking lines are byte-identical to upstream (not re-serialised), so they exercise a real
 parser against real formatting. The legacy slice is re-serialised compactly to fit the size cap;
 its values are unmodified.
+
+### Why there are two events CSVs
+
+`_head.csv` is a pure prefix, and the interesting `end_type` values are far too rare for a
+prefix to reach them: the first `shot` in the file is **row 166** of 5 079, so the head fixture
+contains **zero** shots — the single most important line of the mapping (`end_type == "shot"`
+→ canonical `shot`) was untestable offline. At 294 columns a row averages **907 bytes**, so the
+7 494-byte header plus ~100 rows is the entire 100 KB budget — the rows have to be *chosen*.
+
+`_actions.csv` is that choice: a quota per `end_type` / `start_type` / body-part branch, one row
+per `(period, attacking_side)` group taken from the middle of the group so the picks spread over
+the whole match, then an evenly spaced top-up to fill the byte budget. Rows stay in upstream file
+order, the header is byte-identical to upstream, and every data line is a verbatim upstream line
+(each also occurs exactly once). Counts in the 99 rows:
+
+- `end_type`: **6 `shot`** (3 per period, 4 `left_to_right` / 2 `right_to_left`, one of them from
+  a `free_kick_reception` so a shot also exercises the set-piece `subtype`), 25 `pass`,
+  **3 `clearance`**, 3 `possession_loss`, 3 `indirect_regain`, 3 `direct_disruption`,
+  **2 `foul_committed`**, **2 `foul_suffered`**, plus `indirect_disruption` / `direct_regain` /
+  `unknown` (2/1/1) which have no mapping and must fall through to `event_type`, and 48 blanks;
+- all four `event_type`s (40 `player_possession`, 24 `on_ball_engagement`, 22 `passing_option`,
+  13 `off_ball_run`), both `attacking_side`s (57 / 42) and both periods (65 / 34);
+- every set-piece `start_type` this match contains (`throw_in_reception` 4, `free_kick_reception`
+  3, `corner_reception` 2, `goal_kick_reception` 2 — there is no kick-off or penalty reception in
+  `1886347`), 5 `is_header`, 2 `hand_pass`, and a `pass_outcome == "offside"` row (1 in the file).
+
+Through `load_events` those 99 rows yield: `pass` 25, `passing_option` 22, `on_ball_engagement`
+16, `off_ball_run` 13, **`shot` 6**, `dispossessed` 3, `duel` 3, `recovery` 3, `clearance` 3,
+`foul_committed` 2, `foul_won` 2, `player_possession` 1. All 6 shots land at `x ≥ 81.9` on the
+canonical 105 × 68 pitch, i.e. in the attacking third of the goal the acting team attacks.
 
 Full downloads cached (gitignored) under `data/raw/skillcorner/`.

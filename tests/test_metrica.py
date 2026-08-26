@@ -260,6 +260,43 @@ def test_attack_directions_alternate_away_from_a_period_with_evidence() -> None:
     assert blind_signs[(home, 2)] == signs[(home, 2)]
 
 
+def test_game_three_is_routed_to_the_epts_reader() -> None:
+    # Game 3 is a completely different file format, but a caller should not have to know: the
+    # same load_tracking/load_events entry points return the same canonical frame.
+    game3 = "game3"
+    tracking = metrica.load_tracking(
+        3,
+        metadata_file=fixture_path("metrica", game3, "Sample_Game_3_metadata.xml"),
+        tracking_file=fixture_path("metrica", game3, "Sample_Game_3_tracking.slice.txt"),
+    )
+    assert tuple(tracking.columns) == sportio.TRACKING_COLUMNS
+    sportio.validate_tracking(tracking, sample=None)
+    assert tracking["match_id"].unique().tolist() == ["metrica-3"]
+    assert set(tracking["team"]) == {"home", "away", "ball"}
+
+    events = metrica.load_events(
+        3,
+        metadata_file=fixture_path("metrica", game3, "Sample_Game_3_metadata.xml"),
+        events_file=fixture_path("metrica", game3, "Sample_Game_3_events.slice.json"),
+    )
+    assert tuple(events.columns) == sportio.EVENT_COLUMNS
+    sportio.validate_events(events, sample=None)
+    # Only game 3 has carries; games 1 and 2 have no such event at all.
+    assert "carry" in set(events["type"])
+
+
+def test_the_epts_file_arguments_are_rejected_for_the_csv_games() -> None:
+    with pytest.raises(ValueError, match="only game 3"):
+        metrica.load_tracking(1, metadata_file=fixture_path("metrica", HOME))
+
+
+def test_enrichment_is_refused_for_game_three() -> None:
+    # The EPTS tracking stream is not what the enricher expects, and silently doing nothing
+    # would be worse than saying so.
+    with pytest.raises(ValueError, match="EPTS-format game 3"):
+        metrica.load_events(3, enrich=True)
+
+
 def test_player_ids_are_whitespace_normalised() -> None:
     # Game 2 writes "Player 26" with a space for the same player tracking calls "Player26".
     assert metrica._clean_player_id("Player 26") == "Player26"
