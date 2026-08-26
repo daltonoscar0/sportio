@@ -9,7 +9,15 @@ from typing import Any
 
 import pandas as pd
 
-__all__ = ["SourceInfo", "get_source", "load_events", "load_tracking", "source_table", "sources"]
+__all__ = [
+    "SourceInfo",
+    "get_source",
+    "load_events",
+    "load_lineups",
+    "load_tracking",
+    "source_table",
+    "sources",
+]
 
 
 @dataclass(frozen=True, slots=True)
@@ -23,6 +31,7 @@ class SourceInfo:
     license: str
     events: bool
     tracking: bool
+    lineups: bool = False
     notes: str = ""
     extras: tuple[str, ...] = field(default=())
 
@@ -36,6 +45,7 @@ SOURCES: dict[str, SourceInfo] = {
         license="StatsBomb Open Data User Agreement (non-commercial, attribution)",
         events=True,
         tracking=False,
+        lineups=True,
         notes="Events plus 360 freeze frames; freeze frames land in events.extra['freeze_frame'].",
     ),
     "metrica": SourceInfo(
@@ -56,6 +66,7 @@ SOURCES: dict[str, SourceInfo] = {
         license="CC BY-NC-SA 4.0",
         events=True,
         tracking=True,
+        lineups=True,
         notes="Ten A-League matches: 10 Hz broadcast tracking plus derived dynamic events.",
     ),
     "soccernet": SourceInfo(
@@ -113,6 +124,14 @@ def load_tracking(source: str, **kwargs: Any) -> pd.DataFrame:
     return _module(info.name).load_tracking(**kwargs)
 
 
+def load_lineups(source: str, **kwargs: Any) -> pd.DataFrame:
+    """Load the auxiliary squad frame from ``source`` (shirt numbers, positions, minutes)."""
+    info = get_source(source)
+    if not info.lineups:
+        raise ValueError(f"source {info.name!r} publishes no squad data")
+    return _module(info.name).load_lineups(**kwargs)
+
+
 def source_table() -> pd.DataFrame:
     """One row per source: what it provides and under what licence."""
     return pd.DataFrame(
@@ -122,6 +141,7 @@ def source_table() -> pd.DataFrame:
                 "title": s.title,
                 "events": s.events,
                 "tracking": s.tracking,
+                "lineups": s.lineups,
                 "license": s.license,
                 "url": s.url,
                 "notes": s.notes,

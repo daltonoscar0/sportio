@@ -17,7 +17,9 @@ from sportio.transform import (
 )
 
 
-def _synthetic(hz: float = 25.0, seconds: float = 4.0, periods: tuple[int, ...] = (1,)) -> pd.DataFrame:
+def _synthetic(
+    hz: float = 25.0, seconds: float = 4.0, periods: tuple[int, ...] = (1,)
+) -> pd.DataFrame:
     """One home player walking right at 1 m/s, one away keeper parked, and a ball."""
     rows = []
     step = 1.0 / hz
@@ -30,28 +32,60 @@ def _synthetic(hz: float = 25.0, seconds: float = 4.0, periods: tuple[int, ...] 
             t = round((i + 1) * step, 6)
             rows += [
                 {
-                    "match_id": "1", "t": t, "period": period, "frame": frame,
-                    "team": "home", "player_id": "Player1", "jersey": 1,
-                    "x": offset + sign * (10.0 + i * step), "y": 34.0,
-                    "vx": None, "vy": None, "confidence": None,
+                    "match_id": "1",
+                    "t": t,
+                    "period": period,
+                    "frame": frame,
+                    "team": "home",
+                    "player_id": "Player1",
+                    "jersey": 1,
+                    "x": offset + sign * (10.0 + i * step),
+                    "y": 34.0,
+                    "vx": None,
+                    "vy": None,
+                    "confidence": None,
                 },
                 {
-                    "match_id": "1", "t": t, "period": period, "frame": frame,
-                    "team": "home", "player_id": "Player11", "jersey": 11,
-                    "x": offset + sign * 4.0, "y": 34.0,
-                    "vx": None, "vy": None, "confidence": None,
+                    "match_id": "1",
+                    "t": t,
+                    "period": period,
+                    "frame": frame,
+                    "team": "home",
+                    "player_id": "Player11",
+                    "jersey": 11,
+                    "x": offset + sign * 4.0,
+                    "y": 34.0,
+                    "vx": None,
+                    "vy": None,
+                    "confidence": None,
                 },
                 {
-                    "match_id": "1", "t": t, "period": period, "frame": frame,
-                    "team": "away", "player_id": "Player21", "jersey": 1,
-                    "x": offset + sign * 101.0, "y": 34.0,
-                    "vx": None, "vy": None, "confidence": None,
+                    "match_id": "1",
+                    "t": t,
+                    "period": period,
+                    "frame": frame,
+                    "team": "away",
+                    "player_id": "Player21",
+                    "jersey": 1,
+                    "x": offset + sign * 101.0,
+                    "y": 34.0,
+                    "vx": None,
+                    "vy": None,
+                    "confidence": None,
                 },
                 {
-                    "match_id": "1", "t": t, "period": period, "frame": frame,
-                    "team": "ball", "player_id": None, "jersey": None,
-                    "x": 52.5, "y": 34.0,
-                    "vx": None, "vy": None, "confidence": None,
+                    "match_id": "1",
+                    "t": t,
+                    "period": period,
+                    "frame": frame,
+                    "team": "ball",
+                    "player_id": None,
+                    "jersey": None,
+                    "x": 52.5,
+                    "y": 34.0,
+                    "vx": None,
+                    "vy": None,
+                    "confidence": None,
                 },
             ]
             frame += 1
@@ -89,6 +123,94 @@ def test_resample_refuses_to_invent_positions_across_a_long_gap() -> None:
         & (out["t"].astype("float64") < 2.8)
     ]
     assert inside["x"].isna().all()
+
+
+def test_pchip_beats_linear_on_a_curved_track_without_overshooting() -> None:
+    from sportio.transform import _pchip
+
+    # A player running an arc: linear interpolation cuts every corner.
+    x = np.linspace(0.0, 4.0, 9)
+    y = np.sin(x)
+    grid = np.linspace(0.0, 4.0, 201)
+    truth = np.sin(grid)
+    linear_error = float(np.max(np.abs(np.interp(grid, x, y) - truth)))
+    pchip_error = float(np.max(np.abs(_pchip(grid, x, y) - truth)))
+    assert pchip_error < linear_error / 1.5
+
+    # Shape preservation is the reason for choosing pchip over a natural spline: between two
+    # observations it must stay inside their range, so it can never invent an off-pitch point.
+    flat = np.array([0.0, 1.0, 2.0, 3.0])
+    steps = np.array([0.0, 0.0, 1.0, 1.0])
+    curve = _pchip(np.linspace(0.0, 3.0, 61), flat, steps)
+    assert curve.min() >= -1e-12
+    assert curve.max() <= 1.0 + 1e-12
+    # And it still passes exactly through every observation.
+    assert _pchip(flat, flat, steps) == pytest.approx(steps)
+
+
+def test_resample_accepts_pchip_and_still_honours_the_gap_rule() -> None:
+    src = _synthetic(hz=25.0, seconds=4.0)
+    out = resample_tracking(src, hz=10.0, method="pchip")
+    assert native_hz(out) == pytest.approx(10.0)
+    # The synthetic walker moves at a constant 1 m/s, which pchip reproduces exactly.
+    walker = out.loc[out["player_id"] == "Player1"].sort_values("t")
+    expected = 10.0 + (walker["t"].astype("float64") - 0.04)
+    assert walker["x"].astype("float64").to_numpy() == pytest.approx(expected.to_numpy(), abs=1e-6)
+
+    holed = src.loc[~((src["t"].astype("float64") > 1.0) & (src["t"].astype("float64") < 3.0))]
+    gapped = resample_tracking(holed, hz=10.0, max_gap=0.5, method="pchip")
+    inside = gapped.loc[
+        (gapped["player_id"] == "Player1")
+        & (gapped["t"].astype("float64") > 1.2)
+        & (gapped["t"].astype("float64") < 2.8)
+    ]
+    assert inside["x"].isna().all()
+
+
+def test_unknown_resample_method_is_rejected() -> None:
+    with pytest.raises(ValueError, match="unknown method"):
+        resample_tracking(_synthetic(hz=10.0, seconds=1.0), hz=5.0, method="quadratic")
+
+
+def test_possession_convention_rotates_only_the_away_spells() -> None:
+    src = _synthetic(hz=10.0, seconds=4.0)
+    home_ltr = normalize_direction(src)
+    spans = pd.DataFrame(
+        [
+            {"match_id": "1", "period": 1, "start_t": 0.0, "end_t": 0.95, "side": "home"},
+            {"match_id": "1", "period": 1, "start_t": 1.0, "end_t": 2.0, "side": "away"},
+        ]
+    )
+    out = normalize_direction(src, convention="possession", spans=spans)
+
+    # The ball sits on the centre spot in this fixture, and rotating the centre spot is a
+    # no-op, so it can never register as moved. Judge on the players.
+    players = out["team"] != "ball"
+    moved = (out["x"].astype("float64") - home_ltr["x"].astype("float64")).abs() > 1e-9
+    times = out["t"].astype("float64")
+    # Exactly the away window moved, and it moved by a full 180 degree rotation.
+    assert moved[players & (times >= 1.0) & (times <= 2.0)].all()
+    assert not moved[times < 1.0].any()
+    assert not moved[times > 2.0].any()
+    rotated = out.loc[moved]
+    original = home_ltr.loc[moved]
+    assert rotated["x"].astype("float64").to_numpy() == pytest.approx(
+        105.0 - original["x"].astype("float64").to_numpy()
+    )
+    assert rotated["y"].astype("float64").to_numpy() == pytest.approx(
+        68.0 - original["y"].astype("float64").to_numpy()
+    )
+
+
+def test_possession_convention_demands_the_spans() -> None:
+    with pytest.raises(ValueError, match="needs spans"):
+        normalize_direction(_synthetic(hz=10.0, seconds=1.0), convention="possession")
+    with pytest.raises(KeyError, match="missing columns"):
+        normalize_direction(
+            _synthetic(hz=10.0, seconds=1.0),
+            convention="possession",
+            spans=pd.DataFrame({"period": [1]}),
+        )
 
 
 def test_velocities_recover_a_known_speed() -> None:

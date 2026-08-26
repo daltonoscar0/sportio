@@ -9,6 +9,7 @@ import pandas as pd
 import pytest
 
 import sportio
+import sportio.schema
 from sportio.loaders import statsbomb
 
 from .conftest import fixture_path
@@ -144,8 +145,16 @@ def test_goalkeeper_events_keep_their_payload(events: pd.DataFrame) -> None:
     assert len(keepers) > 0
     assert keepers["subtype"].notna().all()
     assert set(keepers["subtype"]) <= {
-        "shot_faced", "shot_saved", "goal_conceded", "collected", "punch", "smother",
-        "keeper_sweeper", "save", "penalty_saved", "penalty_conceded",
+        "shot_faced",
+        "shot_saved",
+        "goal_conceded",
+        "collected",
+        "punch",
+        "smother",
+        "keeper_sweeper",
+        "save",
+        "penalty_saved",
+        "penalty_conceded",
     }
     # Shot Faced events carry an end_location; at least one must have survived.
     assert keepers["end_x"].notna().any()
@@ -185,6 +194,58 @@ def test_event_type_names_are_snake_cased(events: pd.DataFrame) -> None:
     # "Ball Receipt*" carries a literal asterisk and "50/50" starts with a digit.
     assert "ball_receipt" in set(events["type"])
     assert events["type"].str.match(r"^[a-z0-9_]+$").all()
+
+
+# --------------------------------------------------------------------------------------
+# lineups
+# --------------------------------------------------------------------------------------
+
+
+def test_lineups_carry_shirt_numbers_and_minutes(events: pd.DataFrame) -> None:
+    lineups = statsbomb.load_lineups(
+        match=MATCH,
+        lineups_file=fixture_path("statsbomb", "lineups_3943043.json"),
+        events=events,
+    )
+    assert tuple(lineups.columns) == sportio.LINEUP_COLUMNS
+    assert dict(lineups.dtypes.astype(str)) == dict(sportio.schema.LINEUP_DTYPES)
+
+    # Eleven starters a side, and the jersey number exists nowhere in the canonical frames.
+    assert lineups.groupby("team")["starter"].sum().to_dict() == {"England": 11, "Spain": 11}
+    assert lineups["jersey"].notna().all()
+    assert lineups["team"].nunique() == 2
+
+
+def test_unused_substitutes_played_no_minutes() -> None:
+    lineups = statsbomb.load_lineups(
+        match=MATCH,
+        lineups_file=fixture_path("statsbomb", "lineups_3943043.json"),
+        full_time_minutes=94.0,
+    )
+    bench = lineups.loc[lineups["minutes"] == 0.0]
+    assert len(bench) > 0
+    assert not bench["starter"].any()
+    assert not bench["on_at_full_time"].any()
+    # Nobody can play more than the match lasted.
+    assert lineups["minutes"].max() <= 94.0 + 1e-9
+
+
+def test_minutes_say_when_they_are_an_estimate() -> None:
+    # With the real events the full-time clock is known, so nothing is estimated.
+    known = statsbomb.load_lineups(
+        match=MATCH,
+        lineups_file=fixture_path("statsbomb", "lineups_3943043.json"),
+        full_time_minutes=94.03,
+    )
+    assert not known["minutes_estimated"].any()
+
+    # Without them it falls back to the last substitution, which is only a floor -- and says so
+    # for exactly the players whose spell never closed.
+    guessed = statsbomb.load_lineups(
+        match=MATCH, lineups_file=fixture_path("statsbomb", "lineups_3943043.json")
+    )
+    assert guessed["minutes_estimated"].any()
+    assert (guessed["minutes_estimated"] == guessed["on_at_full_time"]).all()
 
 
 # --------------------------------------------------------------------------------------

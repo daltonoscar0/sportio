@@ -17,12 +17,15 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 __all__ = [
     "EVENTS_DTYPES",
     "EVENT_COLUMNS",
+    "LINEUP_COLUMNS",
+    "LINEUP_DTYPES",
     "TRACKING_COLUMNS",
     "TRACKING_DTYPES",
     "EventRow",
     "SchemaError",
     "TrackingRow",
     "conform_events",
+    "conform_lineups",
     "conform_tracking",
     "empty_events",
     "empty_tracking",
@@ -79,8 +82,31 @@ TRACKING_DTYPES: dict[str, str] = {
     "confidence": "Float64",
 }
 
+#: Squad metadata. Deliberately NOT a third canonical plane -- events and tracking are the two
+#: things every tool consumes, and this is the lookup table beside them. It exists because a
+#: shirt number and a minutes total live nowhere in either canonical frame, and per-90
+#: normalisation is impossible without them.
+LINEUP_DTYPES: dict[str, str] = {
+    "match_id": "string",
+    "team_id": "string",
+    "team": "string",
+    "player_id": "string",
+    "player": "string",
+    "nickname": "string",
+    "jersey": "Int16",
+    "position": "string",
+    "starter": "boolean",
+    "on_at_full_time": "boolean",
+    "minutes": "Float64",
+    "minutes_estimated": "boolean",
+    "yellow_cards": "Int8",
+    "red_cards": "Int8",
+    "positions": "string",
+}
+
 EVENT_COLUMNS: tuple[str, ...] = tuple(EVENTS_DTYPES)
 TRACKING_COLUMNS: tuple[str, ...] = tuple(TRACKING_DTYPES)
+LINEUP_COLUMNS: tuple[str, ...] = tuple(LINEUP_DTYPES)
 
 TEAM_SIDES: frozenset[str] = frozenset({"home", "away", "ball"})
 
@@ -190,7 +216,7 @@ def _cast(series: pd.Series, dtype: str) -> pd.Series:
     if dtype == "string":
         # Go through object so that numeric ids (1234) become "1234" rather than "1234.0".
         return series.map(_stringify, na_action="ignore").astype("string")
-    if dtype in {"Int16", "Int64"}:
+    if dtype in {"Int8", "Int16", "Int64"}:
         # float -> Int is only allowed when values are integral; round-trip via Float64.
         return pd.to_numeric(series, errors="coerce").astype("Float64").round().astype(dtype)
     if dtype == "Float64":
@@ -219,6 +245,11 @@ def conform_events(df: pd.DataFrame) -> pd.DataFrame:
 def conform_tracking(df: pd.DataFrame) -> pd.DataFrame:
     """Coerce ``df`` to the canonical tracking schema (exact columns, order and dtypes)."""
     return _conform(df, TRACKING_DTYPES, "tracking")
+
+
+def conform_lineups(df: pd.DataFrame) -> pd.DataFrame:
+    """Coerce ``df`` to the auxiliary lineups schema (exact columns, order and dtypes)."""
+    return _conform(df, LINEUP_DTYPES, "lineups")
 
 
 def empty_events() -> pd.DataFrame:
@@ -268,9 +299,7 @@ def _validate(
         raise SchemaError(
             f"{kind} columns are {tuple(df.columns)}; expected exactly {tuple(dtypes)}"
         )
-    wrong = {
-        col: str(df[col].dtype) for col, dt in dtypes.items() if str(df[col].dtype) != dt
-    }
+    wrong = {col: str(df[col].dtype) for col, dt in dtypes.items() if str(df[col].dtype) != dt}
     if wrong:
         raise SchemaError(f"{kind} dtypes are wrong: {wrong} (expected {dict(dtypes)})")
 

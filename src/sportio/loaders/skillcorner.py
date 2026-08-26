@@ -25,11 +25,17 @@ import pandas as pd
 
 from ..http import Fetcher, default_fetcher
 from ..pitch import centered
-from ..schema import conform_events, conform_tracking, encode_extra
+from ..schema import (
+    LINEUP_COLUMNS,
+    conform_events,
+    conform_lineups,
+    conform_tracking,
+    encode_extra,
+)
 from ..transform import flip_events, flip_tracking
 from ._common import finish_events, finish_tracking, snake
 
-__all__ = ["MATCH_IDS", "load_events", "load_matches", "load_tracking"]
+__all__ = ["MATCH_IDS", "load_events", "load_lineups", "load_matches", "load_tracking"]
 
 RAW = "https://raw.githubusercontent.com/SkillCorner/opendata/master"
 MEDIA = "https://media.githubusercontent.com/media/SkillCorner/opendata/master"
@@ -39,8 +45,16 @@ FPS = 10.0
 
 #: The ten A-League 2024/25 matches published as of 2025-10.
 MATCH_IDS: tuple[int, ...] = (
-    1886347, 1899585, 1925299, 1953632, 1996435,
-    2006229, 2011166, 2013725, 2015213, 2017461,
+    1886347,
+    1899585,
+    1925299,
+    1953632,
+    1996435,
+    2006229,
+    2011166,
+    2013725,
+    2015213,
+    2017461,
 )
 
 _COMPETITION = "A-League"
@@ -77,6 +91,60 @@ def _roster(meta: dict[str, Any]) -> dict[int, dict[str, Any]]:
             "name": player.get("short_name") or player.get("last_name"),
         }
     return out
+
+
+def load_lineups(
+    match: int | str = MATCH_IDS[0],
+    *,
+    match_file: str | Path | None = None,
+    fetcher: Fetcher | None = None,
+) -> pd.DataFrame:
+    """Squad list with shirt numbers, roles and minutes played.
+
+    SkillCorner is the easy case: its match metadata already carries a measured
+    ``playing_time.total.minutes_played`` per player, so nothing here is inferred and
+    ``minutes_estimated`` is always false.
+    """
+    fetcher = fetcher or default_fetcher()
+    meta = _match_meta(match, fetcher, match_file)
+    home_id = (meta.get("home_team") or {}).get("id")
+    names = {
+        home_id: (meta.get("home_team") or {}).get("name"),
+        (meta.get("away_team") or {}).get("id"): (meta.get("away_team") or {}).get("name"),
+    }
+    match_id = str(meta.get("id", match))
+
+    rows = []
+    for player in meta.get("players") or []:
+        playing = ((player.get("playing_time") or {}).get("total")) or {}
+        role = (player.get("player_role") or {}).get("acronym")
+        minutes = playing.get("minutes_played")
+        rows.append(
+            {
+                "match_id": match_id,
+                "team_id": _str(player.get("team_id")),
+                "team": names.get(player.get("team_id")),
+                "player_id": _str(player.get("id")),
+                "player": player.get("short_name")
+                or " ".join(filter(None, (player.get("first_name"), player.get("last_name")))),
+                "nickname": player.get("short_name"),
+                "jersey": player.get("number"),
+                "position": role,
+                # start_time is the match clock at which the player came on, so "00:00:00"
+                # is a starter and a null means they never played.
+                "starter": player.get("start_time") == "00:00:00",
+                "on_at_full_time": player.get("end_time") is not None
+                and player.get("start_time") is not None,
+                "minutes": 0.0 if minutes is None else float(minutes),
+                "minutes_estimated": False,
+                "yellow_cards": player.get("yellow_card") or 0,
+                "red_cards": player.get("red_card") or 0,
+                "positions": encode_extra(
+                    {"role": player.get("player_role"), "playing_time": player.get("playing_time")}
+                ),
+            }
+        )
+    return conform_lineups(pd.DataFrame(rows, columns=list(LINEUP_COLUMNS)))
 
 
 def _period_starts(meta: dict[str, Any]) -> dict[int, int]:
@@ -140,8 +208,14 @@ def load_tracking(
             bx, by = spec.to_canonical(float(ball["x"]), float(ball["y"]))
             rows.append(
                 {
-                    **common, "team": "ball", "player_id": None, "jersey": None,
-                    "x": bx, "y": by, "vx": None, "vy": None,
+                    **common,
+                    "team": "ball",
+                    "player_id": None,
+                    "jersey": None,
+                    "x": bx,
+                    "y": by,
+                    "vx": None,
+                    "vy": None,
                     "confidence": 1.0 if ball.get("is_detected") else 0.5,
                 }
             )
@@ -152,8 +226,14 @@ def load_tracking(
             px, py = spec.to_canonical(float(player["x"]), float(player["y"]))
             rows.append(
                 {
-                    **common, "team": info["team"], "player_id": str(player["player_id"]),
-                    "jersey": info["jersey"], "x": px, "y": py, "vx": None, "vy": None,
+                    **common,
+                    "team": info["team"],
+                    "player_id": str(player["player_id"]),
+                    "jersey": info["jersey"],
+                    "x": px,
+                    "y": py,
+                    "vx": None,
+                    "vy": None,
                     # SkillCorner extrapolates off-camera players; is_detected marks the
                     # ~63% of positions that a camera actually saw.
                     "confidence": 1.0 if player.get("is_detected") else 0.5,
@@ -169,8 +249,18 @@ def load_tracking(
 
 
 _TRACKING_KEYS = (
-    "match_id", "t", "period", "frame", "team", "player_id",
-    "jersey", "x", "y", "vx", "vy", "confidence",
+    "match_id",
+    "t",
+    "period",
+    "frame",
+    "team",
+    "player_id",
+    "jersey",
+    "x",
+    "y",
+    "vx",
+    "vy",
+    "confidence",
 )
 
 
@@ -304,10 +394,9 @@ def load_events(
     )
     match_id = str(meta.get("id", match))
     season = ((meta.get("competition_edition") or {}).get("season") or {}).get("name", "")
-    competition = (
-        ((meta.get("competition_edition") or {}).get("competition") or {}).get("name")
-        or _COMPETITION
-    )
+    competition = ((meta.get("competition_edition") or {}).get("competition") or {}).get(
+        "name"
+    ) or _COMPETITION
 
     if events_file is not None:
         raw = pd.read_csv(events_file, low_memory=False)
@@ -338,15 +427,41 @@ def load_events(
 
 
 _EVENT_KEYS = (
-    "match_id", "competition", "season", "team_id", "team", "player_id", "player",
-    "t", "period", "type", "subtype", "x", "y", "end_x", "end_y", "outcome",
-    "pressure", "body_part", "extra",
+    "match_id",
+    "competition",
+    "season",
+    "team_id",
+    "team",
+    "player_id",
+    "player",
+    "t",
+    "period",
+    "type",
+    "subtype",
+    "x",
+    "y",
+    "end_x",
+    "end_y",
+    "outcome",
+    "pressure",
+    "body_part",
+    "extra",
 )
 
 _EXTRA_COLUMNS = (
-    "event_type", "event_subtype", "end_type", "start_type", "attacking_side",
-    "xthreat", "xpass_completion", "duration", "fully_extrapolated", "phase_index",
-    "player_position", "player_targeted_id", "player_targeted_name",
+    "event_type",
+    "event_subtype",
+    "end_type",
+    "start_type",
+    "attacking_side",
+    "xthreat",
+    "xpass_completion",
+    "duration",
+    "fully_extrapolated",
+    "phase_index",
+    "player_position",
+    "player_targeted_id",
+    "player_targeted_name",
 )
 
 
@@ -400,11 +515,7 @@ def _event_row(
         "extra": encode_extra(
             {
                 **{k: _clean(rec.get(k)) for k in _EXTRA_COLUMNS if _clean(rec.get(k)) is not None},
-                **(
-                    {"mirrored": True}
-                    if event_type in _OUT_OF_POSSESSION_TYPES
-                    else {}
-                ),
+                **({"mirrored": True} if event_type in _OUT_OF_POSSESSION_TYPES else {}),
             }
         ),
     }

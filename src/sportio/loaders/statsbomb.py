@@ -30,8 +30,9 @@ import pandas as pd
 from tqdm.auto import tqdm
 
 from ..http import Fetcher, default_fetcher
-from ..pitch import PITCH_WIDTH, STATSBOMB
-from ..schema import concat_events, encode_extra
+from ..pitch import PITCH_WIDTH, STATSBOMB, STATSBOMB_LANDMARK, PitchSpec
+from ..schema import LINEUP_COLUMNS, concat_events, conform_lineups, encode_extra
+from ..setpieces import extra_field
 from ._common import finish_events, snake
 
 __all__ = [
@@ -39,6 +40,7 @@ __all__ = [
     "find_competition",
     "load_competitions",
     "load_events",
+    "load_lineups",
     "load_matches",
 ]
 
@@ -117,9 +119,7 @@ def find_competition(
     # Prefer the most specific label when several match, e.g. "Euro" alone.
     hits.sort()
     if len(hits) > 1 and hits[0][0] == hits[1][0]:
-        raise LookupError(
-            f"{query!r} is ambiguous; candidates: {sorted(h[3] for h in hits)}"
-        )
+        raise LookupError(f"{query!r} is ambiguous; candidates: {sorted(h[3] for h in hits)}")
     return hits[0][1], hits[0][2]
 
 
@@ -139,6 +139,182 @@ def load_matches(
 
 
 # --------------------------------------------------------------------------------------
+# lineups
+# --------------------------------------------------------------------------------------
+
+#: Assumed full time when nothing better is available, in minutes.
+_NOMINAL_FULL_TIME = 90.0
+
+
+def load_lineups(
+    competition: str | None = None,
+    *,
+    season: str | None = None,
+    match: int | str | None = None,
+    competition_id: int | None = None,
+    season_id: int | None = None,
+    limit: int | None = None,
+    lineups_file: str | Path | None = None,
+    events: pd.DataFrame | None = None,
+    full_time_minutes: float | None = None,
+    fetcher: Fetcher | None = None,
+) -> pd.DataFrame:
+    """Squad lists with shirt numbers, positions and minutes played.
+
+    Args:
+        events: a canonical events frame for the same match(es). Used only to read the real
+            full-time clock, which is what turns an open-ended ``positions[].to`` into minutes.
+        full_time_minutes: state full time yourself and skip the inference entirely.
+
+    Minutes are exact for anyone with a closed ``to`` on every spell. For a player still on at
+    the whistle, full time is taken from ``events`` when you pass them, otherwise from the
+    latest substitution in the file, otherwise 90 minutes -- and ``minutes_estimated`` says
+    which of those happened, rather than leaving you to guess.
+    """
+    fetcher = fetcher or default_fetcher()
+
+    if lineups_file is not None:
+        payload = json.loads(Path(lineups_file).read_text())
+        match_id = str(match or Path(lineups_file).stem)
+        full_time = _full_time(match_id, payload, events, full_time_minutes)
+        return _lineups_frame(payload, match_id, full_time)
+
+    match_ids = _resolve_matches(
+        competition, season, match, competition_id, season_id, limit, fetcher
+    )
+    frames = []
+    for one in tqdm(match_ids, desc="statsbomb lineups", leave=False):
+        payload = fetcher.json(
+            f"{BASE}/lineups/{one}.json", f"statsbomb/lineups_{one}.json"
+        )
+        full_time = _full_time(str(one), payload, events, full_time_minutes)
+        frames.append(_lineups_frame(payload, str(one), full_time))
+    if not frames:
+        return pd.DataFrame(columns=list(LINEUP_COLUMNS))
+    return pd.concat(frames, ignore_index=True)
+
+
+def _resolve_matches(
+    competition: str | None,
+    season: str | None,
+    match: int | str | None,
+    competition_id: int | None,
+    season_id: int | None,
+    limit: int | None,
+    fetcher: Fetcher,
+) -> list[int]:
+    if match is not None and competition is None and competition_id is None:
+        return [int(match)]
+    if competition_id is None or season_id is None:
+        if competition is None:
+            raise ValueError("pass match=, or competition= (or competition_id= and season_id=)")
+        competition_id, season_id = find_competition(competition, season, fetcher=fetcher)
+    matches = load_matches(competition_id, season_id, fetcher=fetcher)
+    if match is not None:
+        matches = matches.loc[matches["match_id"].astype("int64") == int(match)]
+    if limit is not None:
+        matches = matches.head(limit)
+    return [int(m) for m in matches["match_id"]]
+
+
+def _full_time(
+    match_id: str,
+    payload: list[dict[str, Any]],
+    events: pd.DataFrame | None,
+    stated: float | None,
+) -> tuple[float, bool]:
+    """``(full_time_seconds, estimated)`` on the wall clock the lineups use."""
+    if stated is not None:
+        return stated * 60.0, False
+
+    if events is not None and not events.empty:
+        rows = events.loc[events["match_id"].astype("string") == match_id]
+        if not rows.empty:
+            minutes = pd.to_numeric(extra_field(rows, "minute"), errors="coerce")
+            seconds = pd.to_numeric(extra_field(rows, "second"), errors="coerce")
+            clock = (minutes * 60.0 + seconds.fillna(0.0)).dropna()
+            if not clock.empty:
+                return float(clock.max()), False
+
+    # Every substituted player has a closed `to`; the latest of them is a floor on full time,
+    # not full time itself, so anything derived from it is flagged as an estimate.
+    latest = 0.0
+    for team in payload:
+        for player in team.get("lineup") or []:
+            for spell in player.get("positions") or []:
+                end = _clock_seconds(spell.get("to"))
+                if end is not None:
+                    latest = max(latest, end)
+    return (latest or _NOMINAL_FULL_TIME * 60.0), True
+
+
+def _clock_seconds(value: Any) -> float | None:
+    """``"88:40"`` -> 5320.0. This is the match wall clock, not a period clock."""
+    if not isinstance(value, str) or ":" not in value:
+        return None
+    try:
+        minutes, seconds = value.split(":")
+        return int(minutes) * 60.0 + float(seconds)
+    except ValueError:  # pragma: no cover - defensive
+        return None
+
+
+def _lineups_frame(
+    payload: list[dict[str, Any]], match_id: str, full_time: tuple[float, bool]
+) -> pd.DataFrame:
+    full_time_seconds, estimated = full_time
+    rows = []
+    for team in payload:
+        team_id = _as_str(team.get("team_id"))
+        team_name = team.get("team_name")
+        for player in team.get("lineup") or []:
+            spells = player.get("positions") or []
+            played, open_ended = _minutes(spells, full_time_seconds)
+            cards = player.get("cards") or []
+            rows.append(
+                {
+                    "match_id": match_id,
+                    "team_id": team_id,
+                    "team": team_name,
+                    "player_id": _as_str(player.get("player_id")),
+                    "player": player.get("player_name"),
+                    "nickname": player.get("player_nickname"),
+                    "jersey": player.get("jersey_number"),
+                    "position": spells[0].get("position") if spells else None,
+                    "starter": bool(spells) and _clock_seconds(spells[0].get("from")) == 0.0,
+                    "on_at_full_time": open_ended,
+                    "minutes": played,
+                    "minutes_estimated": estimated and open_ended,
+                    "yellow_cards": sum(1 for c in cards if _card(c) == "yellow card"),
+                    "red_cards": sum(1 for c in cards if "red" in _card(c)),
+                    "positions": encode_extra({"spells": spells}) if spells else "{}",
+                }
+            )
+    return conform_lineups(pd.DataFrame(rows, columns=list(LINEUP_COLUMNS)))
+
+
+def _minutes(spells: list[dict[str, Any]], full_time_seconds: float) -> tuple[float, bool]:
+    """Total time on the pitch, and whether any spell ran to the final whistle."""
+    total = 0.0
+    open_ended = False
+    for spell in spells:
+        start = _clock_seconds(spell.get("from"))
+        if start is None:
+            continue
+        end = _clock_seconds(spell.get("to"))
+        if end is None:
+            end, open_ended = full_time_seconds, True
+        total += max(0.0, end - start)
+    return round(total / 60.0, 2), open_ended
+
+
+def _card(card: Any) -> str:
+    if isinstance(card, dict):
+        return str(card.get("card_type") or "").lower()
+    return str(card).lower()
+
+
+# --------------------------------------------------------------------------------------
 # events
 # --------------------------------------------------------------------------------------
 
@@ -153,6 +329,7 @@ def load_events(
     limit: int | None = None,
     three_sixty: bool = True,
     frame: str = "possession",
+    pitch: str = "linear",
     events_file: str | Path | None = None,
     three_sixty_file: str | Path | None = None,
     fetcher: Fetcher | None = None,
@@ -168,10 +345,15 @@ def load_events(
         three_sixty: attach 360 freeze frames to ``extra["freeze_frame"]``.
         frame: ``"possession"`` (default, canonical) mirrors off-possession events so the team
             on the ball always attacks +x; ``"acting"`` keeps StatsBomb's per-team frame.
+        pitch: ``"linear"`` (default) rescales 120x80 to 105x68 proportionally, which is what
+            mplsoccer, socceraction and kloppy do -- match it and your numbers match theirs.
+            ``"landmark"`` instead pins the goal line, boxes, penalty spot and halfway line to
+            their real positions, correcting the 5-7% the linear map shrinks the box by.
         events_file, three_sixty_file: read these files instead of downloading, for one match.
     """
     fetcher = fetcher or default_fetcher()
 
+    spec = _pitch_spec(pitch)
     if events_file is not None:
         payload = json.loads(Path(events_file).read_text())
         frames = _load_three_sixty_file(three_sixty_file) if three_sixty_file else {}
@@ -183,6 +365,7 @@ def load_events(
                 season=season,
                 freeze=frames,
                 frame=frame,
+                spec=spec,
             )
         )
 
@@ -200,12 +383,18 @@ def load_events(
         matches = matches.head(limit)
 
     out = [
-        _load_one_match(row, fetcher=fetcher, three_sixty=three_sixty, frame=frame)
-        for row in tqdm(
-            matches.to_dict(orient="records"), desc="statsbomb matches", leave=False
-        )
+        _load_one_match(row, fetcher=fetcher, three_sixty=three_sixty, frame=frame, spec=spec)
+        for row in tqdm(matches.to_dict(orient="records"), desc="statsbomb matches", leave=False)
     ]
     return finish_events(concat_events(out))
+
+
+def _pitch_spec(pitch: str) -> PitchSpec:
+    if pitch == "linear":
+        return STATSBOMB
+    if pitch == "landmark":
+        return STATSBOMB_LANDMARK
+    raise ValueError(f"unknown pitch {pitch!r}; use 'linear' or 'landmark'")
 
 
 def _load_one_match(
@@ -214,6 +403,7 @@ def _load_one_match(
     fetcher: Fetcher,
     three_sixty: bool,
     frame: str,
+    spec: PitchSpec,
 ) -> pd.DataFrame:
     match_id = int(row["match_id"])
     payload = fetcher.json(f"{BASE}/events/{match_id}.json", f"statsbomb/events_{match_id}.json")
@@ -233,6 +423,7 @@ def _load_one_match(
         season=str(row.get("season.season_name") or ""),
         freeze=freeze,
         frame=frame,
+        spec=spec,
     )
 
 
@@ -249,19 +440,37 @@ def _events_frame(
     season: str | None,
     freeze: dict[str, dict[str, Any]],
     frame: str,
+    spec: PitchSpec = STATSBOMB,
 ) -> pd.DataFrame:
     if frame not in {"possession", "acting"}:
         raise ValueError(f"unknown frame {frame!r}; use 'possession' or 'acting'")
     rows = [
-        _event_row(event, match_id, competition, season, freeze, frame) for event in payload
+        _event_row(event, match_id, competition, season, freeze, frame, spec)
+        for event in payload
     ]
     return pd.DataFrame(rows, columns=list(_EVENT_KEYS))
 
 
 _EVENT_KEYS = (
-    "match_id", "competition", "season", "team_id", "team", "player_id", "player",
-    "t", "period", "type", "subtype", "x", "y", "end_x", "end_y", "outcome",
-    "pressure", "body_part", "extra",
+    "match_id",
+    "competition",
+    "season",
+    "team_id",
+    "team",
+    "player_id",
+    "player",
+    "t",
+    "period",
+    "type",
+    "subtype",
+    "x",
+    "y",
+    "end_x",
+    "end_y",
+    "outcome",
+    "pressure",
+    "body_part",
+    "extra",
 )
 
 
@@ -272,6 +481,7 @@ def _event_row(
     season: str | None,
     freeze: dict[str, dict[str, Any]],
     frame: str,
+    spec: PitchSpec,
 ) -> dict[str, Any]:
     type_name = (event.get("type") or {}).get("name", "")
     key = snake(type_name) or "unknown"
@@ -282,9 +492,9 @@ def _event_row(
     possession_team = event.get("possession_team") or {}
     mirror = frame == "possession" and team.get("id") != possession_team.get("id")
 
-    x, y = _point(event.get("location"), mirror)
+    x, y = _point(event.get("location"), mirror, spec)
     end_raw = body.get("end_location")
-    end_x, end_y = _point(end_raw, mirror)
+    end_x, end_y = _point(end_raw, mirror, spec)
     end_z = _height(end_raw)
 
     subtype_name = (body.get("type") or {}).get("name")
@@ -296,7 +506,7 @@ def _event_row(
         # StatsBomb omits pass.outcome entirely on a completed pass.
         outcome = "Complete"
 
-    extra = _extra(event, body, key, end_z, freeze, mirror)
+    extra = _extra(event, body, key, end_z, freeze, mirror, spec)
     extra.update(_geometry(x, y, end_x, end_y))
 
     return {
@@ -330,6 +540,7 @@ def _extra(
     end_z: float | None,
     freeze: dict[str, dict[str, Any]],
     mirror: bool,
+    spec: PitchSpec,
 ) -> dict[str, Any]:
     extra: dict[str, Any] = {
         "id": event.get("id"),
@@ -356,14 +567,16 @@ def _extra(
             continue
         if name == "freeze_frame":
             # shot.freeze_frame is richer than the 360 one: it names the players.
-            extra["shot_freeze_frame"] = [_shot_player(p, mirror) for p in value]
+            extra["shot_freeze_frame"] = [_shot_player(p, mirror, spec) for p in value]
             continue
         extra[name] = _flatten(value)
 
     blob = freeze.get(str(event.get("id")))
     if blob:
-        extra["freeze_frame"] = [_freeze_player(p, mirror) for p in blob.get("freeze_frame") or []]
-        extra["visible_area"] = _visible_area(blob.get("visible_area"), mirror)
+        extra["freeze_frame"] = [
+            _freeze_player(p, mirror, spec) for p in blob.get("freeze_frame") or []
+        ]
+        extra["visible_area"] = _visible_area(blob.get("visible_area"), mirror, spec)
 
     return {k: v for k, v in extra.items() if v is not None}
 
@@ -392,8 +605,8 @@ def _flatten(value: Any) -> Any:
     return value
 
 
-def _freeze_player(player: dict[str, Any], mirror: bool) -> dict[str, Any]:
-    x, y = _point(player.get("location"), mirror)
+def _freeze_player(player: dict[str, Any], mirror: bool, spec: PitchSpec) -> dict[str, Any]:
+    x, y = _point(player.get("location"), mirror, spec)
     return {
         "teammate": bool(player.get("teammate", False)),
         "actor": bool(player.get("actor", False)),
@@ -402,8 +615,8 @@ def _freeze_player(player: dict[str, Any], mirror: bool) -> dict[str, Any]:
     }
 
 
-def _shot_player(player: dict[str, Any], mirror: bool) -> dict[str, Any]:
-    x, y = _point(player.get("location"), mirror)
+def _shot_player(player: dict[str, Any], mirror: bool, spec: PitchSpec) -> dict[str, Any]:
+    x, y = _point(player.get("location"), mirror, spec)
     return {
         "teammate": bool(player.get("teammate", False)),
         "player": (player.get("player") or {}).get("name"),
@@ -413,25 +626,27 @@ def _shot_player(player: dict[str, Any], mirror: bool) -> dict[str, Any]:
     }
 
 
-def _visible_area(area: Any, mirror: bool) -> list[list[float]] | None:
+def _visible_area(area: Any, mirror: bool, spec: PitchSpec) -> list[list[float]] | None:
     """``visible_area`` is a flat ``[x1,y1,x2,y2,...]`` list, not a list of pairs."""
     if not area:
         return None
     pairs = []
     for i in range(0, len(area) - 1, 2):
-        x, y = _point([area[i], area[i + 1]], mirror)
+        x, y = _point([area[i], area[i + 1]], mirror, spec)
         if x is not None and y is not None:
             pairs.append([x, y])
     return pairs or None
 
 
-def _point(location: Any, mirror: bool) -> tuple[float | None, float | None]:
+def _point(
+    location: Any, mirror: bool, spec: PitchSpec = STATSBOMB
+) -> tuple[float | None, float | None]:
     if not isinstance(location, (list, tuple)) or len(location) < 2:
         return None, None
     x, y = float(location[0]), float(location[1])
     if mirror:
         x, y = _SB_LENGTH - x, _SB_WIDTH - y
-    return STATSBOMB.to_canonical(x, y)
+    return spec.to_canonical(x, y)
 
 
 def _height(location: Any) -> float | None:

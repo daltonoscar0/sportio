@@ -151,9 +151,7 @@ def test_skillcorner_only_out_of_possession_rows_are_mirrored() -> None:
     assert set(source_type[mirrored]) == {"on_ball_engagement"}
     assert "on_ball_engagement" not in set(source_type[~mirrored])
 
-    differs = (
-        possession["x"].astype("float64") - acting["x"].astype("float64")
-    ).abs() > 1e-9
+    differs = (possession["x"].astype("float64") - acting["x"].astype("float64")).abs() > 1e-9
     assert differs.sum() == mirrored.sum()
 
 
@@ -171,8 +169,26 @@ def test_skillcorner_pressure_is_derived_from_the_engagement_subtype() -> None:
     pressured = events.loc[events["pressure"]]
     assert len(pressured) > 0
     assert set(pressured["subtype"].dropna()) <= {
-        "pressure", "pressing", "counter_press", "recovery_press",
+        "pressure",
+        "pressing",
+        "counter_press",
+        "recovery_press",
     }
+
+
+def test_skillcorner_lineups_report_measured_minutes() -> None:
+    lineups = skillcorner.load_lineups(
+        1886347, match_file=fixture_path(SC, "1886347_match.json")
+    )
+    assert tuple(lineups.columns) == sportio.LINEUP_COLUMNS
+    assert lineups.groupby("team")["starter"].sum().to_dict() == {
+        "Auckland FC": 11,
+        "Newcastle United Jets FC": 11,
+    }
+    # SkillCorner measures playing time itself, so none of this is inferred.
+    assert not lineups["minutes_estimated"].any()
+    assert lineups["minutes"].max() > 80.0
+    assert lineups.loc[lineups["starter"], "minutes"].min() > 0.0
 
 
 # --------------------------------------------------------------------------------------
@@ -209,9 +225,7 @@ def test_soccernet_drops_unprojection_blow_ups() -> None:
     tracking = soccernet.load_tracking(fixture_path("soccernet", "gsr", "SNGS-035"))
     assert tracking["y"].astype("float64").between(-15, 83).all()
 
-    unfiltered = soccernet.load_tracking(
-        fixture_path("soccernet", "gsr", "SNGS-035"), margin=None
-    )
+    unfiltered = soccernet.load_tracking(fixture_path("soccernet", "gsr", "SNGS-035"), margin=None)
     assert len(unfiltered) > len(tracking)
 
 
@@ -257,9 +271,7 @@ def test_skillcorner_y_axis_keeps_left_on_the_left() -> None:
     import json as _json
 
     meta = _json.loads(fixture_path(SC, "1886347_match.json").read_text())
-    roles = {
-        str(p["id"]): (p.get("player_role") or {}).get("name") or "" for p in meta["players"]
-    }
+    roles = {str(p["id"]): (p.get("player_role") or {}).get("name") or "" for p in meta["players"]}
     tracking = _sc_tracking("1886347_tracking_head.jsonl")  # home normalised to attack +x
 
     home = tracking.loc[tracking["team"] == "home"]
@@ -296,9 +308,7 @@ def test_soccernet_rejects_a_directory_that_is_neither_format(tmp_path) -> None:
 
 @pytest.fixture(scope="module")
 def rugby_events() -> pd.DataFrame:
-    return rugby.load_events(
-        summary_file=fixture_path("rugby", "espn_summary_180659_600252.json")
-    )
+    return rugby.load_events(summary_file=fixture_path("rugby", "espn_summary_180659_600252.json"))
 
 
 def test_rugby_has_no_coordinates_and_does_not_pretend_otherwise(

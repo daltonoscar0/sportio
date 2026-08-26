@@ -23,6 +23,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from ..enrich import enrich_from_tracking
 from ..http import Fetcher, default_fetcher
 from ..pitch import METRICA
 from ..schema import conform_events, conform_tracking, encode_extra
@@ -199,15 +200,42 @@ _SET_PIECE_TAGS = {
 
 #: Remaining tags that describe *how* the action was played, most specific first.
 _TECHNIQUE_TAGS = (
-    "cross", "through_ball", "deep_ball", "clearance", "tackle", "dribble",
-    "aerial", "ground", "interception", "theft", "hand_ball", "referee_hit",
-    "direct", "indirect", "retaken", "voluntary", "forced", "end_half",
+    "cross",
+    "through_ball",
+    "deep_ball",
+    "clearance",
+    "tackle",
+    "dribble",
+    "aerial",
+    "ground",
+    "interception",
+    "theft",
+    "hand_ball",
+    "referee_hit",
+    "direct",
+    "indirect",
+    "retaken",
+    "voluntary",
+    "forced",
+    "end_half",
 )
 
 #: Tags that describe how the action ended, most decisive first.
 _OUTCOME_TAGS = (
-    "goal", "saved", "blocked", "woodwork", "off_target", "on_target",
-    "won", "lost", "offside", "out", "advantage", "fault", "yellow", "red",
+    "goal",
+    "saved",
+    "blocked",
+    "woodwork",
+    "off_target",
+    "on_target",
+    "won",
+    "lost",
+    "offside",
+    "out",
+    "advantage",
+    "fault",
+    "yellow",
+    "red",
 )
 
 
@@ -267,10 +295,7 @@ def read_events(
             # Metrica has no under-pressure flag; pressing context must come from tracking.
             "pressure": False,
             "body_part": ["head" if "head" in tag_set else None for tag_set in tags],
-            "extra": [
-                encode_extra(payload)
-                for payload in _extras(raw, tags)
-            ],
+            "extra": [encode_extra(payload) for payload in _extras(raw, tags)],
         }
     )
     return conform_events(out)
@@ -347,6 +372,10 @@ def load_events(
     events_file: str | Path | None = None,
     direction: str = "possession",
     starts: Mapping[int, int] | None = None,
+    enrich: bool = False,
+    home_file: str | Path | None = None,
+    away_file: str | Path | None = None,
+    pressure_radius: float = 3.0,
     fetcher: Fetcher | None = None,
 ) -> pd.DataFrame:
     """Load one Metrica sample game as canonical events.
@@ -362,9 +391,31 @@ def load_events(
             on ``extra["start_frame"]`` instead if you cannot supply this. Note that if the
             tracking is a truncated slice, events preceding its first frame get a negative
             ``t``, which is the honest answer rather than a clamp.
+        enrich: also read the tracking and use it to fill in what the events file leaves out --
+            the null coordinates on every set piece, and a ``pressure`` flag Metrica does not
+            record at all. This loads the tracking (~65 MB for a full game), which is why it is
+            off by default. ``starts`` is derived from it automatically.
+        home_file, away_file: tracking CSVs for ``enrich``; downloaded if omitted.
+        pressure_radius: metres to the nearest opponent that counts as pressure.
     """
     fetcher = fetcher or default_fetcher()
     match_id = _match_id(match)
+
+    tracking = None
+    if enrich:
+        # Deliberately raw: enrichment happens before the possession rotation below, so both
+        # frames have to be in Metrica's own match frame for the ball position to mean anything.
+        tracking = load_tracking(
+            match,
+            home_file=home_file,
+            away_file=away_file,
+            direction="raw",
+            velocities=False,
+            fetcher=fetcher,
+        )
+        if starts is None:
+            starts = period_starts(tracking)
+
     if events_file is None:
         name = f"Sample_Game_{match}_RawEventsData.csv"
         events_file = fetcher.download(
@@ -372,6 +423,8 @@ def load_events(
         )
 
     out = read_events(events_file, match_id, starts)
+    if tracking is not None:
+        out = conform_events(enrich_from_tracking(out, tracking, radius=pressure_radius))
     if direction == "possession":
         signs = attack_directions(out)
         pairs = zip(out["team_id"], out["period"], strict=True)
