@@ -57,6 +57,8 @@ def test_info_rejects_an_unknown_source(capsys: pytest.CaptureFixture[str]) -> N
         (("skillcorner", "1886347_tracking_head.jsonl"), "skillcorner tracking loader"),
         (("rugby", "espn_summary_180659_600252.json"), "rugby events loader"),
         (("soccernet", "gsr", "SNGS-056"), "soccernet tracking loader"),
+        (("metrica", "game3", "Sample_Game_3_events.slice.json"), "metrica events loader"),
+        (("metrica", "game3", "Sample_Game_3_tracking.slice.txt"), "metrica tracking loader"),
     ],
 )
 def test_validate_detects_the_source_from_the_path(
@@ -66,6 +68,25 @@ def test_validate_detects_the_source_from_the_path(
     out = capsys.readouterr().out
     assert out.startswith("ok:")
     assert expected in out
+
+
+def test_info_reports_which_sources_publish_squads(capsys: pytest.CaptureFixture[str]) -> None:
+    assert run("info") == 0
+    out = capsys.readouterr().out
+    assert "lineups" in out
+
+
+def test_validate_tells_you_when_game_three_is_missing_its_metadata(
+    tmp_path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    # EPTS tracking is undecodable without the XML: the column layout is defined there, and
+    # it changes at every substitution.
+    orphan = tmp_path / "Sample_Game_3_tracking.slice.txt"
+    orphan.write_text(
+        fixture_path("metrica", "game3", "Sample_Game_3_tracking.slice.txt").read_text()
+    )
+    assert run("validate", str(orphan), "--source", "metrica") == 1
+    assert "metadata XML" in capsys.readouterr().err
 
 
 def test_validate_round_trips_a_frame_sportio_wrote(

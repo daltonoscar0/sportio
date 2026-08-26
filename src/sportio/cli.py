@@ -111,7 +111,7 @@ def _cmd_info(args: argparse.Namespace) -> int:
         return 0
     print(f"sportio {__version__}   cache: {data_root(create=False)}")
     print()
-    print(_render(table[["source", "events", "tracking", "title", "license"]]))
+    print(_render(table[["source", "events", "tracking", "lineups", "title", "license"]]))
     print()
     print(f"canonical events columns:   {', '.join(EVENT_COLUMNS)}")
     print(f"canonical tracking columns: {', '.join(TRACKING_COLUMNS)}")
@@ -291,10 +291,13 @@ def _detect_source(path: Path) -> str | None:
 
 def _detect_kind(path: Path, events: bool, tracking: bool) -> str:
     name = path.name.lower()
-    if "tracking" in name or "gamestate" in name or path.is_dir():
-        return "tracking" if tracking else "events"
+    # "events" wins over "tracking" because Metrica's files are named
+    # Sample_Game_1_RawEventsData.csv and Sample_Game_1_RawTrackingData_*.csv -- only one of
+    # the two words appears in each, but a directory name could contribute the other.
     if "event" in name or "summary" in name or "scoreboard" in name:
         return "events" if events else "tracking"
+    if "tracking" in name or "gamestate" in name or path.is_dir():
+        return "tracking" if tracking else "events"
     return "events" if events else "tracking"
 
 
@@ -307,6 +310,8 @@ def _validation_kwargs(source: str, path: Path, kind: str) -> dict[str, Any]:
     if source == "soccernet":
         return {"path": path}
     if source == "metrica":
+        if _is_metrica_game3(path):
+            return _metrica_game3_kwargs(path, kind)
         if kind == "events":
             return {"events_file": path}
         home, away = _metrica_pair(path)
@@ -324,6 +329,31 @@ def _validation_kwargs(source: str, path: Path, kind: str) -> dict[str, Any]:
         match_id = path.name.split("_")[0]
         return {key: path, "match_file": match_file, "match": match_id}
     return {"path": path}  # pragma: no cover - every source is covered above
+
+
+def _is_metrica_game3(path: Path) -> bool:
+    """Game 3 is the EPTS format, which shares nothing with the game 1-2 CSVs."""
+    parts = {part.lower() for part in path.parts}
+    return "game3" in parts or "sample_game_3" in path.name.lower()
+
+
+def _metrica_game3_kwargs(path: Path, kind: str) -> dict[str, Any]:
+    metadata = _find_beside(path, "metadata")
+    if metadata is None:
+        raise FileNotFoundError(
+            f"{path} is Metrica game 3 (EPTS), which needs its metadata XML alongside it; "
+            "expected a *_metadata.xml in the same directory"
+        )
+    if kind == "events":
+        return {"match": 3, "metadata_file": metadata, "events_file": path}
+    return {"match": 3, "metadata_file": metadata, "tracking_file": path}
+
+
+def _find_beside(path: Path, needle: str) -> Path | None:
+    for candidate in sorted(path.parent.glob("*.xml")):
+        if needle in candidate.name.lower():
+            return candidate
+    return None
 
 
 def _metrica_pair(path: Path) -> tuple[Path, Path]:

@@ -44,29 +44,31 @@ This is the biggest gap in the suite and it is not fixable with more code:
   `events/`, `plays/` or `timeline/` directory in either data version, and no ball-by-ball
   function in the package API.
 - ESPN's rugby feed carries a **scoring-and-discipline** list — try, conversion, penalty goal,
-  cards, substitutions — with a clock, a team and one athlete. A recursive walk of the full
-  summary payload finds no coordinate, zone, metre or distance key. `commentaryAvailable` is
-  `false`, so there is not even free text to derive positions from.
+  drop goal, cards, substitutions and half markers — with a clock, a team and one athlete. A
+  recursive walk of the full summary payload finds no coordinate, zone, metre or distance key.
+  `commentaryAvailable` is `false`, so there is not even free text to derive positions from.
 - Everything else found on GitHub is results-only, a scraper with no bundled data, or a parser
   for licensed Opta Superscout XML.
 
 Consequences, all reflected in `sportio.loaders.rugby`:
 
 - `x`, `y`, `end_x`, `end_y`, `pressure`, `body_part` are structurally null.
-- 11 of the 17 terms in `RUGBY_EVENT_TYPES` — `carry, pass, kick, ruck, maul, lineout, scrum,
+- 11 of the 19 terms in `RUGBY_EVENT_TYPES` — `carry, pass, kick, ruck, maul, lineout, scrum,
   tackle, turnover, knock_on, penalty` — never appear. The vocabulary is defined anyway so a
   better feed can be dropped in without touching anything downstream.
 - The spec's `x = metres from own line` convention is therefore unimplemented. If a positional
   feed ever appears, map it into the existing `x`/`y` columns rather than adding new ones.
-- ESPN `type.id` **4** and **6** were not observed in the sampled matches. They are mapped to
-  `drop_goal` and red `card` from the enum ordering and flagged `extra["type_mapping"] =
-  "unverified"`. Confirm against a match containing one before relying on them.
-- Only *successful* kicks at goal produce a detail row, so conversion counts are not
-  attempt counts.
+- Missed conversions and penalty goals produce **no row at all**, so those are counts of kicks
+  *made*, not attempted. A missed drop goal does get its own row (`type.id` 37), so the three
+  are not comparable attempt counts.
 - The **scoreboard** play shape omits `period.number`, so the loader infers the half from the
   clock and sets `extra["period_inferred"]`. First-half added time overruns the nominal 2400 s
   boundary (a period-1 play at 2419 s, a period-2 play at 2402 s), so plays within ~20 s of
   half time can land in the wrong half. Use `summary` when the half matters.
+
+The type enum itself is now **settled**, not guessed: a census of 9,626 detail rows across 184
+matches and 11 competitions found exactly thirteen ids (1–12 and 37) and nothing else. See
+`docs/schema_notes/rugby.md` §2.5 for the counts and the witness matches.
 
 ### Metrica
 
@@ -79,20 +81,17 @@ Consequences, all reflected in `sportio.loaders.rugby`:
   clock (verified event-by-event against the tracking rows). Failing that, join on frames —
   every event carries `extra["start_frame"]`, which indexes straight into `tracking.frame`.
   Making the alignment automatic would mean the events loader pulling the 65 MB tracking file,
-  so it stays opt-in.
-- **Game 3 (FIFA EPTS format) is not implemented.** It is a different file set entirely:
-  `Sample_Game_3_metadata.xml` (EPTS XML), `Sample_Game_3_tracking.txt` (a
-  `frame:player_x,player_y;…:ball_x,ball_y` stream) and `Sample_Game_3_events.json`. The
-  tracking stream has **11 different column layouts**, one per frame range, changing at every
-  substitution — a loader has to select the right `DataFormatSpecification` before decoding
-  each row. Schema is fully documented in `docs/schema_notes/metrica.md` §9. Games 1 and 2
-  (CSV) are what `GAMES` advertises.
-- **Every `SET PIECE` row has null coordinates** — all 62 of them in game 1, including all 10
-  corners. `sportio.corners()` on Metrica returns rows with `x`/`y` null. The position can only
-  be recovered by joining `Start Frame` against the tracking ball, which needs the full 65 MB
-  tracking files. Worth adding as an opt-in `enrich_from_tracking=` flag.
-- There is no `under_pressure` concept anywhere in Metrica, so `pressure` is always `False`.
-  Deriving it from nearest-opponent distance in the tracking data is a real option.
+  so it stays opt-in. `enrich=True` does it for you.
+- Set pieces have null coordinates in the source — all 62 of them in game 1, including all 10
+  corners. `load_events(enrich=True)` recovers them from the tracking ball; without it,
+  `sportio.corners()` on Metrica returns positionless rows. Roughly one corner per match still
+  cannot be recovered because the ball itself is null in tracking at that frame (dead ball).
+- Metrica has no under-pressure concept, so `pressure` is `False` unless you pass `enrich=True`,
+  which derives it from the distance to the nearest opponent and records that distance in
+  `extra["opponent_distance"]`. 3 m is the default threshold; StatsBomb's own flag is closer to
+  a 5 m cone, so tune it if you are trying to match that feed.
+- Game 3 (FIFA EPTS) is supported and routes through `metrica_epts`, but `enrich=True` is not
+  wired up for it.
 - No competition, season, match id or real names exist in games 1–2; `match_id` is synthesised
   as `metrica-{n}`.
 
@@ -105,11 +104,11 @@ Consequences, all reflected in `sportio.loaders.rugby`:
   of ≥15 players") holds for the filtered set — every corner that has a frame comfortably
   clears 15 — but making the filter the default would silently hide three quarters of the
   corners from the setpiece tool. Flagging rather than deciding unilaterally.
-- The 120×80 → 105×68 rescale is **plain linear**, which is what mplsoccer / socceraction /
-  kloppy do, so sportio matches the ecosystem. It shrinks the penalty box and goal by 5–7%
-  (goal 6.80 m vs 7.32 m, penalty spot 10.50 m vs 11.00 m). If box-relative features start to
-  matter, add a piecewise-linear landmark-preserving option to `PitchSpec` rather than changing
-  the default.
+- The 120×80 → 105×68 rescale is **plain linear by default**, which is what mplsoccer /
+  socceraction / kloppy do, so sportio matches the ecosystem out of the box. It shrinks the
+  penalty box and goal by 5–7% (goal 6.80 m vs 7.32 m, penalty spot 10.50 m vs 11.00 m). Pass
+  `pitch="landmark"` for the piecewise map that pins the real markings instead. The two are not
+  interchangeable — a frame read one way must be written back the same way.
 - Period 5 (penalty shootouts) is emitted as ordinary events, all located at the penalty spot.
   Decide per consumer whether to drop them.
 - 360 freeze frames are attached per event into `extra`, which makes a full-competition events
@@ -118,6 +117,9 @@ Consequences, all reflected in `sportio.loaders.rugby`:
   copied from `pass.length` / `pass.angle`. StatsBomb measures those in 120x80 units on a
   y-down axis and the rescale is anisotropic (0.875 in x, 0.85 in y), so a copied value drifts
   from the coordinates beside it by up to ~15% in length and ~0.8 degrees in angle.
+- `load_lineups` infers full time from the events when you pass them and otherwise falls back
+  to the last substitution, which is only a floor. `minutes_estimated` marks exactly the rows
+  that fallback affected.
 
 ### SkillCorner
 
@@ -136,9 +138,8 @@ Consequences, all reflected in `sportio.loaders.rugby`:
   `tests/test_sources.py::test_skillcorner_events_are_already_in_the_acting_teams_frame`
   is what will catch it.
 - `dynamic_events.csv` is Game Intelligence output, not a conventional event feed. `event_type`
-  has four values; a pass is a `player_possession` row with `end_type == "pass"`. The committed
-  fixture happens to contain **no** `end_type == "shot"` row, so that branch of the mapping is
-  exercised only by the network tests. Worth extending the fixture.
+  has four values; a pass is a `player_possession` row with `end_type == "pass"` and a shot is
+  one with `end_type == "shot"`.
 - `1886347_tracking_period2.jsonl` is an extrapolation dead zone (mean 1.08 of 22 players
   detected). It is good for testing the time base and bad for testing geometry — the tests use
   it only for the former.
@@ -150,9 +151,10 @@ Consequences, all reflected in `sportio.loaders.rugby`:
 
 - `to_parquet` and `rugby.load_rugbypy` need `pyarrow`, which sportio deliberately does not
   depend on. Both raise a clear install hint.
-- `resample_tracking` interpolates linearly. For broadcast tracking a constant-velocity or
-  spline fill would be better across short occlusions; `max_gap` currently just blanks them.
-- `normalize_direction` supports `"home_ltr"` and `"raw"`. A `"possession"` convention for
-  tracking (rotating per possession, matching the events convention) would help the pressing
-  tool but needs a possession signal that only SkillCorner provides.
-- No writer for StatsBomb or SkillCorner formats yet; only Metrica round-trips.
+- Metrica game 3 does not support `enrich=True`; the EPTS tracking stream would need routing
+  into the enricher first.
+- `possession_spans` needs a `sides=` mapping for any source whose team ids are not literally
+  `home`/`away`. The match metadata knows the answer for SkillCorner and StatsBomb, so a loader
+  could supply it automatically.
+- SoccerNet publishes no squad data in the GSR labels beyond `attributes.jersey`, so it has no
+  `load_lineups`.
