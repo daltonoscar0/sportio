@@ -21,13 +21,14 @@ from urllib.parse import urlsplit
 import requests
 from tqdm.auto import tqdm
 
+from ._version import __version__
 from .paths import cache_path
 
 __all__ = ["Fetcher", "OfflineError", "default_fetcher", "is_offline"]
 
 log = logging.getLogger("sportio.http")
 
-USER_AGENT = "sportio/0.1.0 (+https://github.com/daltonoscar0/sportio)"
+USER_AGENT = f"sportio/{__version__} (+https://github.com/daltonoscar0/sportio)"
 RETRY_STATUS = frozenset({408, 425, 429, 500, 502, 503, 504})
 
 

@@ -14,6 +14,7 @@ touches a vendor schema.
 
 from __future__ import annotations
 
+from ._version import __version__
 from .enrich import (
     add_pressure_from_tracking,
     enrich_from_tracking,
@@ -66,8 +67,6 @@ from .zones import (
     zone_labels,
     zones,
 )
-
-__version__ = "0.1.0"
 
 __all__ = [
     "CHANNELS",
