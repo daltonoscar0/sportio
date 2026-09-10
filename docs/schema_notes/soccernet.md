@@ -1,4 +1,4 @@
-# SoccerNet — tracking (SN-MOT) and Game State Reconstruction (SN-GSR)
+# SoccerNet, tracking (SN-MOT) and Game State Reconstruction (SN-GSR)
 
 Recon date: 2026-08-25. Everything below was verified against live sources; the
 "Provenance" column of each table says which one.
@@ -131,7 +131,7 @@ valid.zip
       000001.jpg ... 000750.jpg      # exactly 750 frames per sequence
 ```
 
-There is **no** `gt/`, no `seqinfo.ini` and no `gameinfo.ini` in the GSR archive —
+There is **no** `gt/`, no `seqinfo.ini` and no `gameinfo.ini` in the GSR archive -
 all of that information moved into `Labels-GameState.json`. (Those files belong to the
 SoccerNet-**Tracking** MOT archives, section 5.)
 
@@ -151,7 +151,7 @@ Top level, verified on two real files:
 `SNGS-056`: 750 images, 11599 annotations, 7 categories.
 `SNGS-035`: 750 images, 13506 annotations, 7 categories.
 
-### 4.1 `info` — real values from `SNGS-056`
+### 4.1 `info`, real values from `SNGS-056`
 
 ```json
 {
@@ -183,7 +183,7 @@ Types matter: **`frame_rate` and `seq_length` are JSON numbers; everything else 
   This is exactly what `tracklab` does
   (`info_data.get('game_time_start', ' - ').split(' - ')[1]`).
 * `clip_start` / `clip_stop` are **milliseconds** into the half
-  (`2238000 - 2208000 = 30000 ms = 30 s = 750 frames @ 25 fps` — consistent).
+  (`2238000 - 2208000 = 30000 ms = 30 s = 750 frames @ 25 fps`, consistent).
 * `action_position` is also ms, and lies inside `[clip_start, clip_stop]`.
 * `action_class` observed: `"Goal"`, `"Kick-off"`. `visibility` observed: `"visible"`.
 
@@ -222,14 +222,14 @@ ignore_regions_x, ignore_regions_y, image_id, is_labeled, width`.
 `sn-trackeval/trackeval/datasets/soccernet_gs.py`.)
 
 Resolution is 1920x1080 throughout. `image_id.split('_')[-1]` is what upstream sorts
-by — there is no `_` in these ids, so it degenerates to sorting by the full string,
+by, there is no `_` in these ids, so it degenerates to sorting by the full string,
 which happens to be correct because the ids are zero-padded and fixed-width.
 
 ### 4.3 `annotations[]`
 
 Three possible `supercategory` values are anticipated by upstream code:
 `"object"`, `"pitch"`, `"camera"`. **Only `"object"` and `"pitch"` actually occur
-in the 2025 valid split** — see gotchas.
+in the 2025 valid split**, see gotchas.
 
 Key sets measured:
 
@@ -281,7 +281,7 @@ A real `object` annotation (`SNGS-056`, frame 1, verbatim):
 
 * `track_id` is an **int** (not a string), 1-based, dense. Ranges measured:
   `SNGS-056` 1..16 (`num_tracklets` 16), `SNGS-035` 1..25 (`num_tracklets` 25).
-  It is **sequence-local** — `SNGS-056` track 1 and `SNGS-035` track 1 are different
+  It is **sequence-local**, `SNGS-056` track 1 and `SNGS-035` track 1 are different
   people. `tracklab` builds a global id as
   `detections['track_id'].astype(str) + detections['video_id'].astype(str)`.
 * `id` is a string and is unique across the whole file (11599/11599 unique in
@@ -292,7 +292,7 @@ A real `object` annotation (`SNGS-056`, frame 1, verbatim):
     asserts `role in {"other","player","goalkeeper","referee"}` after dropping balls.
   * `team` ∈ `{"left", "right", null}`; `sn-trackeval` additionally tolerates the
     literal string `'nan'`. `null` for `referee`, `ball`, `other`.
-  * `jersey` is a **string of digits or `null`** (e.g. `"43"`, `"5"`) — never an int.
+  * `jersey` is a **string of digits or `null`** (e.g. `"43"`, `"5"`), never an int.
     `null` for goalkeepers whose number is not visible, and always for referee/ball.
     Observed distinct values in `SNGS-035`: `4,5,6,8,10,15,17,19,20,23,34`.
 * `category_id` maps into `categories[]`: 1=player, 2=goalkeeper, 3=referee, 4=ball,
@@ -369,14 +369,14 @@ For sportio, the player position is `(x_bottom_middle, y_bottom_middle)`.
      README: "a special distance tolerance parameter τ set to 5 meters".
   2. `sn_gamestate/visualization/pitch.py` draws the radar with
      `pitch_width = 105 + 2*10`, `pitch_height = 68 + 2*5` and plots each detection at
-     `radar_center + int(x_bottom_middle * scale)` — a bare metre-to-pixel scale.
+     `radar_center + int(x_bottom_middle * scale)`, a bare metre-to-pixel scale.
   3. Measured values: `SNGS-056` (a goal at the right end)
      `x_bottom_middle ∈ [28.97, 57.64]`, `y_bottom_middle ∈ [-10.44, 17.57]`;
      goalkeeper x clusters at `[49.55, 52.47]` i.e. right on the 52.5 m goal line.
 * **Origin: pitch centre.** `SoccerPitch` puts the left penalty mark at
   `[-pitch_length/2 + 11, 0, 0]` and the right at `[+pitch_length/2 - 11, 0, 0]`.
   Confirmed by the goalkeeper clustering at x≈52.0 in `SNGS-056`.
-* **Pitch dimensions: 105 x 68 m** — `SoccerPitch.__init__(self, pitch_length=105., pitch_width=68.)`.
+* **Pitch dimensions: 105 x 68 m**, `SoccerPitch.__init__(self, pitch_length=105., pitch_width=68.)`.
   So on-pitch `x ∈ [-52.5, +52.5]` (goal-to-goal) and `y ∈ [-34, +34]` (touchline to
   touchline). Other constants: `GOAL_LINE_TO_PENALTY_MARK=11.0`,
   `PENALTY_AREA_WIDTH=40.32`, `PENALTY_AREA_LENGTH=16.5`, `GOAL_AREA_WIDTH=18.32`,
@@ -385,7 +385,7 @@ For sportio, the player position is `(x_bottom_middle, y_bottom_middle)`.
 * **+y direction:** the radar draws at `radar_center_y + y_bottom_middle*scale`, and
   image y grows downward, so **+y points toward the bottom touchline as seen in the
   broadcast frame**. sportio's canonical y is up-positive, so `y_sportio = -y_pitch`
-  (or flip once and stay consistent — the important part is that it is *not* already
+  (or flip once and stay consistent, the important part is that it is *not* already
   up-positive).
 * No rescaling is needed for sportio: SoccerNet is *already* 105x68 metres centred at
   the origin. Only `+52.5/+34` shift and y-sign need handling.
@@ -409,7 +409,7 @@ For sportio, the player position is `(x_bottom_middle, y_bottom_middle)`.
 
 ---
 
-## 6. SoccerNet-Tracking (MOT) on-disk format — gated, documented from source
+## 6. SoccerNet-Tracking (MOT) on-disk format, gated, documented from source
 
 Could not be downloaded (NDA). Documented from upstream code and README, which is
 enough to write a loader; see the citation table in section 8.
@@ -436,7 +436,7 @@ Sequence names are `SNMOT-###`. Exact lists ship inside the pip package at
 `SoccerNet/data/SNMOT-challenge-nodet.txt` (36, `SNMOT-001`..). Each file has a
 `name` header line then one id per line.
 
-### `gt/gt.txt` — 10 columns, no header
+### `gt/gt.txt`, 10 columns, no header
 
 From the sn-tracking README, verbatim:
 
@@ -456,7 +456,7 @@ df = pd.read_csv(file_path, header=None, names=columns)
 
 So: `frame, track_id, bbox_left, bbox_top, bbox_width, bbox_height, conf, class,
 visibility, unused`, where `conf == 1` in GT and columns 8/9/10 (`class`,
-`visibility`, `unused`) are **always `-1`** — SoccerNet does not populate them, unlike
+`visibility`, `unused`) are **always `-1`**, SoccerNet does not populate them, unlike
 stock MOT20. `frame` is 1-based; `tracklab` rebases with `detections_df['image_id'] - 1`.
 Coordinates are pixels, image top-left origin, 1920x1080.
 
@@ -495,7 +495,7 @@ substrings `player`/`goalkeeper`/`referee`/`ball`/`other` and, for players and
 goalkeepers, `left` or `right`. The extra field is the jersey number for
 players/goalkeepers and a free-text position for referees.
 
-This is the **only** place team/role/jersey live in the MOT product — `gt.txt` itself
+This is the **only** place team/role/jersey live in the MOT product, `gt.txt` itself
 carries no identity, so `gameinfo.ini` must be joined on `track_id`.
 
 ---
@@ -504,7 +504,7 @@ carries no identity, so `gameinfo.ini` must be joined on `track_id`.
 
 1. **`"bbox_pitch": null` is common and can cover half a clip.** In `SNGS-035`,
    **5975 of 12756** object annotations (47%) have `bbox_pitch == null`, and it is not
-   scattered — frames `2035000377` through `2035000750` (374 consecutive frames, the
+   scattered, frames `2035000377` through `2035000750` (374 consecutive frames, the
    entire back half of the clip) have `bbox_pitch == null` on *every* object. Cause:
    camera calibration is lost mid-clip. `SNGS-056` by contrast has 0 nulls.
    `bbox_pitch_raw` is null on essentially the same rows (6008 vs 5975).
@@ -521,7 +521,7 @@ carries no identity, so `gameinfo.ini` must be joined on `track_id`.
    official evaluator's, this is why they differ.
 4. **Pitch coordinates blow up near the horizon.** Unprojection is unbounded, so
    `SNGS-035` contains `x_bottom_middle = -175.59` and `y_bottom_middle = -280.39`
-   — far outside a 105x68 pitch. Upstream's own visualiser does
+, far outside a 105x68 pitch. Upstream's own visualiser does
    `np.clip(..., -10000, 10000)`. Measured: 99.7% of `SNGS-035` and 100.0% of
    `SNGS-056` non-null points fall inside pitch + 5 m margin, so clip or drop the tail.
 5. **No `camera` annotations are actually shipped.** `categories` declares id 6
@@ -537,7 +537,7 @@ carries no identity, so `gameinfo.ini` must be joined on `track_id`.
    centre circle): mean `x_bottom_middle` is `-9.49` for team `left` and `+0.00` for
    team `right`; medians `-8.28` vs `+0.18`. The two are **not** separated by the
    halfway line. Consequences for sportio: `team` maps to `home`/`away` only by
-   convention, and **attacking direction is not derivable from a 30 s clip** — there
+   convention, and **attacking direction is not derivable from a 30 s clip**, there
    are no goal/possession events in the annotations to anchor it. Record the raw
    `left`/`right` label and leave direction normalisation to the caller.
 7. **Sequence ids are non-contiguous.** `valid.zip` has `SNGS-021..059` then
@@ -545,7 +545,7 @@ carries no identity, so `gameinfo.ini` must be joined on `track_id`.
 8. **Everything in `info` except `frame_rate`/`seq_length` is a string**, including
    numeric-looking fields. `attributes.jersey` is a string too. `track_id` is an int.
    Mixed typing across the same file.
-9. **`tracklab`'s `read_ini_file` is fragile** — `dict(line.strip().split('=') for line
+9. **`tracklab`'s `read_ini_file` is fragile**, `dict(line.strip().split('=') for line
    in lines[1:])` unconditionally drops the first line and raises `ValueError` on a
    blank line or a value containing `=`. Do not copy it; use `configparser` or a
    tolerant split.
@@ -570,7 +570,7 @@ carries no identity, so `gameinfo.ini` must be joined on `track_id`.
 
 ### Mapping onto sportio's canonical `tracking` frame
 
-SoccerNet GSR is a *tracking* source, not an *events* source — there is nothing in
+SoccerNet GSR is a *tracking* source, not an *events* source, there is nothing in
 `Labels-GameState.json` that maps to sportio's `events` schema (no passes, shots,
 outcomes; only `info.action_class` labels the whole clip). Suggested mapping:
 
@@ -592,7 +592,7 @@ outcomes; only `info.action_class` labels the whole clip). Suggested mapping:
 
 ## 8. Fixtures in this repo
 
-### `tests/fixtures/soccernet/gsr/` — REAL
+### `tests/fixtures/soccernet/gsr/`, REAL
 
 Genuine slices of `SoccerNet/SN-GSR-2025` `valid.zip`
 (commit `ce84ee7d9acb2f9fe999ceed2b38e303ffa5efb9`, `info.version == "1.3"`),
@@ -601,9 +601,9 @@ obtained by ZIP64 range requests. Only `info.seq_length` was edited (750 -> 3).
 | file | size | content |
 |---|---|---|
 | `gsr/SNGS-056/Labels-GameState.json` | 59 KB | frames `2056000001..003`, 45 object + 3 pitch annotations, **0 null `bbox_pitch`** |
-| `gsr/SNGS-035/Labels-GameState.json` | 41 KB | frames `2035000376..378`, 48 object + 3 pitch annotations, **32 of 48 with `"bbox_pitch": null`** — deliberately straddles the calibration loss at frame 377 |
+| `gsr/SNGS-035/Labels-GameState.json` | 41 KB | frames `2035000376..378`, 48 object + 3 pitch annotations, **32 of 48 with `"bbox_pitch": null`**, deliberately straddles the calibration loss at frame 377 |
 
-### `tests/fixtures/soccernet/mot/SNMOT-116/` — SYNTHETIC but schema-faithful
+### `tests/fixtures/soccernet/mot/SNMOT-116/`, SYNTHETIC but schema-faithful
 
 SoccerNet-Tracking is NDA-gated, so these were **hand-written**. The numbers are
 invented (loosely traced from the real GSR bboxes above); every *key name, column
@@ -620,7 +620,7 @@ order and value format* comes from a verified source:
 | `gameTimeStart`/`Stop`, `clipStart`/`Stop`, `actionPosition`, `actionClass` values | copied from the real `SNGS-056` `info` block so the encodings are genuine |
 | section header line `[Sequence]` | **assumption.** `read_ini_file` discards `lines[0]` unconditionally, so upstream requires *a* header but never names it; `[Sequence]` is the MOTChallenge convention |
 
-The one genuinely uncertain detail is the whitespace after `;` in `trackletID_<i>` —
+The one genuinely uncertain detail is the whitespace after `;` in `trackletID_<i>` -
 see gotcha 10.
 
 ---

@@ -1,11 +1,11 @@
-# Metrica Sports sample data — schema notes
+# Metrica Sports sample data, schema notes
 
 Source: <https://github.com/metrica-sports/sample-data> (branch `master`).
 Public, no auth, no rate limiting beyond normal raw.githubusercontent.com limits.
 Verified live on 2026-08-25. Everything below was measured on the real files, not inferred.
 
 Anonymised: no real competition / season / team / player names. Teams are literally
-`Home` / `Away` (games 1–2) and `Team A` / `Team B` (game 3).
+`Home` / `Away` (games 1-2) and `Team A` / `Team B` (game 3).
 
 ## 1. Repo layout
 
@@ -27,7 +27,7 @@ data/
 
 Games 1 and 2 = "Metrica CSV" format. Game 3 = EPTS/FIFA format (added 2021-04-15),
 a completely different set of files. There is **no** CSV tracking for game 3 and **no**
-EPTS tracking for games 1–2. There is no `documentation/` folder in the repo despite the
+EPTS tracking for games 1-2. There is no `documentation/` folder in the repo despite the
 README referencing one.
 
 ## 2. URL templates
@@ -46,7 +46,7 @@ https://raw.githubusercontent.com/metrica-sports/sample-data/master/data/Sample_
 Directory listing (if you want to discover files):
 `https://api.github.com/repos/metrica-sports/sample-data/contents/data/Sample_Game_{g}`
 
-## 3. Tracking CSV — the 3-row header, verbatim
+## 3. Tracking CSV, the 3-row header, verbatim
 
 First six lines of `Sample_Game_1_RawTrackingData_Home_Team.csv`, byte for byte:
 
@@ -76,7 +76,7 @@ Period,Frame,Time [s],Player25,,Player15,,Player16,,Player17,,Player18,,Player19
 | 2 | **shirt number** for the player whose X column is at that index. Non-empty at indices `3,5,…,29`. |
 | 3 | the real header. `Period,Frame,Time [s]` at indices 0,1,2; then `PlayerNN` at each even index `3,5,…,29` naming the **X** column; then `Ball` at index 31 naming the ball X column. |
 
-Column index → meaning (0-based, exactly 33 columns):
+Column index -> meaning (0-based, exactly 33 columns):
 
 ```
 0  Period
@@ -91,12 +91,12 @@ Column index → meaning (0-based, exactly 33 columns):
 Row 2 pairs the shirt number to the player id: for the Home file index 3 carries
 `Player11` / shirt `11`; index 5 carries `Player1` / shirt `1`, etc. In games 1 and 2 the
 number in `PlayerNN` happens to equal the shirt number for the home team, but do **not**
-rely on it — read row 2 for the jersey and row 3 for the id. Away players carry global ids
+rely on it, read row 2 for the jersey and row 3 for the id. Away players carry global ids
 (`Player15…Player28`) whose shirt numbers in row 2 are `15…28` here, but the id namespace
 is match-global across both teams, so `player_id` is unique match-wide while `jersey` is
 only unique within a team.
 
-Player column ordering is **goalkeeper first, then outfield, then substitutes** — it is
+Player column ordering is **goalkeeper first, then outfield, then substitutes**, it is
 *not* numerically sorted: Home order is `11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14`,
 Away order is `25, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 27, 28`. Never assume
 `Player11` is the GK by number; it is the GK because it is the first player column.
@@ -141,7 +141,7 @@ a way that silently mislabels the Y columns. Do **not** key off the `Unnamed: N`
 * `Period`: `1` for frames `1…71268` (71,268 rows), `2` for frames `71269…145006` (73,738 rows).
 * **`Time [s]` is CUMULATIVE across periods, not reset.** Period 2 begins at
   `Time [s] = 2850.76`, i.e. it continues straight on from period 1's last value `2850.72`.
-  `Frame` is likewise continuous — there is no half-time gap in the file, the two halves
+  `Frame` is likewise continuous, there is no half-time gap in the file, the two halves
   are simply concatenated. Period 1 spans 47.51 min of frames, period 2 spans 49.16 min.
 * For the canonical `t` (seconds within period):
   `t = df["Time [s]"] - df.groupby("Period")["Time [s]"].transform("min")`
@@ -166,7 +166,7 @@ Normalised to the unit square. Stated by the repo README and confirmed empirical
 
 * **Origin = top-left corner** of the pitch as seen from the broadcast camera.
 * `x` increases to the **right** (toward the right-hand goal line at `x = 1`).
-* `y` increases **downward** (screen/image convention, i.e. a *left-handed* system —
+* `y` increases **downward** (screen/image convention, i.e. a *left-handed* system -
   y is flipped relative to the usual "y up" analytics convention).
 * Centre spot = `(0.5, 0.5)`. Measured ball position at real kick-offs:
   `(0.49442, 0.49757)`, `(0.49415, 0.49726)`, `(0.49358, 0.49875)`, `(0.50217, 0.50665)`.
@@ -174,7 +174,7 @@ Normalised to the unit square. Stated by the repo README and confirmed empirical
   `3.66 / 68 = 0.0538`, so the goal spans `y ∈ [0.4462, 0.5538]`. Every scored goal in
   game 1 lands in that band: `End Y` = `0.55, 0.54, 0.54, 0.51` at `End X` = `1.01, 1.01, 0.00, -0.01`.
 
-Measured ranges in `Sample_Game_1` (values escape `[0,1]` — players and ball go off-pitch):
+Measured ranges in `Sample_Game_1` (values escape `[0,1]`, players and ball go off-pitch):
 
 | quantity | min | max |
 |---|---|---|
@@ -187,7 +187,7 @@ Measured ranges in `Sample_Game_1` (values escape `[0,1]` — players and ball g
 | events `End X` | `-0.05` | `1.06` |
 | events `End Y` | `-0.04` | `1.04` |
 
-Do **not** clip to `[0,1]` — off-pitch positions (throw-ins, goals over the line, players
+Do **not** clip to `[0,1]`, off-pitch positions (throw-ins, goals over the line, players
 on the touchline) are legitimate and the clip would corrupt them.
 
 ### Transform to 105 × 68 metres
@@ -210,7 +210,7 @@ Sanity check of the scale: with the above, ball speed over game 1 has median 5.2
 p99 23.66 m/s; a typical outfield player (Player7) has median 1.42 m/s and p99 6.03 m/s.
 Those are physically right for football, so the 105×68 mapping is correct.
 
-## 6. Direction of play — teams DO switch ends at half time
+## 6. Direction of play, teams DO switch ends at half time
 
 Measured on `Sample_Game_1`, mean `x` over all frames of each period:
 
@@ -221,13 +221,13 @@ Measured on `Sample_Game_1`, mean `x` over all frames of each period:
 | **Home GK (`Player11`) mean x** | **`0.1245`** | **`0.9053`** |
 | **Away GK (`Player25`) mean x** | **`0.8936`** | **`0.1168`** |
 
-So in period 1 Home defends the **left** goal and attacks **+x** (left→right); in period 2
+So in period 1 Home defends the **left** goal and attacks **+x** (left->right); in period 2
 Home defends the **right** goal and attacks **−x**. Away is the mirror.
 
 Corroborated by the shots: every Home shot in period 1 has `End X` near `1.0` (`1.01, 1.04, 0.98, 1.03, 1.05, 1.00`)
 and every Home shot in period 2 has `End X` near `0.0` (`-0.02, 0.00, 0.00, -0.01, -0.03, -0.02, 0.02`).
 
-**Detector to use** (robust, no metadata needed for games 1–2):
+**Detector to use** (robust, no metadata needed for games 1-2):
 
 ```python
 # GK = the FIRST player column in each tracking file.
@@ -238,14 +238,14 @@ gk_x = df.groupby("Period")[gk_x_col].mean()
 Mean x of the whole team also works (`0.4735 / 0.5828` vs `0.6017 / 0.4583`) but the
 separation is only ~0.12, whereas the GK separates by ~0.78. Use the GK.
 
-The switch is instantaneous at the period boundary — Home GK x is `0.15355` at frame 71268
+The switch is instantaneous at the period boundary, Home GK x is `0.15355` at frame 71268
 and `1.01279` at frame 71269.
 
 To normalise to "attacking left-to-right for the team in possession", flip when direction
-is `-1`: `x' = 105 - x_m`, `y' = 68 - y_m` (a 180° rotation, not a mirror — mirroring only
+is `-1`: `x' = 105 - x_m`, `y' = 68 - y_m` (a 180° rotation, not a mirror, mirroring only
 x would flip left/right wing labels).
 
-Game 3 does not need the heuristic — its metadata states it directly:
+Game 3 does not need the heuristic, its metadata states it directly:
 `<Team id="FIFATMA">` has `ProviderParameter` `attack_direction_first_half = right_to_left`
 and `FIFATMB` has `left_to_right`.
 
@@ -269,20 +269,20 @@ Away,PASS,,1,77,3.08,96,3.84,Player19,Player21,0.45,0.32,0.49,0.47
 
 * Game 1: 1745 rows (`Home` 917 / `Away` 828; period 1 892 / period 2 853).
 * Game 2: 1935 rows (`Home` 1044 / `Away` 891).
-* `Team` ∈ `{Home, Away}` — matches the tracking filename.
+* `Team` ∈ `{Home, Away}`, matches the tracking filename.
 * `Start Frame` / `End Frame` index directly into the tracking `Frame` column (1-based).
 * `Start Time [s]` / `End Time [s]` are the same **cumulative** clock as tracking
   (`Start Time [s] == Start Frame / 25`).
-* `From` is the actor, `To` the receiver (`To` null on 946/1745 rows in game 1 —
+* `From` is the actor, `To` the receiver (`To` null on 946/1745 rows in game 1 -
   only passes and some challenges have one). Both are strings like `Player11`.
-* `Start X/Y`, `End X/Y` are in the same 0–1 top-left-origin frame as tracking, but
+* `Start X/Y`, `End X/Y` are in the same 0-1 top-left-origin frame as tracking, but
   **rounded to 2 decimals**. Cross-checked against the tracking ball position at
   `Start Frame`: median distance `0.0045` (≈0.4 m), p90 `0.0182`; 85.3 % of events are
   within `0.01`. They are genuinely synchronised, just coarser.
 * Missing coords in game 1: `Start X/Y` null on 81 rows, `End X/Y` null on 636 rows.
   Nulls appear as the literal string `NaN`.
 
-### `Type` vocabulary (complete, union of games 1 and 2 — 9 values)
+### `Type` vocabulary (complete, union of games 1 and 2, 9 values)
 
 `BALL LOST`, `BALL OUT`, `CARD`, `CHALLENGE`, `FAULT RECEIVED`, `PASS`, `RECOVERY`,
 `SET PIECE`, `SHOT`
@@ -292,14 +292,14 @@ Game 1 counts: `PASS` 799, `RECOVERY` 278, `BALL LOST` 257, `CHALLENGE` 233, `SE
 Game 2 counts: `PASS` 964, `CHALLENGE` 311, `RECOVERY` 248, `BALL LOST` 233, `SET PIECE` 80,
 `BALL OUT` 49, `SHOT` 24, `FAULT RECEIVED` 20, `CARD` 6.
 
-Game 3's JSON adds a 10th type, `CARRY` (1395 of its 3620 events). Games 1–2 have **no**
+Game 3's JSON adds a 10th type, `CARRY` (1395 of its 3620 events). Games 1-2 have **no**
 carry/dribble-with-ball events at all.
 
 ### `Subtype` is a hyphen-joined *set of tags*, not an enum
 
 `Subtype` is empty (`NaN`) on 953/1745 rows in game 1. When present it is one or more
 atomic tags joined with `-`, e.g. `HEAD-ON TARGET-GOAL` = {HEAD, ON TARGET, GOAL}.
-61 distinct composite strings across games 1+2; **tag order is not stable** — game 1 has
+61 distinct composite strings across games 1+2; **tag order is not stable**, game 1 has
 `HEAD-OFF TARGET-OUT` while game 2 has `OFF TARGET-HEAD-OUT`. Parse with `s.split("-")`
 into a set, never string-match the whole thing.
 
@@ -351,7 +351,7 @@ Additional composites present only in game 2: `CLEARANCE-INTERCEPTION`, `FAULT-W
 | canonical | Metrica CSV |
 |---|---|
 | `match_id` | synthesise, e.g. `"metrica-1"` (nothing in the files) |
-| `competition` | none — use `"Metrica Sample"` |
+| `competition` | none, use `"Metrica Sample"` |
 | `season` | none |
 | `team_id` / `team` | `Team` (`"Home"` / `"Away"`) |
 | `player_id` / `player` | `From` (string `"Player11"`; strip the `Player` prefix for a numeric id) |
@@ -362,7 +362,7 @@ Additional composites present only in game 2: `CLEARANCE-INTERCEPTION`, `FAULT-W
 | `x` / `y` | `Start X` / `Start Y` → metres via §5 |
 | `end_x` / `end_y` | `End X` / `End Y` |
 | `outcome` | derive from tags: `WON`/`LOST`, `GOAL`/`SAVED`/`OFF TARGET`/`BLOCKED`/`WOODWORK`, `INTERCEPTION` |
-| `pressure` | **not available** — Metrica has no under-pressure flag. Emit `None`/`False`, or derive from tracking (nearest opponent distance) |
+| `pressure` | **not available**, Metrica has no under-pressure flag. Emit `None`/`False`, or derive from tracking (nearest opponent distance) |
 | `body_part` | only `HEAD` is tagged; everything else is implicitly foot/unknown. Do **not** assume "not HEAD ⇒ foot" for e.g. `HAND BALL`. |
 | `extra` | keep `End Frame`, `End Time [s]`, `To`, raw `Subtype` |
 
@@ -376,12 +376,12 @@ labels. The shirt number lives in row 2 at the same column index.
 Which file a player is in tells you their team; there is no team field in events beyond
 `Team`, and `Team` in events uses the same `"Home"`/`"Away"` vocabulary as the filenames.
 
-**Game 2 breaks this.** Its events file contains `"Player 26"` — with a space — on 32 rows,
+**Game 2 breaks this.** Its events file contains `"Player 26"`, with a space, on 32 rows,
 and never `"Player26"`. A naive `==` join silently drops those 32 events. Normalise with
 `re.sub(r"\s+", "", pid)` (or `pid.replace(" ", "")`) before joining. Game 1 has no such
 anomaly (all 28 ids match `^Player\d+$`).
 
-## 9. Game 3 — EPTS format (different loader entirely)
+## 9. Game 3, EPTS format (different loader entirely)
 
 `Sample_Game_3_metadata.xml` (FIFA EPTS XML, root `<main>`):
 
@@ -412,23 +412,23 @@ main/DataFormatSpecifications/DataFormatSpecification[@startFrame][@endFrame][@s
       SplitRegister separator=","  ->  BallChannelRef channelId="x"|"y"
 ```
 
-There are **11** `DataFormatSpecification` blocks, each covering a frame range — the column
+There are **11** `DataFormatSpecification` blocks, each covering a frame range, the column
 layout changes at every substitution. Ranges: `1–69661`, `69662–89697`, `89698–93452`,
 `93453–93835`, `93836–94657`, `94658–98472`, `98473–102811`, `102812–110298`,
 `110299–120212`, `120213–129831`, `129832–143761`. Each block always lists 22 players + ball,
 but *which* `playerN_*` channels differ. A loader must pick the block whose
 `[startFrame, endFrame]` contains the frame before decoding the row.
 
-`Sample_Game_3_tracking.txt` — one line per frame, no header:
+`Sample_Game_3_tracking.txt`, one line per frame, no header:
 
 ```
 1:0.84722,0.52855;0.65268,0.24792;...;0.48864,0.36357:NaN,NaN
 2:0.84722,0.52855;0.65231,0.24513;...;0.48834,0.36362:NaN,NaN
 ```
 `frameCount : player1_x,player1_y ; player2_x,player2_y ; … ; player22_x,player22_y : ball_x,ball_y`
-Same normalised 0–1 coordinates. Missing values are the literal `NaN`.
+Same normalised 0-1 coordinates. Missing values are the literal `NaN`.
 
-`Sample_Game_3_events.json` — `{"data": [...3620 events...], "metadata": [...49 code entries...]}`.
+`Sample_Game_3_events.json`, `{"data": [...3620 events...], "metadata": [...49 code entries...]}`.
 Per-event keys:
 
 ```json
@@ -449,7 +449,7 @@ Per-event keys:
 objects (393), e.g. `[{"name": "GROUND", "id": 42}, {"name": "LOST", "id": 49}]`. Handle all
 three. `to` is `null` for non-pass events. `x`/`y` are `null` on set pieces and cards.
 `time` is again cumulative (period 1 `14.44…2781.68`, period 2 `2803.6…5742.12`).
-Note event `from.name` is `"Player 10"` **with a space**, unlike games 1–2 — join on
+Note event `from.name` is `"Player 10"` **with a space**, unlike games 1-2, join on
 `from.id` (`P3577`), which matches `Player/@id` in the metadata.
 
 ## 10. Gotchas that will break a naive loader
@@ -468,7 +468,7 @@ Note event `from.name` is `"Player 10"` **with a space**, unlike games 1–2 —
    Subtract the per-period minimum to get seconds-within-period.
 5. **Teams switch ends.** Any cross-period aggregation without flipping period 2 will
    average the two halves to nonsense (Home mean x `0.4735` then `0.5828`).
-6. **The ball is `NaN` 39.1 % of frames** in game 1 (56,755 / 145,006) — dead ball, half
+6. **The ball is `NaN` 39.1 % of frames** in game 1 (56,755 / 145,006), dead ball, half
    time, and the whole stretch from the period-2 first frame (71269) until the period-2
    kick-off at frame 72135. Don't forward-fill it; drop those ball rows.
 7. **Substitutions appear as complementary all-NaN column spans**, not as extra rows.
@@ -484,13 +484,13 @@ Note event `from.name` is `"Player 10"` **with a space**, unlike games 1–2 —
 9. **Position teleports exist within a period.** Naive `diff/dt` velocity on game 1 Home
    gives max 557 m/s (`Player3`, frame 71279, walking on at the start of period 2 from the
    clamped `y = -0.05` line) and 70 m/s (`Player10`). Frames with a >1 m single-frame jump:
-   `Player2` 11, `Player3` 9, `Player8` 13, `Player9` 1, `Player10` 7 — 0 for everyone
+   `Player2` 11, `Player3` 9, `Player8` 13, `Player9` 1, `Player10` 7, 0 for everyone
    else. Ball has 183 frames above 40 m/s. For `vx`/`vy`, compute the diff **within**
    period, then clip implausible speeds (>12 m/s players, >45 m/s ball) to NaN and smooth
-   (Savitzky–Golay or a ~7-frame moving average) — otherwise the period boundary alone
+   (Savitzky-Golay or a ~7-frame moving average), otherwise the period boundary alone
    yields 1481 m/s.
 10. **`Team` on a goal event is the last-touch team, not the scoring team.**
-    Game 1 row index 1093 is `Home,BALL OUT,WOODWORK-GOAL,2,...,End X 1.01` — in period 2
+    Game 1 row index 1093 is `Home,BALL OUT,WOODWORK-GOAL,2...,End X 1.01`, in period 2
     Home defends `x = 1`, so this is a Home own goal and it is immediately followed by a
     `Home,SET PIECE,KICK OFF` (row 1094). The team that takes the restart kick-off is the
     team that **conceded**. Determine the scorer from attacking direction + goal end.
@@ -498,7 +498,7 @@ Note event `from.name` is `"Player 10"` **with a space**, unlike games 1–2 —
     Filtering `Type == "SHOT"` misses them.
 12. **The first `SET PIECE / KICK OFF` row has `End Frame = 0`, `End Time [s] = 0`**
     (game 1 row 0). It is the only row with `End Frame == 0`. An `End Frame` of 0 is not a
-    valid frame index (frames are 1-based) — treat as null.
+    valid frame index (frames are 1-based), treat as null.
 13. **The period-1 tracking does not start at the kick-off touch.** Frame 1 already has the
     ball at `(0.45472, 0.38709)`, i.e. the kick-off has been taken; the event file
     nonetheless stamps `KICK OFF` at frame 1 with null coordinates.
@@ -506,12 +506,12 @@ Note event `from.name` is `"Player 10"` **with a space**, unlike games 1–2 —
     player ids before joining to tracking columns.
 15. **`Subtype` token order is not stable across games** (`HEAD-OFF TARGET-OUT` in game 1
     vs `OFF TARGET-HEAD-OUT` in game 2). Split into a set.
-16. **Nulls are the literal string `NaN`** in both CSVs — fine for pandas defaults, but a
+16. **Nulls are the literal string `NaN`** in both CSVs, fine for pandas defaults, but a
     hand-rolled `csv` reader must handle it.
-17. **Game 3 is a different format entirely** — no CSV tracking, 11 frame-range-dependent
+17. **Game 3 is a different format entirely**, no CSV tracking, 11 frame-range-dependent
     column layouts, `subtypes` polymorphic (null | dict | list), and a `CARRY` event type
-    that does not exist in games 1–2.
-18. **No competition, season, match id, date, or real names** anywhere in games 1–2. Game 3
+    that does not exist in games 1-2.
+18. **No competition, season, match id, date, or real names** anywhere in games 1-2. Game 3
     has a date (`2019-02-21T03:30:07.000Z`) and a fake competition (`Demo`). All of
     `match_id`, `competition`, `season` must be synthesised by sportio.
 19. **No under-pressure flag** in any Metrica format. `pressure` cannot be populated from
@@ -522,22 +522,22 @@ Note event `from.name` is `"Player 10"` **with a space**, unlike games 1–2 —
 
 Under `tests/fixtures/metrica/`:
 
-* `Sample_Game_1_RawTrackingData_Home_Team.trunc.csv` — 81,917 B. Byte-identical 3-row
+* `Sample_Game_1_RawTrackingData_Home_Team.trunc.csv`, 81,917 B. Byte-identical 3-row
   header plus 362 data rows: frames `2200–2380` (period 1) and `72100–72280` (period 2).
-* `Sample_Game_1_RawTrackingData_Away_Team.trunc.csv` — 81,865 B. Same frame set.
-* `Sample_Game_1_RawEventsData.trunc.csv` — 94,705 B. Byte-exact prefix of the real file:
+* `Sample_Game_1_RawTrackingData_Away_Team.trunc.csv`, 81,865 B. Same frame set.
+* `Sample_Game_1_RawEventsData.trunc.csv`, 94,705 B. Byte-exact prefix of the real file:
   header + first 1200 data rows (period 1 all 892 rows, period 2 first 308 rows;
   all 9 `Type` values, 48 distinct `Subtype` values).
-* `game3/Sample_Game_3_metadata.xml` — 81,806 B, the complete real EPTS metadata.
-* `game3/Sample_Game_3_tracking.head.txt` — 3,984 B, first frames of the EPTS stream.
-* `game3/Sample_Game_3_events.head.json` — 58,087 B, first 120 events plus the full
+* `game3/Sample_Game_3_metadata.xml`, 81,806 B, the complete real EPTS metadata.
+* `game3/Sample_Game_3_tracking.head.txt`, 3,984 B, first frames of the EPTS stream.
+* `game3/Sample_Game_3_events.head.json`, 58,087 B, first 120 events plus the full
   `metadata` code list.
-* `game3/Sample_Game_3_tracking.slice.txt` — 70,355 B, 190 real rows in two windows: frames
-  13560–13589 (period 1) and 120193–120352 (period 2). The second straddles the
+* `game3/Sample_Game_3_tracking.slice.txt`, 70,355 B, 190 real rows in two windows: frames
+  13560-13589 (period 1) and 120193-120352 (period 2). The second straddles the
   `DataFormatSpecification` boundary at 120212/120213, where `player16_*` switches from P3588
   (shirt 21) to P3700 (shirt 35), and reaches live ball again at 120305. This is the fixture
-  that makes the block switching testable at all — the `head` file covers only block 1.
-* `game3/Sample_Game_3_events.slice.json` — 34,529 B, 52 events (31 period 1, 21 period 2):
+  that makes the block switching testable at all, the `head` file covers only block 1.
+* `game3/Sample_Game_3_events.slice.json`, 34,529 B, 52 events (31 period 1, 21 period 2):
   both Team B goals into opposite ends, a yellow card, set pieces with null x/y, and all three
   `subtypes` shapes (null, object, list).
 
@@ -552,9 +552,9 @@ Properties the tracking fixtures preserve (assert these in tests):
 | ball non-null rows | 256 | 256 |
 
 The event fixture contains both a period-1 goal (`Home`, `HEAD-ON TARGET-GOAL`, frame 2289,
-`End X 1.01`) and a period-2 goal (`Home`, `ON TARGET-GOAL`, frame 90005, `End X 0.00`) —
+`End X 1.01`) and a period-2 goal (`Home`, `ON TARGET-GOAL`, frame 90005, `End X 0.00`) -
 i.e. the same team scoring into opposite ends, which is exactly the direction-flip case.
-Frames 2289 and 72100–72280 are both inside the truncated tracking windows, so the
+Frames 2289 and 72100-72280 are both inside the truncated tracking windows, so the
 event↔tracking synchronisation check works offline.
 
 Full downloads are cached (gitignored) under `data/raw/metrica/`.

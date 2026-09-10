@@ -1,11 +1,11 @@
-# StatsBomb Open Data — schema notes
+# StatsBomb Open Data, schema notes
 
 All facts below were measured directly from files downloaded on 2026-08-25 into
 `data/raw/statsbomb/` (gitignored). Nothing here is copied from documentation.
 
-Primary specimen: **UEFA Euro 2024 Final, Spain 2–1 England, `match_id = 3943043`**
+Primary specimen: **UEFA Euro 2024 Final, Spain 2-1 England, `match_id = 3943043`**
 (3 304 events, 2 882 360-frames). Secondary specimen used for penalties/extra time:
-**Portugal 0–0 Slovenia, R16, `match_id = 3941020`** (4 225 events, periods 1–5).
+**Portugal 0-0 Slovenia, R16, `match_id = 3941020`** (4 225 events, periods 1-5).
 
 ---
 
@@ -57,7 +57,7 @@ metadata{data_version,shot_fidelity_version,xy_fidelity_version},
 match_week, competition_stage{id,name}, stadium{id,name,country}, referee{id,name,country}
 ```
 
-Note the **asymmetric team key names** (`home_team.home_team_id` vs `away_team.away_team_id`) —
+Note the **asymmetric team key names** (`home_team.home_team_id` vs `away_team.away_team_id`) -
 you cannot use one accessor for both. `metadata.data_version` was `"1.1.0"`,
 `shot_fidelity_version` / `xy_fidelity_version` both `"2"`.
 
@@ -80,7 +80,7 @@ Top-level keys and how often they were present across the 3 304 events of match 
 
 | key | present | notes |
 |---|---|---|
-| `id` | 100 % | UUID string — joins to 360 `event_uuid` |
+| `id` | 100 % | UUID string, joins to 360 `event_uuid` |
 | `index` | 100 % | 1-based, dense, sequential within the match |
 | `period` | 100 % | 1,2 = halves; 3,4 = ET; 5 = shootout |
 | `timestamp` | 100 % | `"HH:MM:SS.mmm"`, resets each period |
@@ -89,11 +89,11 @@ Top-level keys and how often they were present across the 3 304 events of match 
 | `possession` | 100 % | integer possession-chain counter |
 | `possession_team` | 100 % | `{id, name}` |
 | `play_pattern` | 100 % | `{id, name}` |
-| `team` | 100 % | `{id, name}` — the acting team |
-| `player` | 99.5 % | `{id, name}` — absent on Starting XI / Half Start / Half End / Tactical Shift |
+| `team` | 100 % | `{id, name}`, the acting team |
+| `player` | 99.5 % | `{id, name}`, absent on Starting XI / Half Start / Half End / Tactical Shift |
 | `position` | 99.5 % | `{id, name}` |
 | `location` | 99.2 % | `[x, y]`, always length 2 |
-| `related_events` | 96.6 % | list of 1–5 event `id`s |
+| `related_events` | 96.6 % | list of 1-5 event `id`s |
 | `duration` | 73.5 % | seconds, float |
 | `under_pressure` | 21.5 % | **only ever `true`** |
 | `counterpress` | 2.8 % | only ever `true` |
@@ -169,7 +169,7 @@ injury_stoppage in_chain
 ```
 
 `Pressure`, `Miscontrol`, `Dispossessed`, `Dribbled Past`, `Error`, `Shield` carry **no**
-sub-dict — all their information is in the top-level fields.
+sub-dict, all their information is in the top-level fields.
 `counterpress` is a bare top-level boolean, **not** a dict.
 
 ### 4.2 Where end coordinates live
@@ -230,7 +230,7 @@ clearance.body_part.name   {Head 20, Left Foot 12, Right Foot 10}  always presen
 
 Also present as redundant booleans on `clearance`: `head`, `left_foot`, `right_foot`.
 
-### 4.5 Set pieces — and how to identify CORNERS
+### 4.5 Set pieces, and how to identify CORNERS
 
 Two different fields, two different meanings. Measured on match 3943043:
 
@@ -247,9 +247,9 @@ play_pattern.name    Regular Play 1236, From Throw In 880, From Free Kick 355,
                           Other 5, From Counter 6, From Goal Kick 7, From Keeper 8, From Kick Off 9
 ```
 
-- **`pass.type.name == "Corner"` (id 61) marks the 12 corner *deliveries*** — the kick itself.
+- **`pass.type.name == "Corner"` (id 61) marks the 12 corner *deliveries***, the kick itself.
 - **`play_pattern.name == "From Corner"` (id 2) marks all 276 events in the possession chains
-  that *followed* a corner** — including the defending team's clearances and the second phase.
+  that *followed* a corner**, including the defending team's clearances and the second phase.
 
 So: use `pass.type.name == "Corner"` to count corners; use `play_pattern.name == "From Corner"`
 to select a corner *sequence*. They differ by a factor of 23 in this match.
@@ -270,15 +270,15 @@ match 3941020 additionally yielded `Free Kick` (id 62) and `Penalty` (id 88):
 shot.type.name  {Open Play 24, Penalty 7, Free Kick 5}   (match 3941020)
 ```
 
-Note `Free Kick` reuses id **62** in both the `pass.type` and `shot.type` enums — the ids are
-namespaced per field, so never build one global id→name map.
+Note `Free Kick` reuses id **62** in both the `pass.type` and `shot.type` enums, the ids are
+namespaced per field, so never build one global id->name map.
 
 ### 4.6 Timestamps
 
 `timestamp` is `"HH:MM:SS.mmm"` and **restarts at `00:00:00.000` at the beginning of every
 period**. `minute`/`second` are the broadcast wall clock and do not reset.
 
-Verified on all 5 periods of match 3941020 — every period's first event has
+Verified on all 5 periods of match 3941020, every period's first event has
 `timestamp == "00:00:00.000"`:
 
 ```
@@ -296,7 +296,7 @@ h, m, s = event["timestamp"].split(":")
 t = int(h) * 3600 + int(m) * 60 + float(s)
 ```
 
-and the relationship to the wall clock is exact — across all 3 304 events of match 3943043,
+and the relationship to the wall clock is exact, across all 3 304 events of match 3943043,
 `minute*60 + second == PERIOD_OFFSET[period] + floor(t)` held with **0 exceptions**, where
 
 ```python
@@ -315,7 +315,7 @@ reaches `timestamp` 00:47:12 while `minute` is 47).
 
 Nominal pitch is **120 × 80**, `x ∈ [0, 120]`, `y ∈ [0, 80]`. Measured over match 3943043:
 event `location` spans x 0.6 → 120.0 and y 0.1 → 80.0; `pass.end_location` spans x 2.0 → 120.0,
-y 0.1 → 80.0.
+y 0.1 -> 80.0.
 
 **Units are yards**, established from fixed pitch furniture:
 
@@ -334,7 +334,7 @@ regardless of which team or which half.
 
 ### 5.3 y direction: y = 0 is the attacking team's LEFT
 
-Established empirically from corner swing vs. kicking foot — 10/10 consistent:
+Established empirically from corner swing vs. kicking foot, 10/10 consistent:
 
 ```
 corner at y≈0    Inswinging  Right Foot   x5      Outswinging  Left Foot  x1
@@ -344,7 +344,7 @@ corner at y≈80   Inswinging  Left Foot    x4
 From the attacking team's **left** flank an inswinging delivery is struck with the **right**
 foot, and vice versa. The `y ≈ 0` corner is therefore the attacker's left. With `x` increasing
 toward the attacked goal, that puts the origin at the **top-left** when the pitch is drawn with
-the attacked goal on the right — i.e. **y increases downward** (screen convention), and the
+the attacked goal on the right, i.e. **y increases downward** (screen convention), and the
 StatsBomb y axis is inverted relative to a standard maths orientation.
 
 `pass.angle` is `atan2(end_y − y, end_x − x)` in these raw axes (checked:
@@ -354,10 +354,10 @@ flipping y also flips the sign of `angle`.
 ### 5.4 THE BIG ONE: the frame is per *event team*, not per *possession team*
 
 Each event's coordinates are expressed in a frame where **`event.team`** attacks toward
-`x = 120` — **not** `event.possession_team`. For the 17.3 % of events (571/3304) where
+`x = 120`, **not** `event.possession_team`. For the 17.3 % of events (571/3304) where
 `team.id != possession_team.id`, the coordinates are rotated 180° relative to the team on the ball.
 
-Evidence 1 — goalkeepers. Every `Goal Keeper` event sits at `x ≈ 1–8` even though the shot it
+Evidence 1, goalkeepers. Every `Goal Keeper` event sits at `x ≈ 1-8` even though the shot it
 responds to ends at `x ≈ 120`:
 
 ```
@@ -367,7 +367,7 @@ Spain    Shot Saved     loc=[1.4, 39.6]
 Portugal Goal Keeper    loc=[1.0, 40.0]   (facing a penalty struck from [108.1, 40.1])
 ```
 
-Evidence 2 — quantitative. Pairing each of the 289 off-possession `Pressure` events with its
+Evidence 2, quantitative. Pairing each of the 289 off-possession `Pressure` events with its
 temporally adjacent possession-team event:
 
 ```
@@ -375,7 +375,7 @@ median L1 error assuming a SHARED frame : 90.6
 median L1 error assuming a MIRRORED frame:  6.9
 ```
 
-Evidence 3 — the corner sequence in the committed fixture (event indices 2513–2518):
+Evidence 3, the corner sequence in the committed fixture (event indices 2513-2518):
 
 ```
 2513 Pass          Spain   loc [120.0,  0.1]   corner delivery
@@ -384,7 +384,7 @@ Evidence 3 — the corner sequence in the committed fixture (event indices 2513�
 2518 Goal Keeper   England loc [  1.0, 38.8]
 ```
 
-Evidence 4 — the *counter-example* that proves it is per-team and not per-event: inside
+Evidence 4, the *counter-example* that proves it is per-team and not per-event: inside
 `shot.freeze_frame`, the opposition keeper is at `x = 118.3` because that nested frame is
 expressed in the **shooter's** frame:
 
@@ -422,18 +422,18 @@ If instead y is kept increasing downward (origin top-left, matching StatsBomb), 
 
 Landmark check of the linear rescale:
 
-| landmark | StatsBomb | → metres | real |
+| landmark | StatsBomb | -> metres | real |
 |---|---|---|---|
-| centre spot | (60, 40) | (52.50, 34.00) | (52.5, 34.0) ✓ |
-| attacked goal centre | (120, 40) | (105.00, 34.00) | (105.0, 34.0) ✓ |
+| centre spot | (60, 40) | (52.50, 34.00) | (52.5, 34.0)  |
+| attacked goal centre | (120, 40) | (105.00, 34.00) | (105.0, 34.0)  |
 | goal width | 8 units | 6.80 m | 7.32 m |
 | penalty spot from goal line | 12 units | 10.50 m | 11.00 m |
 | penalty box depth | 18 units | 15.75 m | 16.50 m |
 | penalty box width | 44 units | 37.40 m | 40.32 m |
 
 The plain linear rescale is what mplsoccer/socceraction/kloppy do, but it shrinks the box and
-goal by **5–7 %**. If box-relative features matter, a piecewise-linear landmark-preserving map
-is the alternative — but it is not what the ecosystem uses, so match the ecosystem by default
+goal by **5-7 %**. If box-relative features matter, a piecewise-linear landmark-preserving map
+is the alternative, but it is not what the ecosystem uses, so match the ecosystem by default
 and expose the choice.
 
 ---
@@ -459,8 +459,8 @@ Flat list, 2 882 entries for match 3943043. Exactly three keys per entry:
 
 - `event_uuid` joins to `event.id`. **All 2 882 uuids resolved** into the events file.
 - `visible_area` is a **flat, alternating `[x1,y1,x2,y2,…]` list**, *not* a list of pairs.
-  Observed lengths: 10 (1 283×), 12 (1 081×), 14 (516×), 8 (2×) → 4–7 polygon vertices.
-- `freeze_frame` players carry only `teammate`, `actor`, `keeper`, `location` — there is
+  Observed lengths: 10 (1 283×), 12 (1 081×), 14 (516×), 8 (2×) -> 4-7 polygon vertices.
+- `freeze_frame` players carry only `teammate`, `actor`, `keeper`, `location`, there is
   **no player_id, no name, no jersey number**.
 
 Measured over all 2 882 frames:
@@ -476,7 +476,7 @@ y range               −7.501 ..  86.005      (OUT of [0,80])
 ```
 
 The frame shares its event's coordinate system: the `actor`'s location equals the parent
-event's `location` **exactly** — L1 distance median 0.00 and p90 0.00 over 2 882 frames.
+event's `location` **exactly**, L1 distance median 0.00 and p90 0.00 over 2 882 frames.
 So §5.4's per-event-team mirror applies to freeze frames too.
 
 Coverage is 2 882 / 3 304 = **87.2 %** of events. Frames exist mostly for on-ball events
@@ -487,7 +487,7 @@ Pass 148, Ball Receipt* 74, Carry 57, Pressure 52, Goal Keeper 17.
 
 2 882 frames across ~96 minutes is **≈ 0.5 Hz**, and the samples are event-triggered rather
 than evenly spaced. It also lacks `player_id`, `jersey`, `vx`, `vy` and any frame counter, and
-only sees players inside the broadcast camera polygon (6–22 of 22). It therefore **cannot
+only sees players inside the broadcast camera polygon (6-22 of 22). It therefore **cannot
 populate the sportio `tracking` schema**, which requires ≥10 Hz plus per-player identity. Treat
 StatsBomb as an events-only source and attach 360 as per-event context (e.g. into `extra`).
 
@@ -499,8 +499,8 @@ Embedded in shot events, and unlike the 360 frames it **does** identify players:
 keys: location, player{id,name}, position{id,name}, teammate
 ```
 
-25 shots in match 3943043 carried 6–19 players each (325 rows total). No `actor` or `keeper`
-flag — the shooter is the event's own `player`, and the keeper is identified by
+25 shots in match 3943043 carried 6-19 players each (325 rows total). No `actor` or `keeper`
+flag, the shooter is the event's own `player`, and the keeper is identified by
 `position.name == "Goalkeeper"`.
 
 ## 7. lineups/{match_id}.json
@@ -525,23 +525,23 @@ still on at the whistle.
 ## 8. Gotchas summary
 
 1. Repo renamed `statsbomb/open-data` → `hudl/open-data`; branch is `master`, `main` 404s.
-2. Coordinates are per **event team**, not possession team — mirror `(120−x, 80−y)` for the
+2. Coordinates are per **event team**, not possession team, mirror `(120−x, 80−y)` for the
    17.3 % of events where `team.id != possession_team.id`.
 3. `y` increases **downward** in StatsBomb; flip it for a bottom-left-origin metre pitch.
 4. `shot.end_location` is length **2 or 3**; everything else is length 2.
 5. Missing `pass.outcome` means **completed**, not unknown.
 6. `under_pressure`, `counterpress`, `out`, `off_camera`, `switch`, `cross`, `aerial_won`,
-   `first_time`, `deflected` etc. appear **only when true** — absence is false, never `False`.
+   `first_time`, `deflected` etc. appear **only when true**, absence is false, never `False`.
 7. `"Ball Receipt*"` contains a literal asterisk.
-8. The `50_50` key starts with a digit — not a valid Python identifier.
+8. The `50_50` key starts with a digit, not a valid Python identifier.
 9. `visible_area` is a flat alternating list, not a list of `[x, y]` pairs.
-10. 360 freeze-frame coordinates go out of bounds (x −2.0 → 123.0, y −7.5 → 86.0) — clip.
+10. 360 freeze-frame coordinates go out of bounds (x −2.0 -> 123.0, y −7.5 -> 86.0), clip.
 11. `matches` uses `home_team.home_team_id` but `away_team.away_team_id`.
 12. `timestamp` resets per period; `minute`/`second` do not. Use `timestamp` for `t`.
 13. Period 5 is the shootout: 16 events, all shots at `location [108.1, 40.1]`,
     `shot.type.name == "Penalty"`. Decide explicitly whether to emit or drop these.
 14. `Free Kick` is id 62 in **both** `pass.type` and `shot.type`; ids are per-field namespaces.
-15. Events files are ~3 MB and 360 files ~7 MB per match — 51 Euro 2024 matches is ~500 MB.
+15. Events files are ~3 MB and 360 files ~7 MB per match, 51 Euro 2024 matches is ~500 MB.
     Cache aggressively.
 
 ## 9. Committed fixtures
@@ -552,8 +552,8 @@ Under `tests/fixtures/statsbomb/` (all real bytes, sliced; nothing synthesised):
 |---|---|---|
 | `competitions.json` | 10 real entries, Euro 2024 (`55/282`) first | 4.3 KB |
 | `matches_55_282.json` | 6 real Euro 2024 matches incl. the Final | 10.0 KB |
-| `events_3943043_slice.json` | events `index` 2460–2600 (141 events), period 2, `00:19:16.065`–`00:25:08.092` | 89.7 KB |
-| `three-sixty_3943043_slice.json` | 50 freeze frames for event indices 2500–2560 | 81.0 KB |
+| `events_3943043_slice.json` | events `index` 2460-2600 (141 events), period 2, `00:19:16.065`-`00:25:08.092` | 89.7 KB |
+| `three-sixty_3943043_slice.json` | 50 freeze frames for event indices 2500-2560 | 81.0 KB |
 | `lineups_3943043.json` | both teams, complete | 21.5 KB |
 
 The events slice deliberately contains **2 corner deliveries** (`index` 2513, 2559),

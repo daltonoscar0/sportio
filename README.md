@@ -3,7 +3,7 @@
 Shared data layer for the sports tools suite (setpiece, pressing, scout, replay, ruck).
 
 Every open soccer and rugby source the suite uses is loaded here and normalised into exactly
-two dataframes — `events` and `tracking`. Downstream tools import `sportio` and never touch a
+two dataframes, `events` and `tracking`. Downstream tools import `sportio` and never touch a
 vendor schema.
 
 ## Quickstart
@@ -38,12 +38,12 @@ $ sportio fetch soccernet --split valid --match SNGS-056
 
 ## Canonical schemas
 
-**`events`** — `match_id, competition, season, team_id, team, player_id, player, t, period,
+**`events`**, `match_id, competition, season, team_id, team, player_id, player, t, period,
 type, subtype, x, y, end_x, end_y, outcome, pressure, body_part, extra`
 
-**`tracking`** — `match_id, t, period, frame, team, player_id, jersey, x, y, vx, vy, confidence`
+**`tracking`**, `match_id, t, period, frame, team, player_id, jersey, x, y, vx, vy, confidence`
 
-**`lineups`** (auxiliary, not a third canonical plane) — `match_id, team_id, team, player_id,
+**`lineups`** (auxiliary, not a third canonical plane), `match_id, team_id, team, player_id,
 player, nickname, jersey, position, starter, on_at_full_time, minutes, minutes_estimated,
 yellow_cards, red_cards, positions`. It exists because a shirt number and a minutes total live
 nowhere in either canonical frame, and per-90 normalisation is impossible without them.
@@ -54,7 +54,7 @@ Guarantees every loader makes:
 |---|---|
 | Pitch | 105 × 68 m, origin **bottom-left**, `x` → right, `y` → **up** |
 | Direction | events attack **left-to-right for the team in possession**; tracking is flipped so the **home** team attacks +x in every period |
-| Time | `t` is **seconds since the start of the current period** — never a match clock |
+| Time | `t` is **seconds since the start of the current period**, never a match clock |
 | Rate | tracking is at least 10 Hz; slower sources are resampled, faster ones are left alone |
 | Entities | `tracking.team` is only ever `home`, `away` or `ball` |
 | Vocabulary | `type` / `subtype` / `outcome` are lowercase `snake_case`; set pieces use a shared vocabulary (`corner`, `free_kick`, `throw_in`, `goal_kick`, `kick_off`, `penalty`, `lineout`, `scrum`) |
@@ -66,7 +66,7 @@ Guarantees every loader makes:
 ### Derived views
 
 These take a canonical frame and hand back a copy with extra columns, or a summary. They are
-deliberately *not* part of the canonical schema — the column list above is a contract — but they
+deliberately *not* part of the canonical schema, the column list above is a contract, but they
 live here so that every tool computes them the same way.
 
 | | |
@@ -80,11 +80,11 @@ live here so that every tool computes them the same way.
 
 | source | events | tracking | what it is | licence |
 |---|---|---|---|---|
-| **statsbomb** | ✅ | — | [StatsBomb Open Data](https://github.com/statsbomb/open-data): full event feeds plus 360 freeze frames, which land in `events.extra["freeze_frame"]` already on the canonical pitch. | StatsBomb Open Data User Agreement (non-commercial, attribution) |
-| **metrica** | ✅ | ✅ | [Metrica Sports sample data](https://github.com/metrica-sports/sample-data): three fully-tracked anonymised matches at 25 Hz with matching event files. Games 1-2 are CSV; game 3 is FIFA EPTS, whose column layout is rewritten at every substitution — both arrive as the same canonical frame. | CC BY-NC-SA 4.0 |
-| **skillcorner** | ✅ | ✅ | [SkillCorner open data](https://github.com/SkillCorner/opendata): ten A-League matches of 10 Hz broadcast tracking, plus their derived "dynamic events". | CC BY-NC-SA 4.0 |
-| **soccernet** | — | ✅ | [SN-GSR-2025](https://huggingface.co/datasets/SoccerNet/SN-GSR-2025): 30-second game-state clips with metric pitch positions. The split archives are 11.2 GB, but sportio range-fetches only the annotation members — 192 MB for all 58 sequences. | GPL-3.0 (the separate SoccerNet-Tracking MOT archives are NDA-gated) |
-| **rugby** | ✅ | — | ESPN rugby play-by-play (tries, conversions, penalty goals, drop goals, cards, substitutions, half markers). The type enum was established by censusing 9,626 rows across 184 matches. **No positional data exists in any open rugby feed** — see `TODO.md`. | ESPN content, used for research |
+| **statsbomb** | yes |, | [StatsBomb Open Data](https://github.com/statsbomb/open-data): full event feeds plus 360 freeze frames, which land in `events.extra["freeze_frame"]` already on the canonical pitch. | StatsBomb Open Data User Agreement (non-commercial, attribution) |
+| **metrica** | yes | | [Metrica Sports sample data](https://github.com/metrica-sports/sample-data): three fully-tracked anonymised matches at 25 Hz with matching event files. Games 1-2 are CSV; game 3 is FIFA EPTS, whose column layout is rewritten at every substitution, both arrive as the same canonical frame. | CC BY-NC-SA 4.0 |
+| **skillcorner** | yes | | [SkillCorner open data](https://github.com/SkillCorner/opendata): ten A-League matches of 10 Hz broadcast tracking, plus their derived "dynamic events". | CC BY-NC-SA 4.0 |
+| **soccernet** |, | yes | [SN-GSR-2025](https://huggingface.co/datasets/SoccerNet/SN-GSR-2025): 30-second game-state clips with metric pitch positions. The split archives are 11.2 GB, but sportio range-fetches only the annotation members, 192 MB for all 58 sequences. | GPL-3.0 (the separate SoccerNet-Tracking MOT archives are NDA-gated) |
+| **rugby** | yes |, | ESPN rugby play-by-play (tries, conversions, penalty goals, drop goals, cards, substitutions, half markers). The type enum was established by censusing 9,626 rows across 184 matches. **No positional data exists in any open rugby feed**, see `TODO.md`. | ESPN content, used for research |
 
 `sportio info` prints the same table, and `sportio info <source>` the detail.
 
@@ -92,7 +92,7 @@ live here so that every tool computes them the same way.
 
 Everything fetched is cached under `data/raw/` (gitignored) and never re-fetched. Requests are
 rate-limited to one per second per host with exponential backoff. Set `SPORTIO_DATA_DIR` to move
-the cache and `SPORTIO_OFFLINE=1` to forbid the network entirely — the test suite runs that way.
+the cache and `SPORTIO_OFFLINE=1` to forbid the network entirely, the test suite runs that way.
 
 Sizes worth knowing before you type a command: a full StatsBomb competition is ~500 MB
 (`--limit` caps it), a Metrica game is ~65 MB, and a SkillCorner tracking file is ~85 MB behind
@@ -112,9 +112,9 @@ uv run pytest -m network   # the same acceptance checks against the live sources
 uv run ruff check
 ```
 
-The suite is verified against both ends of the declared pandas range — 2.1 (with numpy 1.x) and
-3.0 — because the whole point of this package is that five other tools can depend on it.
+The suite is verified against both ends of the declared pandas range, 2.1 (with numpy 1.x) and
+3.0, because the whole point of this package is that five other tools can depend on it.
 
-`docs/schema_notes/` holds a measured, per-source description of every raw format — field paths,
+`docs/schema_notes/` holds a measured, per-source description of every raw format, field paths,
 coordinate systems and the specific ways each one breaks a naive loader. Read the relevant one
 before changing a loader.
