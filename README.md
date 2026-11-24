@@ -1,5 +1,7 @@
 # sportio
 
+[![tests](https://github.com/daltonoscar0/sportio/actions/workflows/tests.yml/badge.svg)](https://github.com/daltonoscar0/sportio/actions/workflows/tests.yml)
+
 Shared data layer for the sports tools suite (setpiece, pressing, scout, replay, ruck).
 
 Every open soccer and rugby source the suite uses is loaded here and normalised into exactly
@@ -118,3 +120,7 @@ The suite is verified against both ends of the declared pandas range, 2.1 (with 
 `docs/schema_notes/` holds a measured, per-source description of every raw format, field paths,
 coordinate systems and the specific ways each one breaks a naive loader. Read the relevant one
 before changing a loader.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
